@@ -1,0 +1,274 @@
+---
+title: "Examples & Demos"
+description: "Working examples and demo applications to inspire your hackathon project"
+---
+
+# Examples & Demo Applications
+
+Explore these working examples to understand Open Finance capabilities and get inspiration for your hackathon project.
+
+<Info>
+  **🎯 All examples include**: Live demos, complete source code, and deployment guides
+</Info>
+
+## Featured Demo Applications
+
+<Card
+  title="🏆 Open Finance Backoffice Portal - Built with Claude Code"
+  icon="robot"
+  href="/examples/payment-app"
+  horizontal
+>
+  **Production-ready consent management portal** showcasing AI-assisted development. Live demo at [openfinance-frontend.onrender.com](https://openfinance-frontend.onrender.com/) | [GitHub](https://github.com/open-finance-os/backoffice-portal)
+</Card>
+
+<CardGroup cols={2}>
+  <Card
+    title="Personal Finance Dashboard"
+    icon="chart-line"
+    href="/examples/personal-finance"
+  >
+    Complete expense tracking and budgeting app with data visualization
+  </Card>
+  <Card
+    title="Insurance Management Portal"
+    icon="shield"
+    href="/examples/insurance-dashboard"
+  >
+    Policy management, claims processing, and quote comparison
+  </Card>
+  <Card
+    title="Small Business Banking"
+    icon="building"
+    href="/examples/business-banking"
+  >
+    Multi-account management for small business financial operations
+  </Card>
+  <Card
+    title="Mobile Banking App"
+    icon="mobile"
+    href="/examples/mobile-app"
+  >
+    React Native mobile app with biometric authentication
+  </Card>
+</CardGroup>
+
+## Example Categories
+
+### 💰 **Personal Finance**
+- **Budget Tracker** - Automated expense categorization and budget monitoring
+- **Savings Goals** - Track progress toward financial goals with predictions
+- **Investment Portfolio** - Basic portfolio tracking and performance analysis
+- **Bill Reminders** - Automated bill tracking and payment reminders
+
+### 🏢 **Business Applications**
+- **Expense Management** - Corporate expense tracking and approval workflows
+- **Cash Flow Forecasting** - Predict future cash flow based on historical data
+- **Multi-Account Dashboard** - Centralized view of multiple business accounts
+- **Payroll Integration** - Connect payroll systems with banking APIs
+
+### 🔄 **Payment Solutions**
+- **P2P Transfer App** - Person-to-person money transfers
+- **Merchant Payment Gateway** - Accept payments from customers
+- **International Transfers** - Cross-border payments with FX services
+- **Subscription Billing** - Recurring payment management
+
+### 🛡️ **Insurance & Protection**
+- **Policy Comparison Tool** - Compare insurance quotes across providers
+- **Claims Tracker** - Monitor insurance claim status and history
+- **Risk Assessment** - Analyze financial risk factors and insurance needs
+- **Premium Calculator** - Calculate insurance premiums based on user data
+
+## Technical Approaches
+
+### 🎨 **Frontend Examples**
+<AccordionGroup>
+  <Accordion title="React SPA with Charts" icon="react">
+    - Real-time data visualization with Recharts
+    - Responsive design with Tailwind CSS
+    - State management with Zustand
+    - TypeScript for type safety
+  </Accordion>
+
+  <Accordion title="Vue.js Dashboard" icon="vuejs">
+    - Composition API with financial data
+    - Chart.js for interactive graphs
+    - Vuex for centralized state
+    - Progressive Web App features
+  </Accordion>
+
+  <Accordion title="Angular Enterprise App" icon="angular">
+    - Component-based architecture
+    - RxJS for reactive programming
+    - Angular Material design system
+    - Enterprise-grade routing and guards
+  </Accordion>
+</AccordionGroup>
+
+### ⚙️ **Backend Examples**
+<AccordionGroup>
+  <Accordion title="Node.js Microservices" icon="node">
+    - Express.js with TypeScript
+    - Redis caching for API responses
+    - JWT authentication with refresh tokens
+    - Docker containerization
+  </Accordion>
+
+  <Accordion title="Python Data Pipeline" icon="python">
+    - FastAPI for high-performance APIs
+    - Pandas for financial data analysis
+    - Machine learning with scikit-learn
+    - Async database operations
+  </Accordion>
+
+  <Accordion title="Serverless Functions" icon="cloud">
+    - AWS Lambda functions
+    - Event-driven architecture
+    - Auto-scaling based on demand
+    - Cost-effective for small teams
+  </Accordion>
+</AccordionGroup>
+
+## Use Case Inspiration
+
+### 🚀 **Innovative Ideas**
+- **AI Financial Advisor** - Personalized financial advice using ML
+- **Social Spending** - Share and compare spending habits with friends
+- **Carbon Footprint Tracker** - Environmental impact of financial transactions
+- **Crypto-Fiat Bridge** - Connect traditional banking with cryptocurrency
+- **Micro-Investment Platform** - Round-up spare change for investments
+
+### 🎯 **Practical Solutions**
+- **Freelancer Finance** - Banking tools for gig economy workers
+- **Student Budget Manager** - Financial planning for students
+- **Family Expense Sharing** - Split household expenses fairly
+- **Travel Budget Tracker** - Multi-currency expense tracking for travelers
+- **Retirement Planning** - Long-term financial planning with projections
+
+### 🏆 **Prize-Winning Concepts**
+Based on previous hackathon winners:
+- **Real-time Fraud Detection** - ML-powered transaction monitoring
+- **Voice-Controlled Banking** - Hands-free financial management
+- **AR Receipt Scanner** - Augmented reality expense tracking
+- **Smart Contract Escrow** - Blockchain-based payment guarantees
+- **Accessibility-First Banking** - Financial apps for users with disabilities
+
+## Code Examples
+
+### Quick API Integration
+```javascript
+// Fetch account balance
+const getBalance = async (accountId) => {
+  const response = await fetch(`/api/accounts/${accountId}/balance`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};
+```
+
+### Real-time Updates
+```javascript
+// WebSocket connection for live updates
+const ws = new WebSocket('wss://api.example.com/ws/transactions');
+
+ws.onmessage = (event) => {
+  const transaction = JSON.parse(event.data);
+  updateTransactionList(transaction);
+  updateBalance(transaction.amount);
+};
+```
+
+### Error Handling
+```javascript
+// Robust error handling for financial apps
+const handleApiError = (error) => {
+  switch (error.status) {
+    case 401:
+      // Redirect to login
+      window.location.href = '/login';
+      break;
+    case 429:
+      // Rate limited - show retry message
+      showRetryMessage();
+      break;
+    case 500:
+      // Server error - contact support
+      showErrorMessage('Please contact support');
+      break;
+    default:
+      showErrorMessage('An unexpected error occurred');
+  }
+};
+```
+
+## Getting Started with Examples
+
+<Steps>
+  <Step title="Choose an Example">
+    Pick an example that matches your team's interests and technical skills.
+  </Step>
+
+  <Step title="Clone the Repository">
+    ```bash
+    git clone https://github.com/open-finance-os/example-NAME.git
+    cd example-NAME
+    ```
+  </Step>
+
+  <Step title="Follow Setup Instructions">
+    Each example includes detailed setup instructions in its README file.
+  </Step>
+
+  <Step title="Explore and Modify">
+    Study the code, understand the architecture, then customize for your needs.
+  </Step>
+
+  <Step title="Build Your Own">
+    Use the example as a starting point for your unique hackathon project.
+  </Step>
+</Steps>
+
+## Contributing Examples
+
+Have a cool Open Finance project? Share it with the community:
+
+1. Fork the examples repository
+2. Add your project with documentation
+3. Include live demo and setup instructions
+4. Submit a pull request
+5. Help other developers learn!
+
+<Note>
+  **Example Quality**: All examples are tested, documented, and maintained by the community.
+</Note>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Join Discussions"
+    icon="comments"
+    href="https://github.com/open-finance-os/discussions"
+  >
+    Ask questions about specific examples
+  </Card>
+  <Card
+    title="Request Examples"
+    icon="lightbulb"
+    href="https://github.com/open-finance-os/discussions/new"
+  >
+    Suggest new examples for the community
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Hackathon Strategy**: Start with a simple example, understand how it works, then add your unique twist to stand out!
+</Tip>

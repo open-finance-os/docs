@@ -1,0 +1,572 @@
+---
+title: "Insurance Management Portal"
+description: "Complete insurance policy management and claims processing platform"
+---
+
+# Insurance Management Portal Example
+
+A comprehensive insurance management application demonstrating integration with UAE Insurance APIs for policy management, claims processing, and quote comparison.
+
+<CardGroup cols={2}>
+  <Card
+    title="Live Demo"
+    icon="external-link"
+    href="https://insurance-portal-demo.vercel.app"
+  >
+    Try the working application with sample policies
+  </Card>
+  <Card
+    title="Source Code"
+    icon="github"
+    href="https://github.com/open-finance-os/example-insurance-portal"
+  >
+    Complete source code with setup instructions
+  </Card>
+</CardGroup>
+
+## Features Overview
+
+### 📋 **Policy Management**
+- Multi-policy dashboard with real-time status
+- Policy document storage and retrieval
+- Premium payment tracking and reminders
+- Coverage analysis and gap identification
+
+### 🔍 **Quote Comparison**
+- Multi-provider quote aggregation
+- Side-by-side coverage comparison
+- AI-powered recommendation engine
+- Price optimization analysis
+
+### 📊 **Claims Processing**
+- Digital claims submission with document upload
+- Real-time claim status tracking
+- Automated claim validation
+- Settlement prediction and timeline
+
+### 📱 **Mobile-First Design**
+- Progressive Web App capabilities
+- Offline policy document access
+- Push notifications for claim updates
+- Biometric authentication support
+
+## Technical Implementation
+
+### **Tech Stack**
+- **Frontend**: Next.js 14 + TypeScript + Tailwind CSS
+- **Backend**: Python FastAPI + SQLAlchemy
+- **Database**: PostgreSQL with insurance-specific schemas
+- **File Storage**: AWS S3 for policy documents
+- **Authentication**: OAuth 2.0 + JWT tokens
+
+### **Insurance API Integration**
+```typescript
+// Policy data fetching with comprehensive error handling
+const usePolicyData = (policyId: string) => {
+  return useQuery({
+    queryKey: ['policy', policyId],
+    queryFn: async () => {
+      const response = await insuranceApi.get(`/policies/${policyId}`);
+      return response.data;
+    },
+    staleTime: 60 * 1000, // 1 minute cache
+    retry: (failureCount, error) => {
+      // Retry on network errors but not on 404s
+      return failureCount < 3 && error.status !== 404;
+    },
+    onError: (error) => {
+      if (error.status === 401) {
+        // Token expired, redirect to auth
+        router.push('/auth/login');
+      }
+    }
+  });
+};
+```
+
+### **Real-time Claim Updates**
+```typescript
+// WebSocket integration for live claim status updates
+useEffect(() => {
+  const ws = new WebSocket(`wss://api.insurance.ae/ws/claims/${userId}`);
+
+  ws.onmessage = (event) => {
+    const update = JSON.parse(event.data);
+
+    // Update claim status in real-time
+    setClaimUpdates(prev => ({
+      ...prev,
+      [update.claimId]: update
+    }));
+
+    // Show notification for important updates
+    if (update.type === 'settlement_approved') {
+      showNotification({
+        title: 'Claim Approved',
+        message: `Your claim ${update.claimId} has been approved for ${formatCurrency(update.amount)}`,
+        type: 'success'
+      });
+    }
+  };
+
+  return () => ws.close();
+}, [userId]);
+```
+
+## Key Components
+
+### Policy Dashboard
+```typescript
+const PolicyDashboard = ({ policies }: { policies: Policy[] }) => {
+  const activeCount = policies.filter(p => p.status === 'active').length;
+  const expiringCount = policies.filter(p =>
+    isWithinDays(p.expiryDate, 30)
+  ).length;
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <StatCard
+        title="Active Policies"
+        value={activeCount}
+        icon={Shield}
+        color="green"
+      />
+      <StatCard
+        title="Expiring Soon"
+        value={expiringCount}
+        icon={AlertTriangle}
+        color="yellow"
+      />
+      <StatCard
+        title="Total Coverage"
+        value={formatCurrency(totalCoverage)}
+        icon={DollarSign}
+        color="blue"
+      />
+      <StatCard
+        title="Monthly Premium"
+        value={formatCurrency(monthlyPremium)}
+        icon={Calendar}
+        color="purple"
+      />
+    </div>
+  );
+};
+```
+
+### Quote Comparison Tool
+```typescript
+const QuoteComparison = ({ quotes }: { quotes: Quote[] }) => {
+  const [selectedQuotes, setSelectedQuotes] = useState<string[]>([]);
+  const [comparisonCriteria, setComparisonCriteria] = useState([
+    'premium', 'coverage', 'deductible', 'benefits'
+  ]);
+
+  return (
+    <div className="comparison-matrix">
+      <div className="criteria-selector mb-6">
+        {comparisonCriteria.map(criteria => (
+          <Checkbox
+            key={criteria}
+            checked={comparisonCriteria.includes(criteria)}
+            onChange={(checked) => {
+              if (checked) {
+                setComparisonCriteria(prev => [...prev, criteria]);
+              } else {
+                setComparisonCriteria(prev => prev.filter(c => c !== criteria));
+              }
+            }}
+          >
+            {formatCriteriaName(criteria)}
+          </Checkbox>
+        ))}
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Provider</TableHead>
+            {comparisonCriteria.map(criteria => (
+              <TableHead key={criteria}>{formatCriteriaName(criteria)}</TableHead>
+            ))}
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {quotes.map(quote => (
+            <QuoteComparisonRow
+              key={quote.id}
+              quote={quote}
+              criteria={comparisonCriteria}
+              onSelect={() => selectQuote(quote.id)}
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+```
+
+## Advanced Features
+
+### **AI-Powered Risk Assessment**
+```python
+# FastAPI backend for risk analysis
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+
+app = FastAPI()
+
+class RiskAssessmentRequest(BaseModel):
+    age: int
+    occupation: str
+    health_score: float
+    coverage_amount: float
+    policy_type: str
+
+@app.post("/api/risk-assessment")
+async def assess_risk(request: RiskAssessmentRequest):
+    try:
+        # Load pre-trained risk model
+        risk_model = load_risk_model()
+
+        # Prepare features for prediction
+        features = prepare_features(request)
+
+        # Predict risk score and premium adjustment
+        risk_score = risk_model.predict_proba([features])[0][1]
+        premium_multiplier = calculate_premium_multiplier(risk_score)
+
+        return {
+            "risk_score": float(risk_score),
+            "risk_category": categorize_risk(risk_score),
+            "premium_adjustment": premium_multiplier,
+            "recommendations": generate_recommendations(request, risk_score)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+```
+
+### **Document Processing**
+```typescript
+// Automatic document classification and extraction
+const processDocument = async (file: File, policyId: string) => {
+  const formData = new FormData();
+  formData.append('document', file);
+  formData.append('policyId', policyId);
+
+  try {
+    const response = await fetch('/api/documents/process', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      // Document processed successfully
+      return {
+        documentType: result.type,
+        extractedData: result.data,
+        confidence: result.confidence,
+        requiresReview: result.confidence < 0.9
+      };
+    }
+  } catch (error) {
+    console.error('Document processing failed:', error);
+    throw new Error('Failed to process document');
+  }
+};
+```
+
+### **Premium Calculator**
+```typescript
+// Dynamic premium calculation with real-time updates
+const usePremiumCalculator = (basePolicy: PolicyBase) => {
+  const [adjustments, setAdjustments] = useState<PremiumAdjustment[]>([]);
+
+  const calculatePremium = useCallback(async () => {
+    const factors = {
+      age: basePolicy.applicant.age,
+      coverage: basePolicy.coverageAmount,
+      deductible: basePolicy.deductible,
+      location: basePolicy.location,
+      riskFactors: adjustments
+    };
+
+    const response = await fetch('/api/premium/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(factors)
+    });
+
+    const { premium, breakdown } = await response.json();
+    return { premium, breakdown };
+  }, [basePolicy, adjustments]);
+
+  const addAdjustment = (adjustment: PremiumAdjustment) => {
+    setAdjustments(prev => [...prev, adjustment]);
+  };
+
+  const removeAdjustment = (id: string) => {
+    setAdjustments(prev => prev.filter(adj => adj.id !== id));
+  };
+
+  return {
+    calculatePremium,
+    addAdjustment,
+    removeAdjustment,
+    adjustments
+  };
+};
+```
+
+## Claims Processing Workflow
+
+### **Claim Submission**
+```typescript
+const ClaimSubmissionForm = () => {
+  const [claimData, setClaimData] = useState<ClaimData>();
+  const [documents, setDocuments] = useState<File[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  const submitClaim = async (e: FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      // Upload documents first
+      const documentIds = await uploadDocuments(documents);
+
+      // Submit claim with document references
+      const claim = await createClaim({
+        ...claimData,
+        documentIds,
+        submissionDate: new Date().toISOString()
+      });
+
+      // Track submission for analytics
+      trackEvent('claim_submitted', {
+        claimType: claimData.type,
+        claimAmount: claimData.amount,
+        documentCount: documents.length
+      });
+
+      // Show success message and redirect
+      showSuccess('Claim submitted successfully');
+      router.push(`/claims/${claim.id}`);
+    } catch (error) {
+      showError('Failed to submit claim. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submitClaim} className="space-y-6">
+      <ClaimDetailsSection
+        data={claimData}
+        onChange={setClaimData}
+      />
+      <DocumentUploadSection
+        files={documents}
+        onChange={setDocuments}
+        maxFiles={10}
+        acceptedTypes={['pdf', 'jpg', 'png']}
+      />
+      <SubmitButton
+        loading={submitting}
+        disabled={!claimData || documents.length === 0}
+      />
+    </form>
+  );
+};
+```
+
+## Setup Instructions
+
+<Steps>
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/open-finance-os/example-insurance-portal.git
+    cd example-insurance-portal
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    # Frontend
+    cd frontend
+    npm install
+
+    # Backend
+    cd ../backend
+    pip install -r requirements.txt
+    ```
+  </Step>
+
+  <Step title="Environment Configuration">
+    ```bash
+    # Backend .env
+    INSURANCE_API_KEY=your_insurance_api_key
+    INSURANCE_API_SECRET=your_api_secret
+    DATABASE_URL=postgresql://user:password@localhost:5432/insurance
+    AWS_ACCESS_KEY_ID=your_aws_key
+    AWS_SECRET_ACCESS_KEY=your_aws_secret
+    S3_BUCKET_NAME=insurance-documents
+
+    # Frontend .env
+    NEXT_PUBLIC_API_URL=http://localhost:8000
+    NEXT_PUBLIC_WS_URL=ws://localhost:8000
+    NEXT_PUBLIC_UPLOAD_MAX_SIZE=10485760
+    ```
+  </Step>
+
+  <Step title="Database Setup">
+    ```bash
+    # Initialize database
+    alembic upgrade head
+
+    # Seed with sample data
+    python scripts/seed_data.py
+    ```
+  </Step>
+
+  <Step title="Start Services">
+    ```bash
+    # Backend API
+    uvicorn main:app --reload --port 8000
+
+    # Frontend (in new terminal)
+    cd frontend
+    npm run dev
+    ```
+  </Step>
+</Steps>
+
+## Customization Examples
+
+### **Custom Policy Types**
+```typescript
+// Define custom insurance policy types
+const customPolicyTypes = [
+  {
+    id: 'travel_adventure',
+    name: 'Adventure Travel Insurance',
+    icon: '🏔️',
+    coverageOptions: [
+      'extreme_sports',
+      'equipment_protection',
+      'rescue_evacuation',
+      'trip_interruption'
+    ],
+    riskFactors: ['destination_risk', 'activity_level', 'duration']
+  },
+  {
+    id: 'cyber_protection',
+    name: 'Cyber Security Insurance',
+    icon: '🔐',
+    coverageOptions: [
+      'data_breach',
+      'ransomware_protection',
+      'business_interruption',
+      'legal_defense'
+    ],
+    riskFactors: ['company_size', 'industry_type', 'security_measures']
+  }
+];
+```
+
+### **Integration with External Services**
+```typescript
+// Weather API integration for travel insurance
+const getDestinationRisk = async (destination: string, travelDates: DateRange) => {
+  const weatherData = await fetch(
+    `https://api.weather.com/risk-assessment/${destination}?start=${travelDates.start}&end=${travelDates.end}`
+  );
+
+  const { riskLevel, factors } = await weatherData.json();
+
+  return {
+    weatherRisk: riskLevel,
+    riskFactors: factors,
+    premiumAdjustment: calculateWeatherPremiumAdjustment(riskLevel)
+  };
+};
+```
+
+## Performance & Security
+
+### **Data Encryption**
+```python
+# Encrypt sensitive policy data
+from cryptography.fernet import Fernet
+import os
+
+class PolicyDataEncryption:
+    def __init__(self):
+        self.key = os.environ.get('ENCRYPTION_KEY')
+        self.cipher = Fernet(self.key)
+
+    def encrypt_policy_data(self, data: dict) -> str:
+        """Encrypt sensitive policy information"""
+        json_data = json.dumps(data)
+        encrypted_data = self.cipher.encrypt(json_data.encode())
+        return base64.b64encode(encrypted_data).decode()
+
+    def decrypt_policy_data(self, encrypted_data: str) -> dict:
+        """Decrypt policy information for authorized access"""
+        encrypted_bytes = base64.b64decode(encrypted_data)
+        decrypted_data = self.cipher.decrypt(encrypted_bytes)
+        return json.loads(decrypted_data.decode())
+```
+
+### **API Rate Limiting**
+```python
+# Implement rate limiting for API endpoints
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+@app.post("/api/quotes/request")
+@limiter.limit("5/minute")  # Limit quote requests
+async def request_quote(request: Request, quote_data: QuoteRequest):
+    return await process_quote_request(quote_data)
+```
+
+## Deployment
+
+### **Frontend (Vercel)**
+```bash
+# Deploy with environment variables
+vercel --prod --env NEXT_PUBLIC_API_URL=https://api.insurance.ae
+```
+
+### **Backend (AWS Lambda)**
+```bash
+# Package for serverless deployment
+pip install -r requirements.txt -t ./package
+cd package && zip -r ../deployment.zip .
+cd .. && zip -g deployment.zip main.py
+
+# Deploy using AWS CLI
+aws lambda update-function-code --function-name insurance-api --zip-file fileb://deployment.zip
+```
+
+<Warning>
+  **Security Note**: This example handles sensitive financial and personal data. Ensure proper encryption, access controls, and compliance with insurance regulations.
+</Warning>
+
+<Tip>
+  This insurance portal demonstrates comprehensive policy management, claims processing, and risk assessment using UAE Insurance APIs.
+</Tip>

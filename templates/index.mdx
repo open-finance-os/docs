@@ -1,0 +1,188 @@
+---
+title: "Starter Templates"
+description: "Ready-to-fork repositories to get your hackathon project running in minutes"
+---
+
+# Hackathon Starter Templates
+
+Fork these repositories and start building immediately. Each template comes pre-configured with Open Finance API integration, authentication, and deployment setup.
+
+<Info>
+  **🚀 Launch in 5 minutes**: Fork → Clone → Configure → Run → Build
+</Info>
+
+## Ready-to-Use Templates
+
+<CardGroup cols={2}>
+  <Card
+    title="React + Next.js Template"
+    icon="react"
+    href="/templates/react-nextjs"
+  >
+    Full-stack app with Open Finance integration, Tailwind CSS, and Vercel deployment
+  </Card>
+  <Card
+    title="Node.js + Express Template"
+    icon="node"
+    href="/templates/nodejs-express"
+  >
+    Backend API with authentication, rate limiting, and Railway deployment
+  </Card>
+  <Card
+    title="Python + FastAPI Template"
+    icon="python"
+    href="/templates/python-fastapi"
+  >
+    ML-ready backend perfect for financial insights and data analysis
+  </Card>
+  <Card
+    title="Mobile App Template"
+    icon="mobile"
+    href="/templates/react-native"
+  >
+    React Native app with banking features and secure authentication
+  </Card>
+</CardGroup>
+
+## Template Features
+
+Every template includes:
+
+<AccordionGroup>
+  <Accordion title="🔐 Pre-configured Authentication" icon="lock">
+    - OAuth 2.0 implementation for Open Finance APIs
+    - Token management and refresh logic
+    - Environment variable setup
+    - Error handling for auth failures
+  </Accordion>
+
+  <Accordion title="🏗️ Project Structure" icon="building">
+    - Organized folder structure following best practices
+    - API client setup with all endpoint configurations
+    - Type definitions for API responses
+    - Utility functions for common operations
+  </Accordion>
+
+  <Accordion title="🎨 UI Components" icon="palette">
+    - Pre-built components for financial data display
+    - Responsive design for mobile and desktop
+    - Accessibility features built-in
+    - Charts and data visualization components
+  </Accordion>
+
+  <Accordion title="🚀 Deployment Ready" icon="rocket">
+    - Docker configuration files
+    - CI/CD pipeline setup
+    - Environment configuration for production
+    - Deployment scripts for popular platforms
+  </Accordion>
+
+  <Accordion title="🧪 Testing Setup" icon="flask">
+    - Unit test examples for API integration
+    - Mock data for development
+    - Test utilities for financial calculations
+    - CI test automation
+  </Accordion>
+</AccordionGroup>
+
+## Quick Start Guide
+
+<Steps>
+  <Step title="Choose Your Template">
+    Pick the technology stack you're most comfortable with. All templates provide the same Open Finance functionality.
+  </Step>
+
+  <Step title="Fork & Clone">
+    ```bash
+    # Fork the repository on GitHub, then:
+    git clone https://github.com/YOUR_USERNAME/TEMPLATE_NAME.git
+    cd TEMPLATE_NAME
+    ```
+  </Step>
+
+  <Step title="Environment Setup">
+    ```bash
+    # Copy environment template
+    cp .env.example .env
+
+    # Add your API credentials
+    OPENFINANCE_CLIENT_ID=your_client_id
+    OPENFINANCE_CLIENT_SECRET=your_client_secret
+    OPENFINANCE_API_KEY=your_api_key
+    ```
+  </Step>
+
+  <Step title="Install & Run">
+    ```bash
+    # Install dependencies
+    npm install  # or pip install -r requirements.txt
+
+    # Start development server
+    npm run dev  # or python main.py
+    ```
+  </Step>
+
+  <Step title="Verify Integration">
+    Open your browser and test the API connection. You should see live data from the Open Finance sandbox.
+  </Step>
+</Steps>
+
+## Template Comparison
+
+| Feature | React/Next.js | Node.js/Express | Python/FastAPI | React Native |
+|---------|---------------|-----------------|-----------------|--------------|
+| **Best For** | Full-stack web apps | Backend APIs | Data analysis | Mobile apps |
+| **Setup Time** | 5 minutes | 3 minutes | 4 minutes | 7 minutes |
+| **Deployment** | Vercel | Railway/Heroku | AWS/GCP | Expo |
+| **Learning Curve** | Medium | Easy | Medium | Hard |
+| **Team Size** | 2-4 people | 1-2 people | 1-2 people | 2-3 people |
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Template Issues"
+    icon="bug"
+    href="https://github.com/open-finance-os/discussions"
+  >
+    Report bugs or ask for template-specific help
+  </Card>
+  <Card
+    title="API Integration"
+    icon="plug"
+    href="/api-reference/introduction"
+  >
+    Learn more about Open Finance API usage
+  </Card>
+  <Card
+    title="Deployment Help"
+    icon="cloud"
+    href="/development#deployment"
+  >
+    Guides for deploying to various platforms
+  </Card>
+  <Card
+    title="Team Collaboration"
+    icon="users"
+    href="/support/hackathon-help#team-collaboration"
+  >
+    Best practices for working together
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro Tip**: Start with the template closest to your team's expertise, then customize. Don't spend time learning new tech during the hackathon!
+</Tip>
+
+## Contributing
+
+Found a bug or want to improve a template? All templates are open source and accept contributions:
+
+1. Fork the template repository
+2. Create a feature branch
+3. Submit a pull request
+4. Help other hackathon teams succeed!
+
+<Note>
+  **Template Maintenance**: These templates are actively maintained and updated with the latest Open Finance API changes.
+</Note>

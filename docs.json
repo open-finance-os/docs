@@ -20,13 +20,44 @@
               "quickstart",
               "development"
             ]
+          }
+        ]
+      },
+      {
+        "tab": "Starter Templates",
+        "groups": [
+          {
+            "group": "Ready-to-Use Templates",
+            "pages": [
+              "templates/index",
+              "templates/react-nextjs",
+              "templates/nodejs-express",
+              "templates/python-fastapi",
+              "templates/react-native"
+            ]
           },
           {
-            "group": "AI Tools",
+            "group": "Examples & Demos",
             "pages": [
-              "ai-tools/claude-code",
-              "ai-tools/cursor",
-              "ai-tools/windsurf"
+              "examples/index",
+              "examples/personal-finance",
+              "examples/payment-app",
+              "examples/insurance-dashboard",
+              "examples/business-banking",
+              "examples/mobile-app"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Advanced Integration",
+        "groups": [
+          {
+            "group": "Power Tools",
+            "pages": [
+              "additional-info/mcps",
+              "additional-info/existing-projects",
+              "additional-info/deployments"
             ]
           }
         ]

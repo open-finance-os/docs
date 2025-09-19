@@ -1,0 +1,874 @@
+---
+title: "Mobile Banking App"
+description: "React Native mobile application with biometric authentication and offline capabilities"
+---
+
+# Mobile Banking App Example
+
+A comprehensive mobile banking application built with React Native, demonstrating secure authentication, offline capabilities, and native device integration for Open Finance APIs.
+
+<CardGroup cols={2}>
+  <Card
+    title="iOS Demo"
+    icon="mobile"
+    href="https://apps.apple.com/app/openfinance-demo"
+  >
+    Download from App Store (TestFlight)
+  </Card>
+  <Card
+    title="Android Demo"
+    icon="android"
+    href="https://play.google.com/store/apps/details?id=com.openfinance.demo"
+  >
+    Download from Google Play (Internal Testing)
+  </Card>
+  <Card
+    title="Source Code"
+    icon="github"
+    href="https://github.com/open-finance-os/example-mobile-app"
+  >
+    Complete React Native source code
+  </Card>
+  <Card
+    title="Expo Snack"
+    icon="play"
+    href="https://snack.expo.dev/@openfinance/mobile-banking-demo"
+  >
+    Try in browser (Expo Snack)
+  </Card>
+</CardGroup>
+
+## Features Overview
+
+### 🔐 **Security & Authentication**
+- Biometric authentication (Face ID, Touch ID, Fingerprint)
+- Multi-factor authentication with SMS/Email
+- Secure keychain/keystore integration
+- Session management with automatic logout
+
+### 📱 **Native Mobile Features**
+- Push notifications for transactions and alerts
+- Camera integration for check deposits
+- Contact integration for easy transfers
+- Location services for ATM/branch finding
+
+### 🌐 **Offline Capabilities**
+- Local data caching with SQLite
+- Offline transaction queuing
+- Sync conflict resolution
+- Progressive data loading
+
+### 💳 **Banking Features**
+- Account overview with pull-to-refresh
+- Transaction history with infinite scroll
+- Quick transfers between accounts
+- Bill payment and scheduling
+
+## Technical Implementation
+
+### **Tech Stack**
+- **Framework**: React Native 0.72 + TypeScript
+- **Navigation**: React Navigation 6
+- **State Management**: Redux Toolkit + RTK Query
+- **Database**: SQLite (via react-native-sqlite-storage)
+- **Authentication**: React Native Keychain + Biometrics
+- **Notifications**: React Native Firebase
+
+### **Project Structure**
+```
+src/
+├── components/          # Reusable UI components
+├── screens/            # Screen components
+├── navigation/         # Navigation configuration
+├── services/           # API and database services
+├── store/              # Redux store and slices
+├── utils/              # Utility functions
+├── hooks/              # Custom React hooks
+└── types/              # TypeScript type definitions
+```
+
+### **Secure Authentication Flow**
+```typescript
+// Biometric authentication implementation
+import TouchID from 'react-native-touch-id';
+import Keychain from 'react-native-keychain';
+
+class BiometricAuth {
+  async authenticateWithBiometrics(): Promise<AuthResult> {
+    try {
+      // Check if biometrics are available
+      const biometryType = await TouchID.isSupported();
+
+      if (!biometryType) {
+        throw new Error('Biometric authentication not available');
+      }
+
+      // Authenticate with biometrics
+      await TouchID.authenticate('Access your account securely', {
+        title: 'Authenticate',
+        subtitle: 'Use your biometric to access your account',
+        description: 'This app uses biometric authentication for security',
+        fallbackLabel: 'Use Passcode',
+        cancelLabel: 'Cancel',
+        passcodeFallback: true
+      });
+
+      // Retrieve stored credentials
+      const credentials = await Keychain.getInternetCredentials('openfinance_app');
+
+      if (credentials) {
+        return {
+          success: true,
+          token: credentials.password,
+          biometricType: biometryType
+        };
+      }
+
+      throw new Error('No stored credentials found');
+    } catch (error) {
+      console.error('Biometric authentication failed:', error);
+      return {
+        success: false,
+        error: error.message,
+        fallbackToPasscode: error.name === 'LAErrorUserFallback'
+      };
+    }
+  }
+
+  async storeCredentials(token: string): Promise<void> {
+    await Keychain.setInternetCredentials(
+      'openfinance_app',
+      'user_token',
+      token,
+      {
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+        accessGroup: 'group.com.openfinance.app',
+        authenticatePrompt: 'Authenticate to save your credentials'
+      }
+    );
+  }
+}
+```
+
+### **Offline Data Management**
+```typescript
+// SQLite database management for offline capabilities
+import SQLite from 'react-native-sqlite-storage';
+
+class OfflineDatabase {
+  private db: SQLite.SQLiteDatabase;
+
+  async initialize(): Promise<void> {
+    this.db = await SQLite.openDatabase({
+      name: 'OpenFinanceDB.db',
+      location: 'default',
+      createFromLocation: '~OpenFinanceDB.db'
+    });
+
+    await this.createTables();
+  }
+
+  private async createTables(): Promise<void> {
+    const queries = [
+      `CREATE TABLE IF NOT EXISTS accounts (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        balance REAL NOT NULL,
+        type TEXT NOT NULL,
+        last_updated INTEGER NOT NULL,
+        sync_status TEXT DEFAULT 'synced'
+      )`,
+      `CREATE TABLE IF NOT EXISTS transactions (
+        id TEXT PRIMARY KEY,
+        account_id TEXT NOT NULL,
+        amount REAL NOT NULL,
+        description TEXT,
+        date INTEGER NOT NULL,
+        category TEXT,
+        sync_status TEXT DEFAULT 'synced',
+        FOREIGN KEY (account_id) REFERENCES accounts (id)
+      )`,
+      `CREATE TABLE IF NOT EXISTS pending_actions (
+        id TEXT PRIMARY KEY,
+        action_type TEXT NOT NULL,
+        payload TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        retry_count INTEGER DEFAULT 0
+      )`
+    ];
+
+    for (const query of queries) {
+      await this.executeQuery(query);
+    }
+  }
+
+  async cacheTransactions(transactions: Transaction[]): Promise<void> {
+    const placeholders = transactions.map(() => '(?, ?, ?, ?, ?, ?, ?)').join(',');
+    const query = `
+      INSERT OR REPLACE INTO transactions
+      (id, account_id, amount, description, date, category, sync_status)
+      VALUES ${placeholders}
+    `;
+
+    const params = transactions.flatMap(tx => [
+      tx.id,
+      tx.accountId,
+      tx.amount,
+      tx.description,
+      tx.date.getTime(),
+      tx.category,
+      'synced'
+    ]);
+
+    await this.executeQuery(query, params);
+  }
+
+  async getOfflineTransactions(): Promise<Transaction[]> {
+    const query = 'SELECT * FROM transactions ORDER BY date DESC LIMIT 50';
+    const results = await this.executeQuery(query);
+
+    return results.rows.raw().map(row => ({
+      id: row.id,
+      accountId: row.account_id,
+      amount: row.amount,
+      description: row.description,
+      date: new Date(row.date),
+      category: row.category,
+      syncStatus: row.sync_status
+    }));
+  }
+}
+```
+
+## Key Components
+
+### Account Overview Screen
+```typescript
+const AccountOverviewScreen: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { accounts, loading, error } = useAppSelector(state => state.accounts);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await dispatch(fetchAccounts()).unwrap();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to refresh accounts');
+    } finally {
+      setRefreshing(false);
+    }
+  }, [dispatch]);
+
+  const renderAccountCard = ({ item: account }: { item: Account }) => (
+    <TouchableOpacity
+      style={styles.accountCard}
+      onPress={() => navigation.navigate('AccountDetails', { accountId: account.id })}
+    >
+      <View style={styles.accountHeader}>
+        <Text style={styles.accountName}>{account.name}</Text>
+        <Text style={styles.accountType}>{account.type}</Text>
+      </View>
+      <Text style={styles.accountBalance}>
+        {formatCurrency(account.balance)}
+      </Text>
+      <View style={styles.accountActions}>
+        <Button
+          title="Transfer"
+          onPress={() => initiateTransfer(account.id)}
+          style={styles.actionButton}
+        />
+        <Button
+          title="Pay Bills"
+          onPress={() => navigateToPayBills(account.id)}
+          style={styles.actionButton}
+        />
+      </View>
+    </TouchableOpacity>
+  );
+
+  if (loading && !refreshing) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Accounts</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Avatar source={{ uri: user.avatar }} size={40} />
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={accounts}
+        renderItem={renderAccountCard}
+        keyExtractor={item => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={styles.accountsList}
+        showsVerticalScrollIndicator={false}
+      />
+
+      <FloatingActionButton
+        onPress={() => navigation.navigate('QuickActions')}
+        icon="plus"
+        style={styles.fab}
+      />
+    </SafeAreaView>
+  );
+};
+```
+
+### Transaction History with Infinite Scroll
+```typescript
+const TransactionHistoryScreen: React.FC<Props> = ({ route }) => {
+  const { accountId } = route.params;
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+
+  const loadTransactions = useCallback(async (pageNum: number = 1) => {
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      const response = await transactionAPI.getTransactions({
+        accountId,
+        page: pageNum,
+        limit: 20
+      });
+
+      if (pageNum === 1) {
+        setTransactions(response.data);
+      } else {
+        setTransactions(prev => [...prev, ...response.data]);
+      }
+
+      setHasMore(response.hasMore);
+      setPage(pageNum);
+    } catch (error) {
+      // Try to load from offline cache
+      const offlineTransactions = await offlineDB.getOfflineTransactions();
+      if (pageNum === 1 && offlineTransactions.length > 0) {
+        setTransactions(offlineTransactions);
+        Alert.alert('Offline Mode', 'Showing cached transactions');
+      } else {
+        Alert.alert('Error', 'Failed to load transactions');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [accountId, loading]);
+
+  const loadMore = () => {
+    if (hasMore && !loading) {
+      loadTransactions(page + 1);
+    }
+  };
+
+  const renderTransaction = ({ item }: { item: Transaction }) => (
+    <TransactionCard
+      transaction={item}
+      onPress={() => navigation.navigate('TransactionDetails', { id: item.id })}
+    />
+  );
+
+  const renderFooter = () => {
+    if (!loading) return null;
+    return (
+      <View style={styles.footer}>
+        <ActivityIndicator size="small" color="#007AFF" />
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <SearchBar
+        placeholder="Search transactions..."
+        onChangeText={handleSearch}
+        style={styles.searchBar}
+      />
+
+      <FlatList
+        data={transactions}
+        renderItem={renderTransaction}
+        keyExtractor={item => item.id}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={renderFooter}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => loadTransactions(1)}
+          />
+        }
+      />
+    </View>
+  );
+};
+```
+
+## Advanced Features
+
+### **Push Notifications**
+```typescript
+// Firebase push notification setup
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+
+class NotificationService {
+  async initialize(): Promise<void> {
+    // Request permission for iOS
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (!enabled) {
+      console.log('Push notification permission denied');
+      return;
+    }
+
+    // Get FCM token
+    const token = await messaging().getToken();
+    await this.registerTokenWithServer(token);
+
+    // Handle background messages
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+      await this.processBackgroundNotification(remoteMessage);
+    });
+
+    // Handle foreground messages
+    messaging().onMessage(async remoteMessage => {
+      this.showLocalNotification(remoteMessage);
+    });
+
+    // Handle notification open events
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      this.handleNotificationTap(remoteMessage);
+    });
+  }
+
+  private showLocalNotification(remoteMessage: any): void {
+    PushNotification.localNotification({
+      title: remoteMessage.notification?.title,
+      message: remoteMessage.notification?.body,
+      userInfo: remoteMessage.data,
+      playSound: true,
+      soundName: 'transaction_alert.mp3',
+      actions: ['View', 'Dismiss'],
+      invokeApp: false
+    });
+  }
+
+  async schedulePaymentReminder(payment: ScheduledPayment): Promise<void> {
+    const notificationDate = new Date(payment.dueDate);
+    notificationDate.setDate(notificationDate.getDate() - 1); // Remind 1 day before
+
+    PushNotification.localNotificationSchedule({
+      title: 'Payment Reminder',
+      message: `${payment.payeeName} payment of ${formatCurrency(payment.amount)} is due tomorrow`,
+      date: notificationDate,
+      userInfo: { type: 'payment_reminder', paymentId: payment.id },
+      repeatType: payment.recurring ? 'month' : undefined
+    });
+  }
+}
+```
+
+### **Camera Integration for Check Deposits**
+```typescript
+// Check deposit using camera and OCR
+import { RNCamera } from 'react-native-camera';
+import TextRecognition from '@react-native-ml-kit/text-recognition';
+
+const CheckDepositScreen: React.FC = () => {
+  const [capturing, setCapturing] = useState(false);
+  const [checkData, setCheckData] = useState<CheckData | null>(null);
+
+  const captureCheck = async (camera: RNCamera) => {
+    if (capturing) return;
+
+    setCapturing(true);
+    try {
+      const options = {
+        quality: 0.8,
+        base64: false,
+        skipProcessing: false,
+        forceUpOrientation: true,
+        fixOrientation: true
+      };
+
+      const data = await camera.takePictureAsync(options);
+
+      // Process the image with ML Kit
+      const extractedText = await TextRecognition.recognize(data.uri);
+      const parsedData = await parseCheckData(extractedText.text);
+
+      setCheckData(parsedData);
+
+      // Navigate to confirmation screen
+      navigation.navigate('CheckConfirmation', {
+        imageUri: data.uri,
+        checkData: parsedData
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to capture check image');
+    } finally {
+      setCapturing(false);
+    }
+  };
+
+  const parseCheckData = async (text: string): Promise<CheckData> => {
+    // Extract check information using regex patterns
+    const routingNumberPattern = /\b\d{9}\b/;
+    const accountNumberPattern = /\b\d{10,12}\b/;
+    const amountPattern = /\$[\d,]+\.?\d*/;
+
+    const routingNumber = text.match(routingNumberPattern)?.[0];
+    const accountNumber = text.match(accountNumberPattern)?.[0];
+    const amountMatch = text.match(amountPattern)?.[0];
+    const amount = amountMatch ? parseFloat(amountMatch.replace(/[$,]/g, '')) : 0;
+
+    return {
+      routingNumber,
+      accountNumber,
+      amount,
+      confidence: calculateConfidence(text, { routingNumber, accountNumber, amount })
+    };
+  };
+
+  return (
+    <View style={styles.container}>
+      <RNCamera
+        ref={ref => setCamera(ref)}
+        style={styles.preview}
+        type={RNCamera.Constants.Type.back}
+        flashMode={RNCamera.Constants.FlashMode.auto}
+        androidCameraPermissionOptions={{
+          title: 'Permission to use camera',
+          message: 'We need your permission to capture check images',
+          buttonPositive: 'Ok',
+          buttonNegative: 'Cancel'
+        }}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.checkFrame} />
+          <Text style={styles.instructionText}>
+            Position the check within the frame
+          </Text>
+
+          <TouchableOpacity
+            style={styles.captureButton}
+            onPress={() => captureCheck(camera)}
+            disabled={capturing}
+          >
+            <Text style={styles.captureText}>
+              {capturing ? 'Processing...' : 'Capture Check'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </RNCamera>
+    </View>
+  );
+};
+```
+
+### **Offline Transaction Queuing**
+```typescript
+// Queue manager for offline transactions
+class OfflineTransactionQueue {
+  private queue: QueuedTransaction[] = [];
+
+  async addTransaction(transaction: PendingTransaction): Promise<void> {
+    const queuedTransaction: QueuedTransaction = {
+      id: generateUUID(),
+      transaction,
+      timestamp: Date.now(),
+      retryCount: 0,
+      status: 'queued'
+    };
+
+    this.queue.push(queuedTransaction);
+    await this.saveQueueToStorage();
+
+    // Show user confirmation
+    Alert.alert(
+      'Transaction Queued',
+      'Your transaction will be processed when connection is restored',
+      [{ text: 'OK' }]
+    );
+  }
+
+  async processQueue(): Promise<void> {
+    if (this.queue.length === 0) return;
+
+    const isOnline = await NetInfo.fetch().then(state => state.isConnected);
+    if (!isOnline) return;
+
+    const promises = this.queue
+      .filter(item => item.status === 'queued')
+      .map(item => this.processQueuedTransaction(item));
+
+    await Promise.allSettled(promises);
+    await this.saveQueueToStorage();
+  }
+
+  private async processQueuedTransaction(queuedTransaction: QueuedTransaction): Promise<void> {
+    try {
+      queuedTransaction.status = 'processing';
+
+      const result = await transactionAPI.submitTransaction(queuedTransaction.transaction);
+
+      queuedTransaction.status = 'completed';
+      queuedTransaction.result = result;
+
+      // Remove from queue
+      this.queue = this.queue.filter(item => item.id !== queuedTransaction.id);
+
+      // Show success notification
+      this.showTransactionCompleteNotification(queuedTransaction);
+    } catch (error) {
+      queuedTransaction.retryCount++;
+      queuedTransaction.status = 'failed';
+      queuedTransaction.error = error.message;
+
+      if (queuedTransaction.retryCount >= 3) {
+        // Move to failed permanently
+        this.showTransactionFailedNotification(queuedTransaction);
+      } else {
+        // Retry later
+        queuedTransaction.status = 'queued';
+      }
+    }
+  }
+
+  private showTransactionCompleteNotification(transaction: QueuedTransaction): void {
+    PushNotification.localNotification({
+      title: 'Transaction Completed',
+      message: `Your ${transaction.transaction.type} of ${formatCurrency(transaction.transaction.amount)} was successful`,
+      userInfo: { transactionId: transaction.result?.id },
+      playSound: true
+    });
+  }
+}
+```
+
+## Security Best Practices
+
+### **Certificate Pinning**
+```typescript
+// SSL certificate pinning for enhanced security
+import { NetworkingModule } from 'react-native';
+
+const API_CERTIFICATES = {
+  'api.openfinance.ae': [
+    'sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+    'sha256/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB='
+  ]
+};
+
+class SecureAPIClient {
+  constructor() {
+    this.setupCertificatePinning();
+  }
+
+  private setupCertificatePinning(): void {
+    NetworkingModule.addRequestInterceptor((request) => {
+      const hostname = new URL(request.url).hostname;
+      const expectedPins = API_CERTIFICATES[hostname];
+
+      if (expectedPins) {
+        request.certificatePins = expectedPins;
+      }
+
+      return request;
+    });
+  }
+
+  async makeSecureRequest(endpoint: string, options: RequestOptions): Promise<any> {
+    try {
+      const response = await fetch(endpoint, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'X-API-Version': '1.0',
+          'X-Client-Type': 'mobile'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      if (error.message.includes('certificate')) {
+        Alert.alert(
+          'Security Warning',
+          'Unable to verify server identity. Please check your connection.',
+          [{ text: 'OK' }]
+        );
+      }
+      throw error;
+    }
+  }
+}
+```
+
+## Setup Instructions
+
+<Steps>
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/open-finance-os/example-mobile-app.git
+    cd example-mobile-app
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    # Install npm dependencies
+    npm install
+
+    # iOS specific setup
+    cd ios && pod install && cd ..
+
+    # Android specific setup (if needed)
+    cd android && ./gradlew clean && cd ..
+    ```
+  </Step>
+
+  <Step title="Environment Configuration">
+    ```bash
+    # Create environment files
+    cp .env.example .env.development
+    cp .env.example .env.production
+
+    # Configure API endpoints and keys
+    API_BASE_URL=https://api.openfinance.ae
+    OPENFINANCE_CLIENT_ID=your_client_id
+    FIREBASE_API_KEY=your_firebase_key
+    ```
+  </Step>
+
+  <Step title="Platform Setup">
+    ```bash
+    # iOS development
+    npx react-native run-ios
+
+    # Android development
+    npx react-native run-android
+
+    # For physical device testing
+    npx react-native run-ios --device
+    npx react-native run-android --variant=debug
+    ```
+  </Step>
+
+  <Step title="Build for Production">
+    ```bash
+    # iOS production build
+    cd ios && xcodebuild -workspace MobileApp.xcworkspace -scheme MobileApp archive
+
+    # Android production build
+    cd android && ./gradlew assembleRelease
+    ```
+  </Step>
+</Steps>
+
+## Testing Strategy
+
+### **Unit Testing**
+```typescript
+// Example test for authentication service
+import { BiometricAuth } from '../services/BiometricAuth';
+import TouchID from 'react-native-touch-id';
+
+jest.mock('react-native-touch-id');
+jest.mock('react-native-keychain');
+
+describe('BiometricAuth', () => {
+  let biometricAuth: BiometricAuth;
+
+  beforeEach(() => {
+    biometricAuth = new BiometricAuth();
+    jest.clearAllMocks();
+  });
+
+  it('should authenticate successfully with Face ID', async () => {
+    (TouchID.isSupported as jest.Mock).mockResolvedValue('FaceID');
+    (TouchID.authenticate as jest.Mock).mockResolvedValue(true);
+
+    const result = await biometricAuth.authenticateWithBiometrics();
+
+    expect(result.success).toBe(true);
+    expect(result.biometricType).toBe('FaceID');
+  });
+
+  it('should handle authentication failure gracefully', async () => {
+    (TouchID.isSupported as jest.Mock).mockResolvedValue('TouchID');
+    (TouchID.authenticate as jest.Mock).mockRejectedValue(new Error('Authentication failed'));
+
+    const result = await biometricAuth.authenticateWithBiometrics();
+
+    expect(result.success).toBe(false);
+    expect(result.error).toBe('Authentication failed');
+  });
+});
+```
+
+### **Integration Testing**
+```typescript
+// E2E testing with Detox
+describe('Account Overview', () => {
+  beforeAll(async () => {
+    await device.launchApp();
+  });
+
+  beforeEach(async () => {
+    await device.reloadReactNative();
+  });
+
+  it('should display account balance after login', async () => {
+    // Login flow
+    await element(by.id('loginButton')).tap();
+    await element(by.id('emailInput')).typeText('test@example.com');
+    await element(by.id('passwordInput')).typeText('password123');
+    await element(by.id('submitButton')).tap();
+
+    // Wait for accounts to load
+    await waitFor(element(by.id('accountsList')))
+      .toBeVisible()
+      .withTimeout(5000);
+
+    // Verify account data is displayed
+    await expect(element(by.id('accountBalance'))).toBeVisible();
+    await expect(element(by.text('Checking Account'))).toBeVisible();
+  });
+
+  it('should refresh accounts on pull-to-refresh', async () => {
+    await element(by.id('accountsList')).swipe('down', 'slow');
+    await waitFor(element(by.id('refreshIndicator')))
+      .toBeVisible()
+      .withTimeout(2000);
+    await waitFor(element(by.id('refreshIndicator')))
+      .not.toBeVisible()
+      .withTimeout(5000);
+  });
+});
+```
+
+<Warning>
+  **Security**: Mobile apps require additional security measures including certificate pinning, biometric authentication, and secure storage. Follow platform security guidelines.
+</Warning>
+
+<Tip>
+  This mobile banking app demonstrates native mobile development with React Native, including biometric authentication, offline capabilities, and secure API integration.
+</Tip>

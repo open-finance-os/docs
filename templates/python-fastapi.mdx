@@ -1,0 +1,288 @@
+---
+title: "Python + FastAPI Template"
+description: "ML-ready backend template for financial data analysis and insights"
+---
+
+# Python + FastAPI Starter Template
+
+A high-performance backend template built with FastAPI, perfect for financial data analysis, machine learning, and API development.
+
+<CardGroup cols={2}>
+  <Card
+    title="Fork on GitHub"
+    icon="github"
+    href="https://github.com/open-finance-os/template-python-fastapi"
+  >
+    Production-ready Python API template
+  </Card>
+  <Card
+    title="API Docs"
+    icon="book"
+    href="https://fastapi-demo.openfinance.ae/docs"
+  >
+    Auto-generated interactive API documentation
+  </Card>
+</CardGroup>
+
+## What's Included
+
+### 🛠️ **Tech Stack**
+- **FastAPI** - Modern, fast web framework
+- **Python 3.11+** - Latest Python features
+- **SQLAlchemy** - SQL toolkit and ORM
+- **Pydantic** - Data validation using Python type hints
+- **Pandas** - Data analysis and manipulation
+- **NumPy** - Numerical computing
+- **scikit-learn** - Machine learning library
+
+### 🤖 **ML & Analytics**
+- Financial data analysis tools
+- Spending pattern detection
+- Risk assessment algorithms
+- Predictive modeling pipelines
+- Real-time fraud detection
+
+### 🔐 **Security & Performance**
+- OAuth2 with JWT tokens
+- API rate limiting
+- Request validation
+- Background tasks with Celery
+- Async database operations
+
+## Quick Setup
+
+<Steps>
+  <Step title="Fork & Clone">
+    ```bash
+    git clone https://github.com/YOUR_USERNAME/template-python-fastapi.git
+    cd template-python-fastapi
+    ```
+  </Step>
+
+  <Step title="Virtual Environment">
+    ```bash
+    # Create virtual environment
+    python -m venv hackathon-env
+    source hackathon-env/bin/activate  # On Windows: hackathon-env\Scripts\activate
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    pip install -r requirements.txt
+    ```
+  </Step>
+
+  <Step title="Environment Setup">
+    ```bash
+    cp .env.example .env
+
+    # Edit .env file
+    OPENFINANCE_CLIENT_ID=your_client_id
+    OPENFINANCE_CLIENT_SECRET=your_client_secret
+    DATABASE_URL=postgresql://user:password@localhost/openfinance
+    REDIS_URL=redis://localhost:6379
+    ```
+  </Step>
+
+  <Step title="Database Setup">
+    ```bash
+    # Run migrations
+    alembic upgrade head
+
+    # Seed with sample data
+    python scripts/seed_data.py
+    ```
+  </Step>
+
+  <Step title="Start Development Server">
+    ```bash
+    uvicorn app.main:app --reload --port 8000
+    ```
+
+    API will be available at `http://localhost:8000`
+    Interactive docs at `http://localhost:8000/docs`
+  </Step>
+</Steps>
+
+## Key Features
+
+### 📊 **Financial Analytics**
+```python
+# Spending analysis endpoint
+@app.get("/analytics/spending")
+async def analyze_spending(account_id: str, period: str = "month"):
+    transactions = await get_transactions(account_id)
+    analysis = analyze_spending_patterns(transactions, period)
+    return SpendingAnalysisResponse(**analysis)
+
+# Fraud detection
+@app.post("/fraud/detect")
+async def detect_fraud(transaction: TransactionCreate):
+    risk_score = await fraud_detection_model.predict(transaction)
+    return FraudAssessment(risk_score=risk_score, is_suspicious=risk_score > 0.7)
+```
+
+### 🔮 **Predictive Models**
+```python
+# Cash flow prediction
+@app.get("/predictions/cashflow")
+async def predict_cashflow(account_id: str, days_ahead: int = 30):
+    historical_data = await get_transaction_history(account_id)
+    prediction = cashflow_model.predict(historical_data, days_ahead)
+    return CashflowPrediction(predictions=prediction, confidence=0.85)
+```
+
+### 📈 **Real-time Analytics**
+```python
+# WebSocket for real-time updates
+@app.websocket("/ws/analytics/{account_id}")
+async def analytics_websocket(websocket: WebSocket, account_id: str):
+    await websocket.accept()
+    while True:
+        # Stream real-time analytics
+        analytics = await get_realtime_analytics(account_id)
+        await websocket.send_json(analytics.dict())
+        await asyncio.sleep(5)  # Update every 5 seconds
+```
+
+## ML Models Included
+
+### 🎯 **Spending Categorization**
+```python
+# Automatic transaction categorization
+def categorize_transaction(description: str, amount: float) -> str:
+    features = extract_features(description, amount)
+    category = category_model.predict([features])[0]
+    return category
+
+# Categories: groceries, transport, entertainment, bills, etc.
+```
+
+### 🔍 **Anomaly Detection**
+```python
+# Detect unusual spending patterns
+def detect_anomalies(transactions: List[Transaction]) -> List[Anomaly]:
+    features = prepare_features(transactions)
+    anomalies = isolation_forest.fit_predict(features)
+    return [create_anomaly(t, score) for t, score in zip(transactions, anomalies)]
+```
+
+### 💰 **Budget Optimization**
+```python
+# Suggest budget optimizations
+def optimize_budget(income: float, expenses: List[Expense]) -> BudgetSuggestion:
+    current_allocation = analyze_allocation(expenses)
+    optimal_allocation = budget_optimizer.optimize(income, current_allocation)
+    return BudgetSuggestion(
+        current=current_allocation,
+        suggested=optimal_allocation,
+        potential_savings=calculate_savings(current_allocation, optimal_allocation)
+    )
+```
+
+## Data Processing Pipeline
+
+```python
+# ETL pipeline for financial data
+class DataPipeline:
+    async def extract(self, account_id: str) -> RawData:
+        """Extract data from Open Finance API"""
+        return await openfinance_client.get_all_data(account_id)
+
+    def transform(self, raw_data: RawData) -> ProcessedData:
+        """Clean and transform financial data"""
+        df = pd.DataFrame(raw_data.transactions)
+        df = self.clean_data(df)
+        df = self.feature_engineering(df)
+        return ProcessedData(df)
+
+    async def load(self, processed_data: ProcessedData) -> None:
+        """Store processed data for analysis"""
+        await database.save_processed_data(processed_data)
+```
+
+## API Examples
+
+### Financial Insights
+```python
+# GET /insights/spending/{account_id}
+{
+  "total_spending": 2450.00,
+  "category_breakdown": {
+    "groceries": 680.00,
+    "transport": 320.00,
+    "entertainment": 180.00
+  },
+  "trends": {
+    "monthly_change": -5.2,
+    "predicted_next_month": 2300.00
+  },
+  "recommendations": [
+    "Consider reducing entertainment spending by 15%",
+    "Your transport costs are 20% above average"
+  ]
+}
+```
+
+### Risk Assessment
+```python
+# POST /risk/assess
+{
+  "account_id": "acc_123",
+  "risk_factors": {
+    "debt_to_income": 0.35,
+    "spending_volatility": 0.12,
+    "savings_rate": 0.08
+  },
+  "risk_score": 0.42,
+  "risk_level": "moderate",
+  "recommendations": [
+    "Increase emergency fund to 6 months expenses",
+    "Consider debt consolidation options"
+  ]
+}
+```
+
+## Deployment
+
+### AWS Lambda (Serverless)
+```bash
+# Install serverless framework
+npm install -g serverless
+
+# Deploy to AWS
+serverless deploy
+```
+
+### Google Cloud Run
+```bash
+# Build and deploy
+gcloud builds submit --tag gcr.io/PROJECT-ID/openfinance-api
+gcloud run deploy --image gcr.io/PROJECT-ID/openfinance-api
+```
+
+### Docker
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+## Perfect For
+
+- **Data Science Teams** - Built-in ML pipelines and analytics
+- **Backend Specialists** - High-performance async API
+- **Fintech Innovation** - Advanced financial algorithms
+- **Academic Projects** - Research-grade data analysis tools
+
+<Tip>
+  **AI/ML Focus**: This template is ideal for teams wanting to build intelligent financial applications with predictive capabilities.
+</Tip>

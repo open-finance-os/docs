@@ -1,0 +1,188 @@
+---
+title: "Node.js + Express Template"
+description: "Backend API template for Open Finance applications"
+---
+
+# Node.js + Express Starter Template
+
+A production-ready backend API template for building Open Finance services with Node.js, Express, and TypeScript.
+
+<CardGroup cols={2}>
+  <Card
+    title="Fork on GitHub"
+    icon="github"
+    href="https://github.com/open-finance-os/template-nodejs-express"
+  >
+    Ready-to-fork backend API repository
+  </Card>
+  <Card
+    title="API Documentation"
+    icon="book"
+    href="https://api-docs.openfinance-demo.com"
+  >
+    Interactive API documentation with examples
+  </Card>
+</CardGroup>
+
+## What's Included
+
+### 🛠️ **Tech Stack**
+- **Node.js 18+** - JavaScript runtime
+- **Express.js** - Web framework
+- **TypeScript** - Type safety
+- **Prisma** - Database ORM
+- **Redis** - Caching and session storage
+- **Jest** - Testing framework
+- **Docker** - Containerization
+
+### 🔐 **Security Features**
+- JWT authentication with refresh tokens
+- Rate limiting and request throttling
+- Input validation and sanitization
+- CORS configuration
+- Helmet.js security headers
+- API key management
+
+### 📊 **Database & Caching**
+- PostgreSQL database with Prisma ORM
+- Redis caching for API responses
+- Database migrations and seeding
+- Connection pooling and optimization
+
+## Quick Setup
+
+<Steps>
+  <Step title="Fork & Clone">
+    ```bash
+    git clone https://github.com/YOUR_USERNAME/template-nodejs-express.git
+    cd template-nodejs-express
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    npm install
+    ```
+  </Step>
+
+  <Step title="Environment Setup">
+    ```bash
+    cp .env.example .env
+
+    # Edit .env with your credentials
+    OPENFINANCE_CLIENT_ID=your_client_id
+    OPENFINANCE_CLIENT_SECRET=your_client_secret
+    DATABASE_URL=postgresql://user:password@localhost:5432/openfinance
+    REDIS_URL=redis://localhost:6379
+    JWT_SECRET=your_jwt_secret
+    ```
+  </Step>
+
+  <Step title="Database Setup">
+    ```bash
+    # Start PostgreSQL and Redis (using Docker)
+    docker-compose up -d db redis
+
+    # Run database migrations
+    npx prisma migrate dev
+
+    # Seed with sample data
+    npm run db:seed
+    ```
+  </Step>
+
+  <Step title="Start Development Server">
+    ```bash
+    npm run dev
+    ```
+
+    API will be available at `http://localhost:8000`
+  </Step>
+</Steps>
+
+## API Endpoints
+
+### Authentication
+```typescript
+POST /auth/login          # User login
+POST /auth/refresh        # Refresh JWT token
+POST /auth/logout         # User logout
+```
+
+### Accounts
+```typescript
+GET    /accounts          # List user accounts
+GET    /accounts/:id      # Get account details
+GET    /accounts/:id/balance  # Get account balance
+GET    /accounts/:id/transactions  # Get transactions
+```
+
+### Payments
+```typescript
+POST   /payments          # Initiate payment
+GET    /payments/:id      # Get payment status
+PUT    /payments/:id/confirm  # Confirm payment
+DELETE /payments/:id      # Cancel payment
+```
+
+### Example API Usage
+```typescript
+// Get account balance
+const response = await fetch('/accounts/123/balance', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+});
+
+const balance = await response.json();
+```
+
+## Project Structure
+
+```
+template-nodejs-express/
+├── src/
+│   ├── controllers/       # Request handlers
+│   ├── middleware/        # Express middleware
+│   ├── routes/           # API route definitions
+│   ├── services/         # Business logic
+│   ├── models/           # Database models
+│   ├── utils/            # Utility functions
+│   └── types/            # TypeScript definitions
+├── prisma/               # Database schema & migrations
+├── tests/                # Test files
+├── docker/               # Docker configurations
+└── docs/                 # API documentation
+```
+
+## Deployment
+
+### Railway (Recommended)
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login and deploy
+railway login
+railway init
+railway up
+```
+
+### Heroku
+```bash
+# Install Heroku CLI and deploy
+heroku create your-app-name
+git push heroku main
+```
+
+### Docker
+```bash
+# Build and run container
+docker build -t openfinance-api .
+docker run -p 8000:8000 openfinance-api
+```
+
+<Tip>
+  **Perfect for teams** who need a solid backend API that frontend developers can integrate with immediately.
+</Tip>

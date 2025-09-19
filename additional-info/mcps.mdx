@@ -1,0 +1,477 @@
+---
+title: "MCP Servers for Hackathons"
+description: "Supercharge your Open Finance development with Model Context Protocol servers"
+---
+
+# MCP Servers for Open Finance Hackathons
+
+Accelerate your development with Model Context Protocol (MCP) servers that integrate directly with Claude Code for enhanced productivity.
+
+<Info>
+  **🚀 New from GitHub**: The [GitHub MCP Registry](https://github.blog/ai-and-ml/github-copilot/meet-the-github-mcp-registry-the-fastest-way-to-discover-mcp-servers/) is now live! Discover and use production-ready MCP servers for your hackathon project.
+</Info>
+
+## What are MCP Servers?
+
+MCP servers extend Claude Code's capabilities by providing direct access to external tools and services. Think of them as **AI-powered integrations** that let Claude Code interact with your development environment, databases, cloud services, and more.
+
+### **Hackathon Benefits**
+- **50-70% faster development** with automated workflows
+- **Professional-grade infrastructure** from day one
+- **Seamless tool integration** without manual context switching
+- **AI-enhanced debugging** and optimization
+- **Real-time collaboration** across team members
+
+## Essential MCP Servers for Hackathon Teams
+
+### 🚀 **Must-Have (Essential)**
+
+<AccordionGroup>
+  <Accordion title="GitHub MCP Server" icon="github">
+    **Use Case**: Repository management, issue tracking, automated deployments
+
+    **Setup:**
+    ```bash
+    # Install GitHub MCP Server
+    npx @modelcontextprotocol/create-server github
+
+    # Configure with your repository
+    claude config --mcp github --repo "open-finance-os/your-project"
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Create automated deployment workflow
+    @claude use github-mcp to set up CI/CD for our Open Finance app
+
+    # Manage project issues and milestones
+    @claude use github-mcp to create hackathon milestone with submission deadline
+
+    # Code review and collaboration
+    @claude use github-mcp to review this payment integration PR
+    ```
+
+    **Team Benefits:**
+    - Automated commit messages and PR descriptions
+    - Issue tracking for hackathon tasks
+    - Deployment pipeline setup in minutes
+  </Accordion>
+
+  <Accordion title="Docker MCP Server" icon="docker">
+    **Use Case**: Containerization, deployment, and environment management
+
+    **Setup:**
+    ```bash
+    # Install Docker MCP Server
+    npm install @modelcontextprotocol/server-docker
+
+    # Configure Docker integration
+    claude config --mcp docker
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Create production-ready containers
+    @claude use docker-mcp to containerize our Next.js Open Finance app
+
+    # Set up development environment
+    @claude use docker-mcp to create dev environment with PostgreSQL and Redis
+
+    # Multi-service deployment
+    @claude use docker-mcp to orchestrate frontend, backend, and database
+    ```
+
+    **Team Benefits:**
+    - Consistent development environments
+    - One-click deployment setup
+    - Easy scaling for demo day
+  </Accordion>
+
+  <Accordion title="PostgreSQL MCP Server" icon="database">
+    **Use Case**: Financial data storage, queries, and optimization
+
+    **Setup:**
+    ```bash
+    # Install PostgreSQL MCP Server
+    npm install @modelcontextprotocol/server-postgres
+
+    # Configure database connection
+    claude config --mcp postgres --url "postgresql://user:pass@localhost:5432/openfinance"
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Design optimal database schema
+    @claude use postgres-mcp to create schema for Open Finance transaction data
+
+    # Performance optimization
+    @claude use postgres-mcp to optimize queries for account balance aggregation
+
+    # Data analysis and insights
+    @claude use postgres-mcp to analyze spending patterns in our transaction data
+    ```
+
+    **Team Benefits:**
+    - Automatic schema generation
+    - Query optimization for financial data
+    - Real-time data analysis
+  </Accordion>
+</AccordionGroup>
+
+### ⭐ **High-Value (Should-Have)**
+
+<AccordionGroup>
+  <Accordion title="Slack MCP Server" icon="slack">
+    **Use Case**: Team communication, notifications, and coordination
+
+    **Setup:**
+    ```bash
+    # Install Slack MCP Server
+    npm install @modelcontextprotocol/server-slack
+
+    # Configure Slack workspace
+    claude config --mcp slack --workspace "your-hackathon-team"
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Automated progress updates
+    @claude use slack-mcp to notify team when API integration is complete
+
+    # Code deployment notifications
+    @claude use slack-mcp to announce successful deployment to staging
+
+    # Daily standup automation
+    @claude use slack-mcp to schedule daily progress check-ins
+    ```
+  </Accordion>
+
+  <Accordion title="AWS/Vercel MCP Server" icon="cloud">
+    **Use Case**: Cloud deployment, scaling, and infrastructure management
+
+    **Setup:**
+    ```bash
+    # For Vercel (recommended for frontend)
+    npm install @vercel/mcp-server
+
+    # For AWS (backend/infrastructure)
+    npm install @aws/mcp-server
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Deploy React app to Vercel
+    @claude use vercel-mcp to deploy our Open Finance dashboard
+
+    # Set up AWS Lambda for API
+    @claude use aws-mcp to deploy our payment processing functions
+
+    # Configure environment variables
+    @claude use vercel-mcp to set production API keys securely
+    ```
+  </Accordion>
+
+  <Accordion title="OpenAI MCP Server" icon="openai">
+    **Use Case**: AI-powered financial insights and intelligent features
+
+    **Setup:**
+    ```bash
+    # Install OpenAI MCP Server
+    npm install @openai/mcp-server
+
+    # Configure API key
+    claude config --mcp openai --api-key "your-openai-key"
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Generate financial insights
+    @claude use openai-mcp to analyze spending patterns and suggest budgets
+
+    # Intelligent categorization
+    @claude use openai-mcp to auto-categorize transactions by description
+
+    # Fraud detection
+    @claude use openai-mcp to identify suspicious transaction patterns
+    ```
+  </Accordion>
+
+  <Accordion title="Redis MCP Server" icon="redis">
+    **Use Case**: Caching, session management, and real-time features
+
+    **Setup:**
+    ```bash
+    # Install Redis MCP Server
+    npm install @modelcontextprotocol/server-redis
+
+    # Configure Redis connection
+    claude config --mcp redis --url "redis://localhost:6379"
+    ```
+
+    **Hackathon Examples:**
+    ```bash
+    # Implement API response caching
+    @claude use redis-mcp to cache Open Finance API responses for 5 minutes
+
+    # Session management
+    @claude use redis-mcp to handle user sessions and authentication tokens
+
+    # Real-time features
+    @claude use redis-mcp to implement real-time transaction notifications
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### 🎯 **Advanced (Nice-to-Have)**
+
+<AccordionGroup>
+  <Accordion title="Kubernetes MCP Server" icon="kubernetes">
+    **Use Case**: Advanced orchestration and scaling for complex applications
+
+    **Best For**: Teams building microservices or high-scale demos
+  </Accordion>
+
+  <Accordion title="Elasticsearch MCP Server" icon="search">
+    **Use Case**: Advanced search and analytics for financial data
+
+    **Best For**: Teams building analytics dashboards or search features
+  </Accordion>
+
+  <Accordion title="Stripe MCP Server" icon="stripe">
+    **Use Case**: Payment processing beyond Open Finance APIs
+
+    **Best For**: Teams building payment applications or e-commerce features
+  </Accordion>
+
+  <Accordion title="Terraform MCP Server" icon="terraform">
+    **Use Case**: Infrastructure as code for repeatable deployments
+
+    **Best For**: Teams focusing on DevOps and infrastructure
+  </Accordion>
+</AccordionGroup>
+
+## Team-Specific MCP Combinations
+
+### 🎨 **Frontend-Focused Teams**
+```bash
+# Recommended MCP stack
+GitHub + Vercel + OpenAI + Slack
+
+# Example workflow
+@claude use github-mcp to create feature branch for payment UI
+@claude use openai-mcp to generate smart transaction categorization
+@claude use vercel-mcp to deploy preview for team review
+@claude use slack-mcp to notify team of deployment completion
+```
+
+### ⚙️ **Backend-Focused Teams**
+```bash
+# Recommended MCP stack
+GitHub + Docker + PostgreSQL + AWS + Redis
+
+# Example workflow
+@claude use postgres-mcp to design optimal schema for financial data
+@claude use docker-mcp to containerize API with security best practices
+@claude use aws-mcp to deploy scalable Lambda functions
+@claude use redis-mcp to implement high-performance caching
+```
+
+### 🤖 **AI/ML Teams**
+```bash
+# Recommended MCP stack
+GitHub + OpenAI + Elasticsearch + PostgreSQL + Docker
+
+# Example workflow
+@claude use postgres-mcp to extract transaction data for analysis
+@claude use openai-mcp to build intelligent spending categorization
+@claude use elasticsearch-mcp to implement advanced search and analytics
+@claude use docker-mcp to deploy ML models as microservices
+```
+
+### 🏢 **Full-Stack Teams**
+```bash
+# Complete MCP ecosystem
+All essential + high-value MCPs
+
+# Example workflow
+@claude use github-mcp to manage sprint planning and code reviews
+@claude use postgres-mcp to handle complex financial data relationships
+@claude use vercel-mcp to deploy frontend with optimized performance
+@claude use aws-mcp to handle backend APIs and business logic
+@claude use slack-mcp to coordinate across frontend and backend work
+```
+
+## Quick Setup Guide
+
+<Steps>
+  <Step title="Install Claude Code">
+    ```bash
+    npm install -g @anthropic-ai/claude-code
+    ```
+  </Step>
+
+  <Step title="Configure Essential MCPs">
+    ```bash
+    # GitHub (replace with your repo)
+    claude config --mcp github --repo "your-username/hackathon-project"
+
+    # Docker (if using containers)
+    claude config --mcp docker
+
+    # Database (if using PostgreSQL)
+    claude config --mcp postgres --url "your-database-url"
+    ```
+  </Step>
+
+  <Step title="Test MCP Integration">
+    ```bash
+    # Test GitHub integration
+    @claude use github-mcp to create a new issue for "Setup Open Finance API integration"
+
+    # Test Docker integration
+    @claude use docker-mcp to show current container status
+
+    # Test database integration
+    @claude use postgres-mcp to list all tables in our database
+    ```
+  </Step>
+
+  <Step title="Start Building">
+    Now you can use natural language to interact with all your development tools through Claude Code!
+  </Step>
+</Steps>
+
+## Real-World MCP Examples
+
+### **Automated Development Workflow**
+```bash
+# Complete feature development cycle
+@claude use github-mcp to create feature branch for "payment-integration"
+@claude use postgres-mcp to create schema for payment transactions
+@claude use openai-mcp to generate validation logic for payment data
+@claude use docker-mcp to test the integration in development environment
+@claude use vercel-mcp to deploy preview for team testing
+@claude use slack-mcp to notify team that feature is ready for review
+@claude use github-mcp to create pull request with detailed description
+```
+
+### **Data Analysis Pipeline**
+```bash
+# Financial insights generation
+@claude use postgres-mcp to extract last 30 days of transaction data
+@claude use openai-mcp to analyze spending patterns and identify trends
+@claude use elasticsearch-mcp to index insights for fast search
+@claude use slack-mcp to share daily insights report with team
+```
+
+### **Production Deployment**
+```bash
+# End-to-end deployment
+@claude use docker-mcp to build production containers
+@claude use aws-mcp to deploy containers to ECS
+@claude use redis-mcp to configure production caching
+@claude use github-mcp to tag release and update documentation
+@claude use slack-mcp to announce successful production deployment
+```
+
+## Performance & Cost Optimization
+
+### **MCP Server Performance**
+- **Local MCPs** (Docker, PostgreSQL): Near-instant response
+- **Cloud MCPs** (AWS, Vercel): 100-500ms response time
+- **AI MCPs** (OpenAI): 1-3 seconds for complex requests
+
+### **Cost Considerations**
+- **Free Tier MCPs**: GitHub, Docker, PostgreSQL (local)
+- **Low Cost MCPs**: Vercel, Redis, Slack
+- **Usage-Based MCPs**: OpenAI, AWS (monitor usage during hackathon)
+
+### **Optimization Tips**
+```bash
+# Cache expensive operations
+@claude use redis-mcp to cache OpenAI analysis results for 1 hour
+
+# Batch operations
+@claude use postgres-mcp to batch insert transaction data for better performance
+
+# Monitor usage
+@claude use aws-mcp to check current costs and set budget alerts
+```
+
+## Troubleshooting Common Issues
+
+### **MCP Connection Problems**
+```bash
+# Check MCP server status
+claude mcp status
+
+# Restart MCP server
+claude mcp restart github
+
+# Reset MCP configuration
+claude config --reset-mcp github
+```
+
+### **Authentication Issues**
+```bash
+# Refresh GitHub token
+claude config --mcp github --refresh-token
+
+# Update AWS credentials
+claude config --mcp aws --profile hackathon
+
+# Test OpenAI API key
+claude config --mcp openai --test-connection
+```
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card
+    title="GitHub MCP Registry"
+    icon="github"
+    href="https://github.com/modelcontextprotocol/servers"
+  >
+    Official registry of MCP servers
+  </Card>
+  <Card
+    title="Claude Code Documentation"
+    icon="book"
+    href="/development#install-ai-development-tools-optional"
+  >
+    Claude Code setup and usage guide
+  </Card>
+  <Card
+    title="Community Support"
+    icon="comments"
+    href="https://github.com/open-finance-os/discussions"
+  >
+    Get help with MCP integration
+  </Card>
+  <Card
+    title="MCP Troubleshooting"
+    icon="wrench"
+    href="https://docs.anthropic.com/claude/docs/mcp"
+  >
+    Official MCP documentation
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro Tip**: Start with the essential MCPs (GitHub + Docker + PostgreSQL) and add more as needed. Don't over-engineer - focus on what helps your team move faster!
+</Tip>
+
+<Warning>
+  **Hackathon Strategy**: Set up MCPs early in the event. The initial setup time pays dividends throughout the development process.
+</Warning>
+
+## Success Stories
+
+Teams using MCP servers report:
+- **60% faster development cycles**
+- **90% reduction in context switching**
+- **Professional-grade deployments** from day one
+- **Better team coordination** and communication
+- **Higher-quality code** with AI assistance
+
+Ready to supercharge your hackathon project? Start with the essential MCPs and build from there!

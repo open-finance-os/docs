@@ -97,18 +97,35 @@ Get your development environment ready for building Open Finance applications.
     ```
   </Step>
 
-  <Step title="Install AI Development Tools">
-    ### Claude Code (Recommended)
+  <Step title="Install AI Development Tools (Optional)">
+    ### Claude Code for Open Finance Development
 
-    Follow our [Claude Code setup guide](/ai-tools/claude-code) for AI-powered development assistance.
+    Claude Code can accelerate your hackathon development:
 
-    ### Alternative AI Tools
+    ```bash
+    # Install Claude Code
+    npm install -g @anthropic-ai/claude-code
 
-    - [Cursor](/ai-tools/cursor) - AI-first code editor
-    - [Windsurf](/ai-tools/windsurf) - Next-gen AI assistant
+    # Navigate to your project and start
+    claude
+    ```
+
+    **How Claude Code Helps with Open Finance:**
+    - Generate API integration code from documentation
+    - Debug authentication and API errors
+    - Create data models from API responses
+    - Write tests for your integrations
+    - Explain complex financial concepts
+
+    **Example prompts for hackathon:**
+    ```
+    @claude create a function to authenticate with Open Finance API
+    @claude debug this payment initiation error
+    @claude generate TypeScript types from this API response
+    ```
 
     <Tip>
-      AI tools can significantly speed up your development by helping with API integration, debugging, and code generation.
+      Other AI tools like Cursor, GitHub Copilot, or ChatGPT can also help, but Claude Code is specifically optimized for development workflows.
     </Tip>
   </Step>
 </Steps>
@@ -350,11 +367,11 @@ npm install -g newman         # Postman CLI
     Common development issues solved
   </Card>
   <Card
-    title="AI Tools Help"
+    title="AI-Enhanced Development"
     icon="robot"
-    href="/ai-tools/claude-code"
+    href="/additional-info/mcps"
   >
-    Use AI to accelerate development
+    Accelerate development with MCP servers
   </Card>
 </CardGroup>
 

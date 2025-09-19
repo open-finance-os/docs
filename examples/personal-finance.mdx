@@ -1,0 +1,369 @@
+---
+title: "Personal Finance Dashboard"
+description: "Complete expense tracking and budgeting app built with Open Finance APIs"
+---
+
+# Personal Finance Dashboard Example
+
+A comprehensive personal finance management application demonstrating the full capabilities of Open Finance APIs for individual users.
+
+<CardGroup cols={2}>
+  <Card
+    title="Live Demo"
+    icon="external-link"
+    href="https://personal-finance-demo.vercel.app"
+  >
+    Try the working application with sample data
+  </Card>
+  <Card
+    title="Source Code"
+    icon="github"
+    href="https://github.com/open-finance-os/example-personal-finance"
+  >
+    Complete source code with setup instructions
+  </Card>
+</CardGroup>
+
+## Features Overview
+
+### 📊 **Dashboard Analytics**
+- Real-time account balance overview
+- Spending trends and category breakdowns
+- Income vs expenses visualization
+- Monthly/yearly financial summaries
+
+### 💰 **Budget Management**
+- Automated expense categorization
+- Budget tracking with alerts
+- Savings goals with progress indicators
+- Bill reminder system
+
+### 📈 **Data Visualization**
+- Interactive charts using Recharts
+- Spending heatmaps by category
+- Cash flow projections
+- Comparative analysis tools
+
+### 🔒 **Security Features**
+- Secure OAuth 2.0 authentication
+- End-to-end encryption for sensitive data
+- Session management with automatic logout
+- Multi-factor authentication support
+
+## Technical Implementation
+
+### **Tech Stack**
+- **Frontend**: React 18 + TypeScript + Tailwind CSS
+- **Backend**: Node.js + Express + Prisma ORM
+- **Database**: PostgreSQL
+- **Caching**: Redis for API response caching
+- **Deployment**: Vercel (frontend) + Railway (backend)
+
+### **API Integration**
+```typescript
+// Account data fetching with error handling
+const useAccountData = (accountId: string) => {
+  return useQuery({
+    queryKey: ['account', accountId],
+    queryFn: async () => {
+      const response = await openFinanceApi.get(`/accounts/${accountId}`);
+      return response.data;
+    },
+    refetchInterval: 30000, // Refresh every 30 seconds
+    retry: 3,
+    onError: (error) => {
+      console.error('Failed to fetch account data:', error);
+    }
+  });
+};
+```
+
+### **Real-time Updates**
+```typescript
+// WebSocket connection for live transaction updates
+useEffect(() => {
+  const ws = new WebSocket(`wss://api.example.com/ws/accounts/${accountId}`);
+
+  ws.onmessage = (event) => {
+    const transaction = JSON.parse(event.data);
+    setTransactions(prev => [transaction, ...prev]);
+    updateAccountBalance(transaction.amount);
+  };
+
+  return () => ws.close();
+}, [accountId]);
+```
+
+## Key Components
+
+### Account Overview
+```typescript
+const AccountOverview = ({ accounts }: { accounts: Account[] }) => {
+  const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Total Balance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-3xl font-bold text-green-600">
+            {formatCurrency(totalBalance)}
+          </p>
+        </CardContent>
+      </Card>
+
+      {accounts.map(account => (
+        <AccountCard key={account.id} account={account} />
+      ))}
+    </div>
+  );
+};
+```
+
+### Spending Analytics
+```typescript
+const SpendingChart = ({ transactions }: { transactions: Transaction[] }) => {
+  const data = useMemo(() => {
+    return transactions.reduce((acc, transaction) => {
+      const category = transaction.category;
+      acc[category] = (acc[category] || 0) + Math.abs(transaction.amount);
+      return acc;
+    }, {} as Record<string, number>);
+  }, [transactions]);
+
+  return (
+    <PieChart width={400} height={300}>
+      <Pie
+        data={Object.entries(data).map(([name, value]) => ({ name, value }))}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius={100}
+        fill="#8884d8"
+      />
+      <Tooltip formatter={(value) => formatCurrency(value as number)} />
+      <Legend />
+    </PieChart>
+  );
+};
+```
+
+## Advanced Features
+
+### **Smart Categorization**
+```typescript
+// Automatic transaction categorization using ML
+const categorizeTransaction = async (description: string, amount: number) => {
+  const response = await fetch('/api/categorize', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ description, amount })
+  });
+
+  const { category, confidence } = await response.json();
+  return { category, confidence };
+};
+```
+
+### **Budget Alerts**
+```typescript
+// Real-time budget monitoring
+const useBudgetAlerts = (expenses: Expense[], budgets: Budget[]) => {
+  useEffect(() => {
+    budgets.forEach(budget => {
+      const spent = expenses
+        .filter(exp => exp.category === budget.category)
+        .reduce((sum, exp) => sum + exp.amount, 0);
+
+      const percentage = (spent / budget.limit) * 100;
+
+      if (percentage >= 90) {
+        showNotification({
+          type: 'warning',
+          title: 'Budget Alert',
+          message: `You've spent ${percentage.toFixed(0)}% of your ${budget.category} budget`
+        });
+      }
+    });
+  }, [expenses, budgets]);
+};
+```
+
+### **Financial Insights**
+```typescript
+// Generate personalized financial insights
+const generateInsights = (transactions: Transaction[]) => {
+  const insights = [];
+
+  // Spending trend analysis
+  const thisMonth = getThisMonthTransactions(transactions);
+  const lastMonth = getLastMonthTransactions(transactions);
+  const change = ((thisMonth.total - lastMonth.total) / lastMonth.total) * 100;
+
+  if (change > 20) {
+    insights.push({
+      type: 'warning',
+      message: `Your spending increased by ${change.toFixed(1)}% this month`,
+      suggestion: 'Consider reviewing your recent purchases'
+    });
+  }
+
+  // Savings opportunity detection
+  const recurringExpenses = findRecurringExpenses(transactions);
+  if (recurringExpenses.length > 0) {
+    insights.push({
+      type: 'tip',
+      message: 'Found potential savings in recurring subscriptions',
+      suggestion: 'Review and cancel unused subscriptions'
+    });
+  }
+
+  return insights;
+};
+```
+
+## Setup Instructions
+
+<Steps>
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/open-finance-os/example-personal-finance.git
+    cd example-personal-finance
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    # Frontend
+    cd frontend
+    npm install
+
+    # Backend
+    cd ../backend
+    npm install
+    ```
+  </Step>
+
+  <Step title="Environment Setup">
+    ```bash
+    # Backend .env
+    OPENFINANCE_CLIENT_ID=your_client_id
+    OPENFINANCE_CLIENT_SECRET=your_client_secret
+    DATABASE_URL=postgresql://user:password@localhost:5432/personalfinance
+    REDIS_URL=redis://localhost:6379
+    JWT_SECRET=your_jwt_secret
+
+    # Frontend .env
+    REACT_APP_API_URL=http://localhost:8000
+    REACT_APP_WEBSOCKET_URL=ws://localhost:8000
+    ```
+  </Step>
+
+  <Step title="Database Setup">
+    ```bash
+    # Run migrations
+    npx prisma migrate dev
+
+    # Seed with sample data
+    npm run db:seed
+    ```
+  </Step>
+
+  <Step title="Start Development Servers">
+    ```bash
+    # Backend
+    npm run dev
+
+    # Frontend (in new terminal)
+    cd frontend
+    npm start
+    ```
+  </Step>
+</Steps>
+
+## Customization Guide
+
+### **Adding New Charts**
+```typescript
+// Custom spending trend chart
+const SpendingTrendChart = ({ data }: { data: ChartData[] }) => (
+  <LineChart width={600} height={300} data={data}>
+    <XAxis dataKey="date" />
+    <YAxis />
+    <CartesianGrid strokeDasharray="3 3" />
+    <Line type="monotone" dataKey="amount" stroke="#8884d8" strokeWidth={2} />
+    <Tooltip formatter={(value) => formatCurrency(value as number)} />
+  </LineChart>
+);
+```
+
+### **Custom Categories**
+```typescript
+// Add custom expense categories
+const customCategories = [
+  { id: 'fitness', name: 'Fitness & Health', icon: '💪', color: '#10B981' },
+  { id: 'education', name: 'Education', icon: '📚', color: '#3B82F6' },
+  { id: 'pets', name: 'Pet Care', icon: '🐕', color: '#8B5CF6' }
+];
+```
+
+## Performance Optimizations
+
+### **Data Caching**
+```typescript
+// Implement smart caching for API responses
+const useTransactionsWithCache = (accountId: string) => {
+  return useQuery({
+    queryKey: ['transactions', accountId],
+    queryFn: () => fetchTransactions(accountId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false
+  });
+};
+```
+
+### **Virtual Scrolling**
+```typescript
+// Handle large transaction lists efficiently
+import { FixedSizeList as List } from 'react-window';
+
+const TransactionList = ({ transactions }: { transactions: Transaction[] }) => (
+  <List
+    height={400}
+    itemCount={transactions.length}
+    itemSize={60}
+    itemData={transactions}
+  >
+    {TransactionRow}
+  </List>
+);
+```
+
+## Deployment
+
+### **Frontend (Vercel)**
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+```
+
+### **Backend (Railway)**
+```bash
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Deploy
+railway login
+railway up
+```
+
+<Tip>
+  This example demonstrates how to build a production-ready personal finance app using modern web technologies and Open Finance APIs.
+</Tip>

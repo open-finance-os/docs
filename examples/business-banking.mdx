@@ -1,0 +1,765 @@
+---
+title: "Small Business Banking"
+description: "Multi-account management platform for small business financial operations"
+---
+
+# Small Business Banking Example
+
+A comprehensive business banking solution demonstrating multi-account management, cash flow forecasting, and automated financial operations for small and medium enterprises.
+
+<CardGroup cols={2}>
+  <Card
+    title="Live Demo"
+    icon="external-link"
+    href="https://business-banking-demo.vercel.app"
+  >
+    Try the working application with sample business data
+  </Card>
+  <Card
+    title="Source Code"
+    icon="github"
+    href="https://github.com/open-finance-os/example-business-banking"
+  >
+    Complete source code with setup instructions
+  </Card>
+</CardGroup>
+
+## Features Overview
+
+### 🏢 **Multi-Account Management**
+- Real-time account aggregation across multiple banks
+- Unified transaction history and reporting
+- Account-specific permissions and access controls
+- Cross-account transfer automation
+
+### 💰 **Cash Flow Management**
+- Predictive cash flow forecasting
+- Automated reconciliation and categorization
+- Working capital optimization recommendations
+- Seasonal trend analysis
+
+### 📊 **Financial Reporting**
+- Real-time P&L statements
+- Balance sheet automation
+- Tax preparation reports
+- Custom financial dashboards
+
+### ⚡ **Payment Automation**
+- Bulk payment processing
+- Recurring payment management
+- Vendor payment scheduling
+- Invoice payment automation
+
+## Technical Implementation
+
+### **Tech Stack**
+- **Frontend**: React 18 + TypeScript + Material-UI
+- **Backend**: Node.js + Express + TypeORM
+- **Database**: PostgreSQL with business-specific schemas
+- **Queue**: Redis Bull for payment processing
+- **Auth**: Auth0 for enterprise authentication
+
+### **Multi-Bank API Integration**
+```typescript
+// Unified account data aggregation
+class BankingAggregator {
+  private bankConnections: Map<string, BankConnection> = new Map();
+
+  async aggregateAccounts(businessId: string): Promise<Account[]> {
+    const connections = await this.getBusinessConnections(businessId);
+    const accountPromises = connections.map(conn =>
+      this.fetchAccountsFromBank(conn)
+    );
+
+    try {
+      const bankAccounts = await Promise.allSettled(accountPromises);
+
+      return bankAccounts
+        .filter(result => result.status === 'fulfilled')
+        .flatMap(result => result.value)
+        .map(account => this.normalizeAccountData(account));
+    } catch (error) {
+      console.error('Account aggregation failed:', error);
+      throw new Error('Failed to fetch account data');
+    }
+  }
+
+  private async fetchAccountsFromBank(connection: BankConnection): Promise<RawAccount[]> {
+    const apiClient = this.createBankClient(connection);
+    return await apiClient.getAccounts({
+      includeBalances: true,
+      includeDetails: true,
+      dateRange: { start: startOfMonth(new Date()), end: new Date() }
+    });
+  }
+}
+```
+
+### **Cash Flow Forecasting**
+```typescript
+// ML-powered cash flow prediction
+import { LinearRegression } from 'ml-regression';
+
+class CashFlowPredictor {
+  private model: LinearRegression;
+
+  async predictCashFlow(
+    transactions: Transaction[],
+    daysAhead: number = 30
+  ): Promise<CashFlowPrediction> {
+    // Prepare training data
+    const historicalData = this.prepareTrainingData(transactions);
+
+    // Train regression model
+    this.model = new LinearRegression(
+      historicalData.features,
+      historicalData.targets
+    );
+
+    // Generate predictions
+    const predictions = [];
+    for (let day = 1; day <= daysAhead; day++) {
+      const features = this.generateFeatures(day, transactions);
+      const prediction = this.model.predict(features);
+
+      predictions.push({
+        date: addDays(new Date(), day),
+        predictedBalance: prediction,
+        confidence: this.calculateConfidence(features, prediction)
+      });
+    }
+
+    return {
+      predictions,
+      accuracy: this.model.score,
+      factors: this.identifyKeyFactors(),
+      recommendations: this.generateRecommendations(predictions)
+    };
+  }
+
+  private prepareTrainingData(transactions: Transaction[]) {
+    return transactions.reduce((acc, transaction, index) => {
+      const features = [
+        transaction.dayOfWeek,
+        transaction.dayOfMonth,
+        transaction.isRecurring ? 1 : 0,
+        transaction.category === 'revenue' ? 1 : 0,
+        this.getSeasonalFactor(transaction.date)
+      ];
+
+      acc.features.push(features);
+      acc.targets.push(transaction.amount);
+      return acc;
+    }, { features: [], targets: [] });
+  }
+}
+```
+
+## Key Components
+
+### Business Dashboard
+```typescript
+const BusinessDashboard = ({ businessId }: { businessId: string }) => {
+  const { data: accounts } = useAccountsData(businessId);
+  const { data: cashFlow } = useCashFlowData(businessId);
+  const { data: metrics } = useBusinessMetrics(businessId);
+
+  const totalBalance = accounts?.reduce((sum, acc) => sum + acc.balance, 0) || 0;
+  const monthlyRevenue = metrics?.monthlyRevenue || 0;
+  const monthlyExpenses = metrics?.monthlyExpenses || 0;
+  const netIncome = monthlyRevenue - monthlyExpenses;
+
+  return (
+    <Grid container spacing={3}>
+      {/* Key Metrics */}
+      <Grid item xs={12} md={3}>
+        <MetricCard
+          title="Total Balance"
+          value={formatCurrency(totalBalance)}
+          trend={calculateTrend(totalBalance, metrics?.previousBalance)}
+          icon={<AccountBalanceIcon />}
+        />
+      </Grid>
+
+      <Grid item xs={12} md={3}>
+        <MetricCard
+          title="Monthly Revenue"
+          value={formatCurrency(monthlyRevenue)}
+          trend={calculateTrend(monthlyRevenue, metrics?.previousRevenue)}
+          icon={<TrendingUpIcon />}
+          color="success"
+        />
+      </Grid>
+
+      <Grid item xs={12} md={3}>
+        <MetricCard
+          title="Monthly Expenses"
+          value={formatCurrency(monthlyExpenses)}
+          trend={calculateTrend(monthlyExpenses, metrics?.previousExpenses)}
+          icon={<TrendingDownIcon />}
+          color="error"
+        />
+      </Grid>
+
+      <Grid item xs={12} md={3}>
+        <MetricCard
+          title="Net Income"
+          value={formatCurrency(netIncome)}
+          trend={calculateTrend(netIncome, metrics?.previousNetIncome)}
+          icon={<BusinessIcon />}
+          color={netIncome >= 0 ? "success" : "error"}
+        />
+      </Grid>
+
+      {/* Cash Flow Chart */}
+      <Grid item xs={12} md={8}>
+        <CashFlowChart data={cashFlow} predictions={true} />
+      </Grid>
+
+      {/* Quick Actions */}
+      <Grid item xs={12} md={4}>
+        <QuickActions businessId={businessId} />
+      </Grid>
+
+      {/* Recent Transactions */}
+      <Grid item xs={12}>
+        <RecentTransactionsTable businessId={businessId} limit={10} />
+      </Grid>
+    </Grid>
+  );
+};
+```
+
+### Payment Processing System
+```typescript
+// Bulk payment processing with queue management
+class PaymentProcessor {
+  private queue: Queue;
+
+  constructor() {
+    this.queue = new Queue('payment processing', {
+      redis: { host: 'localhost', port: 6379 },
+      defaultJobOptions: {
+        removeOnComplete: 100,
+        removeOnFail: 50,
+        attempts: 3,
+        backoff: 'exponential'
+      }
+    });
+
+    this.setupProcessors();
+  }
+
+  async processBulkPayments(payments: PaymentRequest[]): Promise<BatchResult> {
+    const batchId = generateUUID();
+
+    // Validate all payments first
+    const validationResults = await Promise.all(
+      payments.map(payment => this.validatePayment(payment))
+    );
+
+    const validPayments = payments.filter((_, index) =>
+      validationResults[index].isValid
+    );
+
+    if (validPayments.length === 0) {
+      throw new Error('No valid payments in batch');
+    }
+
+    // Queue payments for processing
+    const jobs = validPayments.map(payment =>
+      this.queue.add('process-payment', {
+        batchId,
+        payment,
+        priority: payment.priority || 'normal'
+      }, {
+        priority: this.getPriorityScore(payment.priority)
+      })
+    );
+
+    // Track batch progress
+    await this.createBatchTracker(batchId, jobs.length);
+
+    return {
+      batchId,
+      totalPayments: payments.length,
+      validPayments: validPayments.length,
+      invalidPayments: payments.length - validPayments.length,
+      estimatedCompletion: this.calculateEstimatedCompletion(validPayments.length)
+    };
+  }
+
+  private setupProcessors() {
+    this.queue.process('process-payment', 5, async (job) => {
+      const { batchId, payment } = job.data;
+
+      try {
+        // Process individual payment
+        const result = await this.executePayment(payment);
+
+        // Update batch progress
+        await this.updateBatchProgress(batchId, result);
+
+        return result;
+      } catch (error) {
+        // Log error and update batch
+        await this.handlePaymentError(batchId, payment, error);
+        throw error;
+      }
+    });
+  }
+}
+```
+
+## Advanced Features
+
+### **Automated Reconciliation**
+```typescript
+// Intelligent transaction matching and reconciliation
+class ReconciliationEngine {
+  async reconcileTransactions(
+    bankTransactions: BankTransaction[],
+    bookTransactions: BookTransaction[]
+  ): Promise<ReconciliationResult> {
+    const matches = new Map<string, TransactionMatch>();
+    const unmatched = { bank: [], book: [] };
+
+    // First pass: Exact matches
+    for (const bankTx of bankTransactions) {
+      const exactMatch = bookTransactions.find(bookTx =>
+        this.isExactMatch(bankTx, bookTx)
+      );
+
+      if (exactMatch) {
+        matches.set(bankTx.id, {
+          bankTransaction: bankTx,
+          bookTransaction: exactMatch,
+          confidence: 1.0,
+          matchType: 'exact'
+        });
+      } else {
+        unmatched.bank.push(bankTx);
+      }
+    }
+
+    // Second pass: Fuzzy matching
+    for (const unmatchedBank of unmatched.bank) {
+      const fuzzyMatches = bookTransactions
+        .filter(bookTx => !Array.from(matches.values()).some(m => m.bookTransaction.id === bookTx.id))
+        .map(bookTx => ({
+          transaction: bookTx,
+          score: this.calculateMatchScore(unmatchedBank, bookTx)
+        }))
+        .filter(match => match.score > 0.7)
+        .sort((a, b) => b.score - a.score);
+
+      if (fuzzyMatches.length > 0) {
+        const bestMatch = fuzzyMatches[0];
+        matches.set(unmatchedBank.id, {
+          bankTransaction: unmatchedBank,
+          bookTransaction: bestMatch.transaction,
+          confidence: bestMatch.score,
+          matchType: 'fuzzy'
+        });
+      } else {
+        unmatched.bank.push(unmatchedBank);
+      }
+    }
+
+    return {
+      matches: Array.from(matches.values()),
+      unmatchedBank: unmatched.bank,
+      unmatchedBook: this.findUnmatchedBookTransactions(bookTransactions, matches),
+      reconciliationRate: matches.size / bankTransactions.length
+    };
+  }
+
+  private calculateMatchScore(bankTx: BankTransaction, bookTx: BookTransaction): number {
+    let score = 0;
+
+    // Amount match (exact = 0.4, close = 0.2)
+    if (Math.abs(bankTx.amount - bookTx.amount) < 0.01) {
+      score += 0.4;
+    } else if (Math.abs(bankTx.amount - bookTx.amount) < Math.abs(bankTx.amount) * 0.05) {
+      score += 0.2;
+    }
+
+    // Date proximity (within 3 days = 0.3, within 7 days = 0.15)
+    const daysDiff = Math.abs(differenceInDays(bankTx.date, bookTx.date));
+    if (daysDiff <= 3) {
+      score += 0.3;
+    } else if (daysDiff <= 7) {
+      score += 0.15;
+    }
+
+    // Description similarity (using Levenshtein distance)
+    const descriptionSimilarity = this.calculateStringSimilarity(
+      bankTx.description,
+      bookTx.description
+    );
+    score += descriptionSimilarity * 0.3;
+
+    return score;
+  }
+}
+```
+
+### **Financial Reporting Engine**
+```typescript
+// Dynamic report generation with multiple formats
+class ReportGenerator {
+  async generateFinancialReport(
+    businessId: string,
+    reportType: ReportType,
+    period: ReportPeriod,
+    format: 'pdf' | 'excel' | 'csv' = 'pdf'
+  ): Promise<ReportResult> {
+    const data = await this.fetchReportData(businessId, reportType, period);
+
+    switch (reportType) {
+      case 'profit-loss':
+        return this.generateProfitLossReport(data, format);
+      case 'balance-sheet':
+        return this.generateBalanceSheetReport(data, format);
+      case 'cash-flow':
+        return this.generateCashFlowReport(data, format);
+      case 'tax-summary':
+        return this.generateTaxSummaryReport(data, format);
+      default:
+        throw new Error(`Unsupported report type: ${reportType}`);
+    }
+  }
+
+  private async generateProfitLossReport(
+    data: ReportData,
+    format: string
+  ): Promise<ReportResult> {
+    const reportStructure = {
+      revenue: {
+        title: 'Revenue',
+        items: data.transactions.filter(t => t.type === 'revenue'),
+        total: data.totals.revenue
+      },
+      expenses: {
+        title: 'Expenses',
+        categories: this.categorizeExpenses(data.transactions.filter(t => t.type === 'expense')),
+        total: data.totals.expenses
+      },
+      netIncome: data.totals.revenue - data.totals.expenses
+    };
+
+    if (format === 'pdf') {
+      return this.generatePDFReport(reportStructure, 'profit-loss');
+    } else if (format === 'excel') {
+      return this.generateExcelReport(reportStructure, 'profit-loss');
+    } else {
+      return this.generateCSVReport(reportStructure, 'profit-loss');
+    }
+  }
+
+  private async generatePDFReport(data: any, template: string): Promise<ReportResult> {
+    const html = await this.renderTemplate(template, data);
+    const pdfBuffer = await this.htmlToPdf(html);
+
+    const filename = `${template}-${Date.now()}.pdf`;
+    const downloadUrl = await this.uploadToStorage(pdfBuffer, filename);
+
+    return {
+      filename,
+      downloadUrl,
+      format: 'pdf',
+      size: pdfBuffer.length
+    };
+  }
+}
+```
+
+### **Vendor Management System**
+```typescript
+// Comprehensive vendor payment and relationship management
+const VendorManagement = () => {
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [paymentSchedules, setPaymentSchedules] = useState<PaymentSchedule[]>([]);
+
+  const scheduleRecurringPayment = async (vendor: Vendor, schedule: PaymentSchedule) => {
+    try {
+      // Create recurring payment schedule
+      const recurringPayment = await createRecurringPayment({
+        vendorId: vendor.id,
+        amount: schedule.amount,
+        frequency: schedule.frequency,
+        startDate: schedule.startDate,
+        endDate: schedule.endDate,
+        paymentMethod: vendor.preferredPaymentMethod,
+        approvalRequired: schedule.amount > 1000 // Auto-approve small payments
+      });
+
+      // Set up automated notifications
+      await schedulePaymentNotifications(recurringPayment.id, {
+        reminderDays: [7, 3, 1], // Remind 7, 3, and 1 days before
+        recipients: [vendor.contactEmail, 'finance@company.com']
+      });
+
+      setPaymentSchedules(prev => [...prev, recurringPayment]);
+
+      showSuccess(`Recurring payment scheduled for ${vendor.name}`);
+    } catch (error) {
+      showError('Failed to schedule payment');
+    }
+  };
+
+  return (
+    <div className="vendor-management">
+      <VendorList
+        vendors={vendors}
+        onSchedulePayment={scheduleRecurringPayment}
+        onEditVendor={editVendor}
+      />
+
+      <PaymentScheduleCalendar
+        schedules={paymentSchedules}
+        onApprovePayment={approvePayment}
+        onModifySchedule={modifySchedule}
+      />
+
+      <VendorPerformanceMetrics
+        vendors={vendors}
+        showMetrics={['payment_history', 'reliability_score', 'cost_analysis']}
+      />
+    </div>
+  );
+};
+```
+
+## Setup Instructions
+
+<Steps>
+  <Step title="Clone Repository">
+    ```bash
+    git clone https://github.com/open-finance-os/example-business-banking.git
+    cd example-business-banking
+    ```
+  </Step>
+
+  <Step title="Install Dependencies">
+    ```bash
+    # Frontend
+    cd frontend
+    npm install
+
+    # Backend
+    cd ../backend
+    npm install
+
+    # Install Redis (for queue management)
+    # macOS: brew install redis
+    # Ubuntu: sudo apt-get install redis-server
+    ```
+  </Step>
+
+  <Step title="Environment Configuration">
+    ```bash
+    # Backend .env
+    OPENFINANCE_CLIENT_ID=your_client_id
+    OPENFINANCE_CLIENT_SECRET=your_client_secret
+    DATABASE_URL=postgresql://user:password@localhost:5432/businessbanking
+    REDIS_URL=redis://localhost:6379
+    AUTH0_DOMAIN=your_auth0_domain
+    AUTH0_CLIENT_ID=your_auth0_client_id
+    WEBHOOK_SECRET=your_webhook_secret
+
+    # Frontend .env
+    REACT_APP_API_URL=http://localhost:8000
+    REACT_APP_AUTH0_DOMAIN=your_auth0_domain
+    REACT_APP_AUTH0_CLIENT_ID=your_auth0_client_id
+    ```
+  </Step>
+
+  <Step title="Database Setup">
+    ```bash
+    # Run migrations
+    npm run migration:run
+
+    # Seed with sample business data
+    npm run db:seed:business
+    ```
+  </Step>
+
+  <Step title="Start Services">
+    ```bash
+    # Start Redis server
+    redis-server
+
+    # Backend API (in new terminal)
+    npm run dev
+
+    # Queue processor (in new terminal)
+    npm run queue:dev
+
+    # Frontend (in new terminal)
+    cd frontend
+    npm start
+    ```
+  </Step>
+</Steps>
+
+## Integration Examples
+
+### **Accounting Software Integration**
+```typescript
+// QuickBooks integration for seamless data sync
+class QuickBooksIntegration {
+  private qboApi: QuickBooksAPI;
+
+  async syncTransactions(businessId: string): Promise<SyncResult> {
+    const bankTransactions = await this.fetchBankTransactions(businessId);
+    const qboTransactions = await this.qboApi.getTransactions();
+
+    const syncTasks = bankTransactions.map(async (transaction) => {
+      // Check if transaction already exists in QuickBooks
+      const existing = qboTransactions.find(qbo =>
+        this.matchTransactions(transaction, qbo)
+      );
+
+      if (!existing) {
+        // Create new transaction in QuickBooks
+        return this.qboApi.createTransaction({
+          date: transaction.date,
+          amount: transaction.amount,
+          description: transaction.description,
+          account: this.mapAccountToQBO(transaction.accountId),
+          category: this.mapCategoryToQBO(transaction.category)
+        });
+      }
+
+      return { status: 'already_exists', transaction };
+    });
+
+    const results = await Promise.allSettled(syncTasks);
+
+    return {
+      total: bankTransactions.length,
+      created: results.filter(r => r.status === 'fulfilled' && r.value.status === 'created').length,
+      existing: results.filter(r => r.status === 'fulfilled' && r.value.status === 'already_exists').length,
+      errors: results.filter(r => r.status === 'rejected').length
+    };
+  }
+}
+```
+
+### **Tax Preparation Integration**
+```typescript
+// Automated tax document preparation
+const generateTaxDocuments = async (businessId: string, taxYear: number) => {
+  const transactions = await getTransactionsByYear(businessId, taxYear);
+  const categories = await getTaxCategories();
+
+  // Categorize transactions for tax purposes
+  const taxData = categories.reduce((acc, category) => {
+    acc[category.name] = {
+      total: 0,
+      transactions: [],
+      deductible: category.deductible
+    };
+    return acc;
+  }, {});
+
+  transactions.forEach(transaction => {
+    const category = transaction.taxCategory || 'uncategorized';
+    if (taxData[category]) {
+      taxData[category].total += transaction.amount;
+      taxData[category].transactions.push(transaction);
+    }
+  });
+
+  // Generate tax forms
+  const forms = await Promise.all([
+    generateForm1120(taxData), // Corporate income tax
+    generateForm941(taxData),  // Quarterly payroll tax
+    generateScheduleC(taxData) // Business income/expenses
+  ]);
+
+  return {
+    taxYear,
+    forms,
+    summary: {
+      totalRevenue: taxData.revenue?.total || 0,
+      totalDeductions: Object.values(taxData)
+        .filter(cat => cat.deductible)
+        .reduce((sum, cat) => sum + cat.total, 0),
+      estimatedTax: calculateEstimatedTax(taxData)
+    }
+  };
+};
+```
+
+## Performance Optimizations
+
+### **Database Indexing**
+```sql
+-- Optimized indexes for business banking queries
+CREATE INDEX CONCURRENTLY idx_transactions_business_date
+ON transactions (business_id, transaction_date DESC);
+
+CREATE INDEX CONCURRENTLY idx_accounts_business_type
+ON accounts (business_id, account_type);
+
+CREATE INDEX CONCURRENTLY idx_payments_status_scheduled
+ON payments (status, scheduled_date)
+WHERE status IN ('pending', 'scheduled');
+
+-- Partial index for active recurring payments
+CREATE INDEX CONCURRENTLY idx_recurring_payments_active
+ON recurring_payments (business_id, next_payment_date)
+WHERE status = 'active';
+```
+
+### **Caching Strategy**
+```typescript
+// Multi-level caching for business data
+class BusinessDataCache {
+  private redisClient: Redis;
+  private memoryCache: LRUCache<string, any>;
+
+  constructor() {
+    this.redisClient = new Redis(process.env.REDIS_URL);
+    this.memoryCache = new LRUCache({
+      max: 1000,
+      ttl: 5 * 60 * 1000 // 5 minutes
+    });
+  }
+
+  async getBusinessMetrics(businessId: string): Promise<BusinessMetrics> {
+    const cacheKey = `business:${businessId}:metrics`;
+
+    // Check memory cache first
+    let metrics = this.memoryCache.get(cacheKey);
+    if (metrics) return metrics;
+
+    // Check Redis cache
+    const cached = await this.redisClient.get(cacheKey);
+    if (cached) {
+      metrics = JSON.parse(cached);
+      this.memoryCache.set(cacheKey, metrics);
+      return metrics;
+    }
+
+    // Calculate from database
+    metrics = await this.calculateBusinessMetrics(businessId);
+
+    // Cache in both levels
+    await this.redisClient.setex(cacheKey, 300, JSON.stringify(metrics)); // 5 minutes
+    this.memoryCache.set(cacheKey, metrics);
+
+    return metrics;
+  }
+}
+```
+
+<Warning>
+  **Security Note**: This example handles sensitive business financial data. Implement proper access controls, audit logging, and encryption for production use.
+</Warning>
+
+<Tip>
+  This business banking platform demonstrates comprehensive financial management for SMEs, including multi-account aggregation, automated reconciliation, and cash flow forecasting.
+</Tip>
