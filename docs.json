@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "Mint Starter Kit",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#DC2626",
+    "light": "#EF4444",
+    "dark": "#991B1B"
   },
   "favicon": "/adcb-favicon.ico",
   "navigation": {
@@ -48,24 +48,25 @@
         ]
       },
       {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
-          }
+        "tab": "Bank Data Sharing",
+        "openapi": [
+          "/api-reference/bank-data-sharing/uae-account-information-openapi.yaml",
+          "/api-reference/bank-data-sharing/uae-atm-openapi.yaml",
+          "/api-reference/bank-data-sharing/uae-product-openapi.yaml"
         ]
+      },
+      {
+        "tab": "Bank Service Initiation", 
+        "openapi": [
+          "/api-reference/bank-service-initiation/uae-account-opening-service-initiation-openapi.yaml",
+          "/api-reference/bank-service-initiation/uae-bank-initiation-openapi.yaml",
+          "/api-reference/bank-service-initiation/uae-confirmation-of-payee-openapi.yaml",
+          "/api-reference/bank-service-initiation/uae-fx-service-initiation-openapi.yaml"
+        ]
+      },
+      {
+        "tab": "Insurance",
+        "openapi": "/api-reference/insurance/uae-insurance-openapi.yaml"
       }
     ],
     "global": {
