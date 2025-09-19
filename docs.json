@@ -69,9 +69,19 @@
             "group": "Help & Resources",
             "pages": [
               "support/index",
-              "support/github-discussions",
               "support/hackathon-help",
               "support/faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
             ]
           }
         ]
@@ -109,11 +119,6 @@
           "anchor": "Hackathon",
           "href": "https://preview--uae-open-finance-hackathon.lovable.app/",
           "icon": "trophy"
-        },
-        {
-          "anchor": "API Docs",
-          "href": "https://docs.openfinance.ae",
-          "icon": "book-open-cover"
         }
       ]
     }
