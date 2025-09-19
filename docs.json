@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "UAE Open Finance Hackathon",
   "colors": {
     "primary": "#DC2626",
     "light": "#EF4444",
@@ -11,10 +11,10 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Getting Started",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Quick Start",
             "pages": [
               "index",
               "quickstart",
@@ -22,27 +22,25 @@
             ]
           },
           {
-            "group": "Customization",
+            "group": "AI Tools",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
               "ai-tools/claude-code",
+              "ai-tools/cursor",
               "ai-tools/windsurf"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Support",
+        "groups": [
+          {
+            "group": "Help & Resources",
+            "pages": [
+              "support/index",
+              "support/github-discussions",
+              "support/hackathon-help",
+              "support/faq"
             ]
           }
         ]
@@ -56,7 +54,7 @@
         ]
       },
       {
-        "tab": "Bank Service Initiation", 
+        "tab": "Bank Service Initiation",
         "openapi": [
           "/api-reference/bank-service-initiation/uae-account-opening-service-initiation-openapi.yaml",
           "/api-reference/bank-service-initiation/uae-bank-initiation-openapi.yaml",
@@ -72,19 +70,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "anchor": "GitHub Discussions",
+          "href": "https://github.com/open-finance-os/discussions",
+          "icon": "comments"
+        },
+        {
+          "anchor": "Hackathon",
+          "href": "https://preview--uae-open-finance-hackathon.lovable.app/",
+          "icon": "trophy"
+        },
+        {
+          "anchor": "API Docs",
+          "href": "https://docs.openfinance.ae",
           "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
         }
       ]
     }
@@ -96,14 +94,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Get Support",
+        "href": "https://github.com/open-finance-os/discussions"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Join Hackathon",
+      "href": "https://preview--uae-open-finance-hackathon.lovable.app/"
     }
   },
   "contextual": {
@@ -116,9 +114,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/open-finance-os"
     }
   }
 }

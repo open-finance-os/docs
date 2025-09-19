@@ -1,33 +1,316 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Open Finance APIs"
+description: "Comprehensive UAE Open Finance API documentation for hackathon developers"
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# UAE Open Finance APIs
 
-## Welcome
+Build innovative financial applications with standardized, secure APIs for banking, insurance, and payments in the UAE market.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## API Categories
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+<CardGroup cols={3}>
+  <Card
+    title="Bank Data Sharing"
+    icon="building-columns"
+    href="#bank-data-sharing-apis"
+  >
+    Account information, ATM locations, and product data
+  </Card>
+  <Card
+    title="Bank Service Initiation"
+    icon="credit-card"
+    href="#bank-service-initiation-apis"
+  >
+    Payment processing, account opening, and FX services
+  </Card>
+  <Card
+    title="Insurance"
+    icon="shield"
+    href="#insurance-apis"
+  >
+    Policy management and claims processing
+  </Card>
+</CardGroup>
 
-## Authentication
+## Getting Started
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+<Steps>
+  <Step title="Get API Credentials">
+    Register at the [Open Finance Sandbox](https://sandbox.openfinance.ae) to obtain:
+    - Client ID
+    - Client Secret
+    - API Key
+  </Step>
+
+  <Step title="Authenticate">
+    Use OAuth 2.0 to obtain access tokens:
+    ```javascript
+    const response = await fetch('/oauth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: 'YOUR_CLIENT_ID',
+        client_secret: 'YOUR_CLIENT_SECRET',
+        grant_type: 'client_credentials'
+      })
+    });
+    ```
+  </Step>
+
+  <Step title="Make API Calls">
+    Include the Bearer token in all requests:
+    ```javascript
+    const data = await fetch('/api/accounts', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    });
+    ```
+  </Step>
+</Steps>
+
+## Bank Data Sharing APIs
+
+Access customer account information, transaction history, and banking product data with proper consent.
+
+### Key Endpoints
+
+<AccordionGroup>
+  <Accordion title="Account Information API" icon="wallet">
+    **Base URL**: `/accounts`
+
+    - `GET /accounts` - List customer accounts
+    - `GET /accounts/{accountId}` - Get account details
+    - `GET /accounts/{accountId}/balances` - Account balances
+    - `GET /accounts/{accountId}/transactions` - Transaction history
+
+    **Use Cases**: Personal finance apps, spending analytics, account aggregation
+  </Accordion>
+
+  <Accordion title="ATM Locator API" icon="map-pin">
+    **Base URL**: `/atms`
+
+    - `GET /atms` - Find nearby ATMs
+    - `GET /atms/{atmId}` - ATM details and services
+    - `GET /atms/search` - Search ATMs by location
+
+    **Use Cases**: ATM finder apps, branch locators, service availability
+  </Accordion>
+
+  <Accordion title="Product Information API" icon="credit-card">
+    **Base URL**: `/products`
+
+    - `GET /products` - Available banking products
+    - `GET /products/{productId}` - Product details
+    - `GET /products/eligibility` - Check product eligibility
+
+    **Use Cases**: Product comparison, eligibility checking, recommendations
+  </Accordion>
+</AccordionGroup>
+
+## Bank Service Initiation APIs
+
+Initiate banking services including payments, account opening, and foreign exchange.
+
+### Key Endpoints
+
+<AccordionGroup>
+  <Accordion title="Payment Initiation" icon="money-bill-transfer">
+    **Base URL**: `/payments`
+
+    - `POST /payments` - Initiate payment
+    - `GET /payments/{paymentId}` - Payment status
+    - `PUT /payments/{paymentId}/authorise` - Authorize payment
+    - `DELETE /payments/{paymentId}` - Cancel payment
+
+    **Use Cases**: P2P payments, bill payments, merchant payments
+  </Accordion>
+
+  <Accordion title="Account Opening" icon="user-plus">
+    **Base URL**: `/account-opening`
+
+    - `POST /account-opening` - Start account application
+    - `GET /account-opening/{applicationId}` - Application status
+    - `PUT /account-opening/{applicationId}` - Update application
+
+    **Use Cases**: Digital onboarding, account applications, KYC processes
+  </Accordion>
+
+  <Accordion title="Confirmation of Payee" icon="shield-check">
+    **Base URL**: `/confirmation-payee`
+
+    - `POST /confirmation-payee` - Verify payee details
+    - `GET /confirmation-payee/{requestId}` - Verification result
+
+    **Use Cases**: Payment verification, fraud prevention, account validation
+  </Accordion>
+
+  <Accordion title="FX Services" icon="coins">
+    **Base URL**: `/fx`
+
+    - `GET /fx/rates` - Current exchange rates
+    - `POST /fx/quote` - Get FX quote
+    - `POST /fx/transaction` - Execute FX transaction
+
+    **Use Cases**: Currency exchange, international transfers, rate monitoring
+  </Accordion>
+</AccordionGroup>
+
+## Insurance APIs
+
+Manage insurance policies, get quotes, and process claims.
+
+### Key Endpoints
+
+<AccordionGroup>
+  <Accordion title="Policy Management" icon="file-shield">
+    **Base URL**: `/insurance/policies`
+
+    - `GET /policies` - List customer policies
+    - `GET /policies/{policyId}` - Policy details
+    - `PUT /policies/{policyId}` - Update policy
+    - `POST /policies/renew` - Renew policy
+
+    **Use Cases**: Policy management apps, renewal reminders, coverage tracking
+  </Accordion>
+
+  <Accordion title="Quote Generation" icon="calculator">
+    **Base URL**: `/insurance/quotes`
+
+    - `POST /quotes` - Generate insurance quote
+    - `GET /quotes/{quoteId}` - Quote details
+    - `POST /quotes/{quoteId}/accept` - Accept quote
+
+    **Use Cases**: Insurance comparison, quote calculators, price discovery
+  </Accordion>
+
+  <Accordion title="Claims Processing" icon="clipboard-list">
+    **Base URL**: `/insurance/claims`
+
+    - `POST /claims` - Submit claim
+    - `GET /claims` - List claims
+    - `GET /claims/{claimId}` - Claim status
+    - `PUT /claims/{claimId}` - Update claim
+
+    **Use Cases**: Claims submission, status tracking, document upload
+  </Accordion>
+</AccordionGroup>
+
+## Authentication & Security
+
+### OAuth 2.0 Flow
+
+All APIs use OAuth 2.0 Client Credentials flow:
+
+1. **Token Request**: Exchange credentials for access token
+2. **API Access**: Include Bearer token in Authorization header
+3. **Token Refresh**: Obtain new token when expired
+
+### Security Best Practices
+
+<Warning>
+**Security Guidelines**:
+- Never expose credentials in client-side code
+- Use HTTPS for all API calls
+- Implement proper error handling
+- Validate and sanitize all inputs
+- Store tokens securely
+</Warning>
+
+### Rate Limits
+
+| Tier | Requests/Minute | Burst Limit |
+|------|----------------|-------------|
+| Sandbox | 100 | 150 |
+| Production | 1000 | 1500 |
+
+## Error Handling
+
+Standard HTTP status codes and error responses:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "The request is invalid",
+    "details": "Missing required parameter: account_id"
   }
-]
+}
 ```
+
+Common error codes:
+- `400` - Bad Request
+- `401` - Unauthorized (invalid token)
+- `403` - Forbidden (insufficient permissions)
+- `429` - Too Many Requests (rate limited)
+- `500` - Internal Server Error
+
+## Testing
+
+### Sandbox Environment
+
+- **Base URL**: `https://sandbox.openfinance.ae/api/v1`
+- **Mock Data**: Realistic test data available
+- **No Charges**: All transactions are simulated
+
+### Test Credentials
+
+Use sandbox credentials for testing:
+```bash
+CLIENT_ID=sandbox_client_id
+CLIENT_SECRET=sandbox_client_secret
+API_KEY=sandbox_api_key
+```
+
+## SDK and Tools
+
+### Official SDKs
+
+- JavaScript/TypeScript SDK (coming soon)
+- Python SDK (coming soon)
+- Java SDK (coming soon)
+
+### Development Tools
+
+- [Postman Collection](https://postman.com) - Pre-built API requests
+- [OpenAPI Specs](https://docs.openfinance.ae) - Complete API documentation
+- [Code Examples](https://github.com/open-finance-os) - Sample implementations
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card
+    title="GitHub Discussions"
+    icon="comments"
+    href="https://github.com/open-finance-os/discussions"
+  >
+    Community support and Q&A
+  </Card>
+  <Card
+    title="Hackathon Resources"
+    icon="trophy"
+    href="/support/hackathon-help"
+  >
+    Quick start guides and tips
+  </Card>
+  <Card
+    title="FAQ"
+    icon="circle-question"
+    href="/support/faq"
+  >
+    Common questions answered
+  </Card>
+  <Card
+    title="API Documentation"
+    icon="book"
+    href="https://docs.openfinance.ae"
+  >
+    Complete API reference
+  </Card>
+</CardGroup>
+
+<Note>
+**Ready to build?** Start with our [Quick Start Guide](/quickstart) or jump straight into the API documentation using the tabs above.
+</Note>

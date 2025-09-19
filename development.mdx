@@ -1,94 +1,374 @@
 ---
-title: 'Development'
-description: 'Preview changes locally to update your docs'
+title: 'Development Setup'
+description: 'Set up your development environment for the hackathon'
 ---
 
 <Info>
-  **Prerequisites**:
+  **Prerequisites for Hackathon Development**:
   - Node.js version 19 or higher
-  - A docs repository with a `docs.json` file
+  - Git
+  - Code editor (VS Code recommended)
+  - Open Finance API credentials
 </Info>
 
-Follow these steps to install and run Mintlify on your operating system.
+Get your development environment ready for building Open Finance applications.
+
+## Essential Development Setup
 
 <Steps>
-<Step title="Install the Mintlify CLI">
+  <Step title="Install Core Tools">
+    ### Required Tools
 
-```bash
-npm i -g mint
-```
-</Step>
+    ```bash
+    # Check Node.js version
+    node --version  # Should be 19+
 
-<Step title="Preview locally">
+    # Install Git (if not already installed)
+    # Visit: https://git-scm.com/downloads
 
-Navigate to your docs directory where your `docs.json` file is located, and run the following command:
+    # Install VS Code (recommended)
+    # Visit: https://code.visualstudio.com/
+    ```
 
-```bash
-mint dev
-```
+    ### Recommended VS Code Extensions
 
-A local preview of your documentation will be available at `http://localhost:3000`.
+    ```bash
+    # Install useful extensions
+    code --install-extension ms-vscode.vscode-typescript-next
+    code --install-extension bradlc.vscode-tailwindcss
+    code --install-extension ms-vscode.vscode-json
+    code --install-extension redhat.vscode-yaml
+    ```
+  </Step>
 
-</Step>
+  <Step title="Set Up Open Finance Environment">
+    ### Create Project Structure
+
+    ```bash
+    # Create your hackathon project
+    mkdir uae-hackathon-project
+    cd uae-hackathon-project
+
+    # Initialize Git repository
+    git init
+    git branch -M main
+
+    # Create basic structure
+    mkdir src api docs
+    touch .env .gitignore README.md
+    ```
+
+    ### Configure Environment Variables
+
+    Add to `.env`:
+    ```bash
+    # Open Finance API Configuration
+    OPENFINANCE_CLIENT_ID=your_client_id
+    OPENFINANCE_CLIENT_SECRET=your_client_secret
+    OPENFINANCE_API_KEY=your_api_key
+    OPENFINANCE_BASE_URL=https://sandbox.openfinance.ae/api/v1
+
+    # Development Settings
+    NODE_ENV=development
+    PORT=3000
+    ```
+
+    Add to `.gitignore`:
+    ```bash
+    # Environment variables
+    .env
+    .env.local
+
+    # Dependencies
+    node_modules/
+    npm-debug.log*
+
+    # Build outputs
+    dist/
+    build/
+
+    # IDE files
+    .vscode/
+    .idea/
+
+    # OS files
+    .DS_Store
+    Thumbs.db
+    ```
+  </Step>
+
+  <Step title="Install AI Development Tools">
+    ### Claude Code (Recommended)
+
+    Follow our [Claude Code setup guide](/ai-tools/claude-code) for AI-powered development assistance.
+
+    ### Alternative AI Tools
+
+    - [Cursor](/ai-tools/cursor) - AI-first code editor
+    - [Windsurf](/ai-tools/windsurf) - Next-gen AI assistant
+
+    <Tip>
+      AI tools can significantly speed up your development by helping with API integration, debugging, and code generation.
+    </Tip>
+  </Step>
 </Steps>
 
-## Custom ports
+## Framework-Specific Setup
 
-By default, Mintlify uses port 3000. You can customize the port Mintlify runs on by using the `--port` flag. For example, to run Mintlify on port 3333, use this command:
+Choose your development stack:
 
+<Tabs>
+  <Tab title="React/Next.js">
+    ```bash
+    # Create Next.js app
+    npx create-next-app@latest my-openfinance-app
+    cd my-openfinance-app
+
+    # Install Open Finance dependencies
+    npm install axios @types/axios
+    npm install -D @types/node
+
+    # Start development server
+    npm run dev
+    ```
+
+    ### Sample API Integration
+    ```javascript
+    // lib/openfinance.js
+    import axios from 'axios';
+
+    const api = axios.create({
+      baseURL: process.env.OPENFINANCE_BASE_URL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    export default api;
+    ```
+  </Tab>
+
+  <Tab title="Node.js/Express">
+    ```bash
+    # Initialize Node.js project
+    npm init -y
+
+    # Install backend dependencies
+    npm install express cors dotenv axios
+    npm install -D nodemon
+
+    # Update package.json scripts
+    # "dev": "nodemon server.js"
+    # "start": "node server.js"
+    ```
+
+    ### Sample Server Setup
+    ```javascript
+    // server.js
+    const express = require('express');
+    const cors = require('cors');
+    require('dotenv').config();
+
+    const app = express();
+    const PORT = process.env.PORT || 3000;
+
+    app.use(cors());
+    app.use(express.json());
+
+    // Health check
+    app.get('/health', (req, res) => {
+      res.json({ status: 'OK', timestamp: new Date().toISOString() });
+    });
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+    ```
+  </Tab>
+
+  <Tab title="Python/FastAPI">
+    ```bash
+    # Create virtual environment
+    python -m venv hackathon-env
+    source hackathon-env/bin/activate  # On Windows: hackathon-env\Scripts\activate
+
+    # Install dependencies
+    pip install fastapi uvicorn requests python-dotenv
+
+    # Create requirements.txt
+    pip freeze > requirements.txt
+    ```
+
+    ### Sample FastAPI Setup
+    ```python
+    # main.py
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+    import os
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    app = FastAPI(title="Open Finance Hackathon API")
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    @app.get("/health")
+    def health_check():
+        return {"status": "OK"}
+
+    # Run with: uvicorn main:app --reload
+    ```
+  </Tab>
+</Tabs>
+
+## Testing Your Setup
+
+### Verify API Connection
+
+```javascript
+// test-connection.js
+require('dotenv').config();
+const axios = require('axios');
+
+async function testConnection() {
+  try {
+    const response = await axios.post(
+      `${process.env.OPENFINANCE_BASE_URL}/oauth/token`,
+      {
+        client_id: process.env.OPENFINANCE_CLIENT_ID,
+        client_secret: process.env.OPENFINANCE_CLIENT_SECRET,
+        grant_type: 'client_credentials'
+      }
+    );
+
+    console.log('✅ Connection successful!');
+    console.log('Token received:', response.data.access_token.substring(0, 20) + '...');
+  } catch (error) {
+    console.log('❌ Connection failed:', error.message);
+  }
+}
+
+testConnection();
+```
+
+Run the test:
 ```bash
-mint dev --port 3333
+node test-connection.js
 ```
 
-If you attempt to run Mintlify on a port that's already in use, it will use the next available port:
+## Development Best Practices
 
-```md
-Port 3000 is already in use. Trying 3001 instead.
+### Code Organization
+
+```
+your-project/
+├── src/
+│   ├── components/     # UI components
+│   ├── services/       # API services
+│   ├── utils/          # Helper functions
+│   └── types/          # Type definitions
+├── api/
+│   ├── auth.js         # Authentication logic
+│   ├── accounts.js     # Account APIs
+│   └── payments.js     # Payment APIs
+├── docs/
+│   └── api.md          # API documentation
+├── .env                # Environment variables
+├── .gitignore          # Git ignore rules
+└── README.md           # Project documentation
 ```
 
-## Mintlify versions
-
-Please note that each CLI release is associated with a specific version of Mintlify. If your local preview does not align with the production version, please update the CLI:
-
-```bash
-npm mint update
-```
-
-## Validating links
-
-The CLI can assist with validating links in your documentation. To identify any broken links, use the following command:
-
-```bash
-mint broken-links
-```
-
-## Deployment
-
-If the deployment is successful, you should see the following:
-
-<Frame>
-  <img src="/images/checks-passed.png" alt="Screenshot of a deployment confirmation message that says All checks have passed." style={{ borderRadius: '0.5rem' }} />
-</Frame>
-
-## Code formatting
-
-We suggest using extensions on your IDE to recognize and format MDX. If you're a VSCode user, consider the [MDX VSCode extension](https://marketplace.visualstudio.com/items?itemName=unifiedjs.vscode-mdx) for syntax highlighting, and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for code formatting.
-
-## Troubleshooting
+### Security Checklist
 
 <AccordionGroup>
-  <Accordion title='Error: Could not load the "sharp" module using the darwin-arm64 runtime'>
-
-    This may be due to an outdated version of node. Try the following:
-    1. Remove the currently-installed version of the CLI: `npm remove -g mint`
-    2. Upgrade to Node v19 or higher.
-    3. Reinstall the CLI: `npm i -g mint`
+  <Accordion title="✅ Environment Variables" icon="shield-check">
+    - Never commit `.env` files
+    - Use different credentials for dev/prod
+    - Validate all environment variables on startup
   </Accordion>
 
-  <Accordion title="Issue: Encountering an unknown error">
-  
-    Solution: Go to the root of your device and delete the `~/.mintlify` folder. Then run `mint dev` again.
+  <Accordion title="✅ API Security" icon="lock">
+    - Always use HTTPS in production
+    - Implement proper error handling
+    - Don't expose sensitive data in logs
+    - Validate and sanitize all inputs
+  </Accordion>
+
+  <Accordion title="✅ Code Quality" icon="code">
+    - Use TypeScript for better type safety
+    - Implement proper error boundaries
+    - Add comprehensive logging
+    - Write tests for critical functions
   </Accordion>
 </AccordionGroup>
 
-Curious about what changed in the latest CLI version? Check out the [CLI changelog](https://www.npmjs.com/package/mintlify?activeTab=versions).
+## Debugging Tools
+
+### API Testing
+
+- **Postman**: Test API endpoints manually
+- **curl**: Command-line API testing
+- **Bruno**: Open-source API client
+
+### Development Tools
+
+```bash
+# Install useful debugging tools
+npm install -g http-server    # Static file server
+npm install -g json-server    # Mock API server
+npm install -g newman         # Postman CLI
+```
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card
+    title="Join GitHub Discussions"
+    icon="comments"
+    href="https://github.com/open-finance-os/discussions"
+  >
+    Get help from mentors and community
+  </Card>
+  <Card
+    title="Hackathon Resources"
+    icon="trophy"
+    href="/support/hackathon-help"
+  >
+    Submission guidelines and tips
+  </Card>
+  <Card
+    title="FAQ"
+    icon="circle-question"
+    href="/support/faq"
+  >
+    Common development issues solved
+  </Card>
+  <Card
+    title="AI Tools Help"
+    icon="robot"
+    href="/ai-tools/claude-code"
+  >
+    Use AI to accelerate development
+  </Card>
+</CardGroup>
+
+<Warning>
+  **Hackathon Tip**: Start simple and iterate! Focus on core functionality first, then add advanced features.
+</Warning>
+
+## Next Steps
+
+1. **Test your setup** with the connection script above
+2. **Explore the APIs** using our [Quick Start guide](/quickstart)
+3. **Join discussions** for real-time help
+4. **Start coding** your innovative solution!
+
+<Note>
+  **Pro Tip**: Use Claude Code or other AI tools to help with boilerplate code, API integration, and debugging - they're especially helpful for hackathons!
+</Note>
