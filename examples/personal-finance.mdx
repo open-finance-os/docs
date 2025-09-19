@@ -1,369 +1,270 @@
 ---
-title: "Personal Finance Dashboard"
-description: "Complete expense tracking and budgeting app built with Open Finance APIs"
+title: "Personal Finance Dashboard Concept"
+description: "Project concept: Expense tracking and budgeting app using Open Finance APIs"
 ---
 
-# Personal Finance Dashboard Example
+# Personal Finance Dashboard Concept
 
-A comprehensive personal finance management application demonstrating the full capabilities of Open Finance APIs for individual users.
+Build a comprehensive personal finance management application using Open Finance APIs. Perfect for hackathon teams interested in consumer fintech and data visualization.
+
+<Info>
+  **Hackathon Scope**: 8-24 hour project • **Difficulty**: Beginner to Intermediate • **Team Size**: 2-4 developers
+</Info>
 
 <CardGroup cols={2}>
   <Card
-    title="Live Demo"
-    icon="external-link"
-    href="https://personal-finance-demo.vercel.app"
+    title="Start with Templates"
+    icon="code"
+    href="/templates/react-nextjs"
   >
-    Try the working application with sample data
+    Use React/Next.js template as foundation
   </Card>
   <Card
-    title="Source Code"
-    icon="github"
-    href="https://github.com/open-finance-os/example-personal-finance"
+    title="API Documentation"
+    icon="book"
+    href="/api-reference/introduction#bank-data-sharing-apis"
   >
-    Complete source code with setup instructions
+    Account Information and Transaction APIs
   </Card>
 </CardGroup>
 
-## Features Overview
+## 🎯 Hackathon Features by Priority
 
-### 📊 **Dashboard Analytics**
-- Real-time account balance overview
-- Spending trends and category breakdowns
-- Income vs expenses visualization
-- Monthly/yearly financial summaries
+### **MVP (4-8 hours)**
+✅ **Must Have**
+- Account balance display
+- Basic transaction list
+- Simple spending categorization
+- Responsive layout
 
-### 💰 **Budget Management**
-- Automated expense categorization
-- Budget tracking with alerts
-- Savings goals with progress indicators
-- Bill reminder system
+### **Enhanced (8-16 hours)**
+⭐ **Should Have**
+- Interactive charts (pie chart for categories)
+- Date range filtering
+- Search/filter transactions
+- Basic budget vs actual comparison
 
-### 📈 **Data Visualization**
-- Interactive charts using Recharts
-- Spending heatmaps by category
-- Cash flow projections
-- Comparative analysis tools
+### **Advanced (16-24+ hours)**
+🚀 **Nice to Have**
+- Multiple account aggregation
+- Predictive spending insights
+- Bill reminder notifications
+- Export functionality
 
-### 🔒 **Security Features**
-- Secure OAuth 2.0 authentication
-- End-to-end encryption for sensitive data
-- Session management with automatic logout
-- Multi-factor authentication support
+## 💻 Implementation Guide
 
-## Technical Implementation
+### **Recommended Tech Stack**
+- **Frontend**: React + Chart.js (or use our [React template](/templates/react-nextjs))
+- **Styling**: Tailwind CSS or CSS modules
+- **State**: React hooks or Zustand for state management
+- **Deployment**: Vercel, Netlify, or GitHub Pages
 
-### **Tech Stack**
-- **Frontend**: React 18 + TypeScript + Tailwind CSS
-- **Backend**: Node.js + Express + Prisma ORM
-- **Database**: PostgreSQL
-- **Caching**: Redis for API response caching
-- **Deployment**: Vercel (frontend) + Railway (backend)
+### **Step 1: Authentication & API Setup**
+```javascript
+// Basic API client setup
+const OPENFINANCE_API = 'https://sandbox.openfinance.ae/api/v1';
 
-### **API Integration**
-```typescript
-// Account data fetching with error handling
-const useAccountData = (accountId: string) => {
-  return useQuery({
-    queryKey: ['account', accountId],
-    queryFn: async () => {
-      const response = await openFinanceApi.get(`/accounts/${accountId}`);
-      return response.data;
-    },
-    refetchInterval: 30000, // Refresh every 30 seconds
-    retry: 3,
-    onError: (error) => {
-      console.error('Failed to fetch account data:', error);
+const apiClient = {
+  get: async (endpoint, token) => {
+    const response = await fetch(`${OPENFINANCE_API}${endpoint}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
     }
-  });
+
+    return response.json();
+  }
 };
 ```
 
-### **Real-time Updates**
-```typescript
-// WebSocket connection for live transaction updates
-useEffect(() => {
-  const ws = new WebSocket(`wss://api.example.com/ws/accounts/${accountId}`);
+### **Step 2: Fetch Account Data**
+```javascript
+// Get account balance and basic info
+const AccountBalance = ({ token }) => {
+  const [balance, setBalance] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  ws.onmessage = (event) => {
-    const transaction = JSON.parse(event.data);
-    setTransactions(prev => [transaction, ...prev]);
-    updateAccountBalance(transaction.amount);
-  };
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const accountData = await apiClient.get('/accounts', token);
+        setBalance(accountData.accounts[0]?.balance);
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return () => ws.close();
-}, [accountId]);
-```
+    fetchBalance();
+  }, [token]);
 
-## Key Components
-
-### Account Overview
-```typescript
-const AccountOverview = ({ accounts }: { accounts: Account[] }) => {
-  const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Total Balance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-3xl font-bold text-green-600">
-            {formatCurrency(totalBalance)}
-          </p>
-        </CardContent>
-      </Card>
+    <div className="balance-card">
+      <h2>Account Balance</h2>
+      <p className="balance-amount">${balance?.available || '0.00'}</p>
+    </div>
+  );
+};
+```
 
-      {accounts.map(account => (
-        <AccountCard key={account.id} account={account} />
+### **Step 3: Transaction List**
+```javascript
+// Display recent transactions
+const TransactionList = ({ token }) => {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const data = await apiClient.get('/accounts/ACCOUNT_ID/transactions', token);
+        setTransactions(data.transactions.slice(0, 10)); // Latest 10
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      }
+    };
+
+    fetchTransactions();
+  }, [token]);
+
+  return (
+    <div className="transaction-list">
+      <h3>Recent Transactions</h3>
+      {transactions.map(tx => (
+        <div key={tx.id} className="transaction-item">
+          <span>{tx.description}</span>
+          <span className={tx.amount > 0 ? 'credit' : 'debit'}>
+            ${Math.abs(tx.amount)}
+          </span>
+        </div>
       ))}
     </div>
   );
 };
 ```
 
-### Spending Analytics
-```typescript
-const SpendingChart = ({ transactions }: { transactions: Transaction[] }) => {
-  const data = useMemo(() => {
-    return transactions.reduce((acc, transaction) => {
-      const category = transaction.category;
-      acc[category] = (acc[category] || 0) + Math.abs(transaction.amount);
-      return acc;
-    }, {} as Record<string, number>);
-  }, [transactions]);
+## 🎨 Quick Wins for Demo Impact
+
+### **Visual Polish (High Impact, Low Effort)**
+```css
+/* Simple but effective styling */
+.balance-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.balance-amount {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.credit { color: #10b981; }
+.debit { color: #ef4444; }
+```
+
+### **Step 4: Simple Spending Chart**
+```javascript
+// Basic pie chart for spending categories
+const SpendingChart = ({ transactions }) => {
+  const categories = transactions.reduce((acc, tx) => {
+    if (tx.amount < 0) { // Only expenses
+      const category = tx.category || 'Other';
+      acc[category] = (acc[category] || 0) + Math.abs(tx.amount);
+    }
+    return acc;
+  }, {});
 
   return (
-    <PieChart width={400} height={300}>
-      <Pie
-        data={Object.entries(data).map(([name, value]) => ({ name, value }))}
-        dataKey="value"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        outerRadius={100}
-        fill="#8884d8"
-      />
-      <Tooltip formatter={(value) => formatCurrency(value as number)} />
-      <Legend />
-    </PieChart>
+    <div className="chart-container">
+      <h3>Spending by Category</h3>
+      {Object.entries(categories).map(([category, amount]) => (
+        <div key={category} className="category-bar">
+          <span>{category}</span>
+          <span>${amount.toFixed(2)}</span>
+        </div>
+      ))}
+    </div>
   );
-};
 ```
 
-## Advanced Features
+## 🏆 Judging Impact Tips
 
-### **Smart Categorization**
-```typescript
-// Automatic transaction categorization using ML
-const categorizeTransaction = async (description: string, amount: number) => {
-  const response = await fetch('/api/categorize', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description, amount })
-  });
+### **What Judges Love to See**
+1. **Real API Integration** - Actually calling Open Finance APIs (not just mock data)
+2. **Error Handling** - What happens when APIs are down or rate-limited?
+3. **User Experience** - Clean, responsive design that works on mobile
+4. **Innovation** - Unique features or creative use of financial data
 
-  const { category, confidence } = await response.json();
-  return { category, confidence };
-};
-```
+### **Common Pitfalls to Avoid**
+- **Over-Engineering** - Focus on working features over perfect architecture
+- **Ignoring Mobile** - Most financial apps are mobile-first
+- **No Error States** - Always show loading/error states
+- **Poor Demo** - Practice your presentation and have backup data
 
-### **Budget Alerts**
-```typescript
-// Real-time budget monitoring
-const useBudgetAlerts = (expenses: Expense[], budgets: Budget[]) => {
-  useEffect(() => {
-    budgets.forEach(budget => {
-      const spent = expenses
-        .filter(exp => exp.category === budget.category)
-        .reduce((sum, exp) => sum + exp.amount, 0);
+## 📋 Pre-Competition Checklist
 
-      const percentage = (spent / budget.limit) * 100;
+<Tabs>
+  <Tab title="Team Preparation">
+    **Before the event:**
+    - [ ] Get Open Finance API credentials
+    - [ ] Set up development environment
+    - [ ] Choose and practice with your tech stack
+    - [ ] Assign roles (frontend, backend, design, demo)
+    - [ ] Create team communication plan
+  </Tab>
 
-      if (percentage >= 90) {
-        showNotification({
-          type: 'warning',
-          title: 'Budget Alert',
-          message: `You've spent ${percentage.toFixed(0)}% of your ${budget.category} budget`
-        });
-      }
-    });
-  }, [expenses, budgets]);
-};
-```
+  <Tab title="Technical Setup">
+    **Day 1 priorities:**
+    - [ ] API authentication working
+    - [ ] Basic project structure
+    - [ ] Deploy pipeline setup
+    - [ ] Mock data for development
+    - [ ] Git repository and collaboration workflow
+  </Tab>
 
-### **Financial Insights**
-```typescript
-// Generate personalized financial insights
-const generateInsights = (transactions: Transaction[]) => {
-  const insights = [];
+  <Tab title="Final Day">
+    **Submission prep:**
+    - [ ] Working demo environment
+    - [ ] Backup presentation data
+    - [ ] 2-minute demo script practiced
+    - [ ] GitHub README with setup instructions
+    - [ ] Team member roles for presentation
+  </Tab>
+</Tabs>
 
-  // Spending trend analysis
-  const thisMonth = getThisMonthTransactions(transactions);
-  const lastMonth = getLastMonthTransactions(transactions);
-  const change = ((thisMonth.total - lastMonth.total) / lastMonth.total) * 100;
+## 🔗 Next Steps
 
-  if (change > 20) {
-    insights.push({
-      type: 'warning',
-      message: `Your spending increased by ${change.toFixed(1)}% this month`,
-      suggestion: 'Consider reviewing your recent purchases'
-    });
-  }
-
-  // Savings opportunity detection
-  const recurringExpenses = findRecurringExpenses(transactions);
-  if (recurringExpenses.length > 0) {
-    insights.push({
-      type: 'tip',
-      message: 'Found potential savings in recurring subscriptions',
-      suggestion: 'Review and cancel unused subscriptions'
-    });
-  }
-
-  return insights;
-};
-```
-
-## Setup Instructions
-
-<Steps>
-  <Step title="Clone Repository">
-    ```bash
-    git clone https://github.com/open-finance-os/example-personal-finance.git
-    cd example-personal-finance
-    ```
-  </Step>
-
-  <Step title="Install Dependencies">
-    ```bash
-    # Frontend
-    cd frontend
-    npm install
-
-    # Backend
-    cd ../backend
-    npm install
-    ```
-  </Step>
-
-  <Step title="Environment Setup">
-    ```bash
-    # Backend .env
-    OPENFINANCE_CLIENT_ID=your_client_id
-    OPENFINANCE_CLIENT_SECRET=your_client_secret
-    DATABASE_URL=postgresql://user:password@localhost:5432/personalfinance
-    REDIS_URL=redis://localhost:6379
-    JWT_SECRET=your_jwt_secret
-
-    # Frontend .env
-    REACT_APP_API_URL=http://localhost:8000
-    REACT_APP_WEBSOCKET_URL=ws://localhost:8000
-    ```
-  </Step>
-
-  <Step title="Database Setup">
-    ```bash
-    # Run migrations
-    npx prisma migrate dev
-
-    # Seed with sample data
-    npm run db:seed
-    ```
-  </Step>
-
-  <Step title="Start Development Servers">
-    ```bash
-    # Backend
-    npm run dev
-
-    # Frontend (in new terminal)
-    cd frontend
-    npm start
-    ```
-  </Step>
-</Steps>
-
-## Customization Guide
-
-### **Adding New Charts**
-```typescript
-// Custom spending trend chart
-const SpendingTrendChart = ({ data }: { data: ChartData[] }) => (
-  <LineChart width={600} height={300} data={data}>
-    <XAxis dataKey="date" />
-    <YAxis />
-    <CartesianGrid strokeDasharray="3 3" />
-    <Line type="monotone" dataKey="amount" stroke="#8884d8" strokeWidth={2} />
-    <Tooltip formatter={(value) => formatCurrency(value as number)} />
-  </LineChart>
-);
-```
-
-### **Custom Categories**
-```typescript
-// Add custom expense categories
-const customCategories = [
-  { id: 'fitness', name: 'Fitness & Health', icon: '💪', color: '#10B981' },
-  { id: 'education', name: 'Education', icon: '📚', color: '#3B82F6' },
-  { id: 'pets', name: 'Pet Care', icon: '🐕', color: '#8B5CF6' }
-];
-```
-
-## Performance Optimizations
-
-### **Data Caching**
-```typescript
-// Implement smart caching for API responses
-const useTransactionsWithCache = (accountId: string) => {
-  return useQuery({
-    queryKey: ['transactions', accountId],
-    queryFn: () => fetchTransactions(accountId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
-    refetchOnWindowFocus: false
-  });
-};
-```
-
-### **Virtual Scrolling**
-```typescript
-// Handle large transaction lists efficiently
-import { FixedSizeList as List } from 'react-window';
-
-const TransactionList = ({ transactions }: { transactions: Transaction[] }) => (
-  <List
-    height={400}
-    itemCount={transactions.length}
-    itemSize={60}
-    itemData={transactions}
+<CardGroup cols={2}>
+  <Card
+    title="Start Building"
+    icon="code"
+    href="/templates/react-nextjs"
   >
-    {TransactionRow}
-  </List>
-);
-```
-
-## Deployment
-
-### **Frontend (Vercel)**
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
-```
-
-### **Backend (Railway)**
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-# Deploy
-railway login
-railway up
-```
-
-<Tip>
-  This example demonstrates how to build a production-ready personal finance app using modern web technologies and Open Finance APIs.
-</Tip>
+    Use our React template to begin development
+  </Card>
+  <Card
+    title="Join Community"
+    icon="comments"
+    href="https://github.com/open-finance-os/docs/discussions"
+  >
+    Get help and share progress with other teams
+  </Card>
+</CardGroup>

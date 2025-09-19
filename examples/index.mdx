@@ -1,20 +1,20 @@
 ---
-title: "Examples & Demos"
-description: "Working examples and demo applications to inspire your hackathon project"
+title: "Examples & Inspiration"
+description: "Project ideas, code examples, and architectural guidance for your hackathon project"
 ---
 
-# Examples & Demo Applications
+# Examples & Project Inspiration
 
-Explore these working examples to understand Open Finance capabilities and get inspiration for your hackathon project.
+Get inspired with project concepts, code examples, and architectural patterns to build innovative Open Finance applications for the hackathon.
 
 <Info>
-  **🎯 All examples include**: Live demos, complete source code, and deployment guides
+  **🎯 Focus on**: Realistic hackathon scope, working code snippets, and proven patterns
 </Info>
 
-## Featured Demo Applications
+## 🏆 Featured: Real Working Example
 
 <Card
-  title="🏆 Open Finance Backoffice Portal - Built with Claude Code"
+  title="Open Finance Backoffice Portal - Built with Claude Code"
   icon="robot"
   href="/examples/payment-app"
   horizontal
@@ -22,34 +22,38 @@ Explore these working examples to understand Open Finance capabilities and get i
   **Production-ready consent management portal** showcasing AI-assisted development. Live demo at [openfinance-frontend.onrender.com](https://openfinance-frontend.onrender.com/) | [GitHub](https://github.com/open-finance-os/backoffice-portal)
 </Card>
 
+## 💡 Project Concepts & Inspiration
+
+Explore these hackathon-ready project ideas with realistic scope and implementation guidance:
+
 <CardGroup cols={2}>
   <Card
     title="Personal Finance Dashboard"
     icon="chart-line"
     href="/examples/personal-finance"
   >
-    Complete expense tracking and budgeting app with data visualization
+    **Concept**: Expense tracking and budgeting with Open Finance APIs
   </Card>
   <Card
-    title="Insurance Management Portal"
-    icon="shield"
-    href="/examples/insurance-dashboard"
-  >
-    Policy management, claims processing, and quote comparison
-  </Card>
-  <Card
-    title="Small Business Banking"
+    title="Business Banking Suite"
     icon="building"
     href="/examples/business-banking"
   >
-    Multi-account management for small business financial operations
+    **Concept**: Multi-account management for SME operations
   </Card>
   <Card
-    title="Mobile Banking App"
+    title="Insurance Management"
+    icon="shield"
+    href="/examples/insurance-dashboard"
+  >
+    **Concept**: Policy management and claims processing portal
+  </Card>
+  <Card
+    title="Mobile Banking"
     icon="mobile"
     href="/examples/mobile-app"
   >
-    React Native mobile app with biometric authentication
+    **Concept**: React Native app with secure authentication
   </Card>
 </CardGroup>
 
@@ -209,46 +213,67 @@ const handleApiError = (error) => {
 };
 ```
 
-## Getting Started with Examples
+## 🚀 Hackathon Project Scoping
 
-<Steps>
-  <Step title="Choose an Example">
-    Pick an example that matches your team's interests and technical skills.
-  </Step>
+<Tabs>
+  <Tab title="4-Hour Sprint">
+    **Perfect for**: Proof of concept, single feature demos
 
-  <Step title="Clone the Repository">
-    ```bash
-    git clone https://github.com/open-finance-os/example-NAME.git
-    cd example-NAME
-    ```
-  </Step>
+    - Basic HTML/JS with API integration
+    - Single endpoint demonstration
+    - Mock data with one real API call
+    - Simple authentication flow
 
-  <Step title="Follow Setup Instructions">
-    Each example includes detailed setup instructions in its README file.
-  </Step>
+    **Example**: Account balance display with refresh button
+  </Tab>
 
-  <Step title="Explore and Modify">
-    Study the code, understand the architecture, then customize for your needs.
-  </Step>
+  <Tab title="8-Hour Build">
+    **Perfect for**: Working prototype with core features
 
-  <Step title="Build Your Own">
-    Use the example as a starting point for your unique hackathon project.
-  </Step>
-</Steps>
+    - React/Vue dashboard with multiple API calls
+    - Basic transaction listing and filtering
+    - Simple data visualization (charts)
+    - Error handling and loading states
 
-## Contributing Examples
+    **Example**: Personal finance dashboard with account overview
+  </Tab>
 
-Have a cool Open Finance project? Share it with the community:
+  <Tab title="24-Hour Project">
+    **Perfect for**: Comprehensive hackathon submission
 
-1. Fork the examples repository
-2. Add your project with documentation
-3. Include live demo and setup instructions
-4. Submit a pull request
-5. Help other developers learn!
+    - Full-stack application with database
+    - Multiple API integrations
+    - User authentication and session management
+    - Responsive design and proper UX
+    - Basic testing and deployment
 
-<Note>
-  **Example Quality**: All examples are tested, documented, and maintained by the community.
-</Note>
+    **Example**: Business banking platform with multi-account management
+  </Tab>
+</Tabs>
+
+## 🎯 Winning Strategy Tips
+
+<AccordionGroup>
+  <Accordion title="Choose the Right Scope" icon="target">
+    - **Underestimate time**: Pick features you can finish in 60% of available time
+    - **Focus on core value**: One great feature beats five broken ones
+    - **Plan for demos**: Ensure your app works reliably during presentations
+  </Accordion>
+
+  <Accordion title="API Integration Tips" icon="plug">
+    - **Start with authentication**: Get API access working first
+    - **Use mock data initially**: Develop UI while waiting for API responses
+    - **Handle errors gracefully**: Judges notice robust error handling
+    - **Cache responses**: Avoid rate limits during development
+  </Accordion>
+
+  <Accordion title="Technical Architecture" icon="code">
+    - **Use familiar tools**: Hackathons aren't for learning new frameworks
+    - **Prioritize frontend**: Visual impact wins competitions
+    - **Keep backend simple**: Focus on API integration over complex logic
+    - **Deploy early**: Get hosting working before the deadline rush
+  </Accordion>
+</AccordionGroup>
 
 ## Need Help?
 
