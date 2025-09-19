@@ -1,0 +1,187 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🤝 Looking to form a team or find teammates? Use this template to connect with other hackathon participants!
+
+  - type: dropdown
+    id: looking-for
+    attributes:
+      label: I'm Looking For...
+      description: What type of collaboration are you seeking?
+      options:
+        - "Teammates to join my project idea"
+        - "A team to join (I have skills to offer)"
+        - "Co-founder for post-hackathon venture"
+        - "Mentor to guide my team"
+        - "Teams to mentor (I'm offering guidance)"
+        - "Collaboration between existing teams"
+    validations:
+      required: true
+
+  - type: textarea
+    id: skills-have
+    attributes:
+      label: Skills I Bring
+      description: What skills and experience do you offer?
+      placeholder: |
+        **Technical Skills:**
+        - Frontend: React, Vue.js, Angular
+        - Backend: Node.js, Python, Go
+        - Mobile: React Native, Flutter
+        - Database: PostgreSQL, MongoDB
+        - Cloud: AWS, Vercel, Docker
+
+        **Non-Technical Skills:**
+        - UI/UX Design
+        - Business Development
+        - Financial Domain Knowledge
+        - Project Management
+        - Marketing/Sales
+
+        **Experience Level:**
+        - Years of experience
+        - Previous hackathons
+        - Relevant projects
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: skills-need
+    attributes:
+      label: Skills I'm Looking For
+      description: What skills or expertise does your team need?
+      placeholder: |
+        - Frontend developer (React experience preferred)
+        - Backend developer (API integration experience)
+        - Mobile developer (React Native/Flutter)
+        - UI/UX designer (financial app experience)
+        - Business analyst (fintech knowledge)
+        - DevOps engineer (deployment expertise)
+      render: markdown
+
+  - type: textarea
+    id: project-idea
+    attributes:
+      label: Project Idea/Direction
+      description: What kind of project are you working on or interested in?
+      placeholder: |
+        Share your project concept, the problem you want to solve,
+        or the type of project you'd like to join. Include:
+
+        - Target users (consumers, businesses, etc.)
+        - Main Open Finance APIs you plan to use
+        - Rough technical approach
+        - Expected scope for the hackathon
+    validations:
+      required: true
+
+  - type: dropdown
+    id: commitment-level
+    attributes:
+      label: Time Commitment
+      description: How much time can you dedicate to the hackathon?
+      options:
+        - "Full-time (most/all weekend)"
+        - "Part-time (evenings/weekends)"
+        - "Flexible schedule"
+        - "Specific hours (will specify below)"
+    validations:
+      required: true
+
+  - type: input
+    id: timezone
+    attributes:
+      label: Timezone/Location
+      description: Your timezone for coordination
+      placeholder: "e.g., GMT+4 (Dubai), EST, PST, or your city"
+    validations:
+      required: true
+
+  - type: textarea
+    id: availability
+    attributes:
+      label: Availability Details
+      description: When are you available during the hackathon?
+      placeholder: |
+        - Specific dates and times
+        - Preferred communication hours
+        - Any conflicts or limitations
+        - Preferred meeting style (video calls, async, etc.)
+
+  - type: checkboxes
+    id: experience-level
+    attributes:
+      label: Experience Level
+      description: What's your hackathon and development experience?
+      options:
+        - label: First-time hackathon participant
+        - label: Experienced hackathon participant (3+ events)
+        - label: New to Open Finance/fintech
+        - label: Experienced with financial APIs
+        - label: Professional developer (1-3 years)
+        - label: Senior developer (3+ years)
+        - label: Student/recent graduate
+        - label: Career changer/bootcamp graduate
+
+  - type: checkboxes
+    id: team-preferences
+    attributes:
+      label: Team Preferences
+      description: What kind of team environment do you prefer?
+      options:
+        - label: Small team (2-3 people)
+        - label: Larger team (4-5 people)
+        - label: Mix of technical and non-technical skills
+        - label: All-technical team
+        - label: Beginner-friendly environment
+        - label: Experienced/competitive team
+        - label: Learning-focused approach
+        - label: Business-focused approach
+
+  - type: textarea
+    id: communication
+    attributes:
+      label: Communication Preferences
+      description: How do you prefer to communicate and collaborate?
+      placeholder: |
+        - Preferred platforms (Slack, Discord, WhatsApp, etc.)
+        - Video call preferences
+        - Response time expectations
+        - Working style (frequent check-ins vs. independent work)
+
+  - type: input
+    id: contact-info
+    attributes:
+      label: Contact Information
+      description: How should interested people reach you?
+      placeholder: "GitHub username, email, Discord, LinkedIn, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: goals
+    attributes:
+      label: Hackathon Goals
+      description: What do you hope to achieve from this hackathon?
+      placeholder: |
+        - Learn new technologies
+        - Build a portfolio project
+        - Network with other developers
+        - Explore fintech/Open Finance
+        - Compete for prizes
+        - Start a potential business
+        - Find long-term collaborators
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Anything else potential teammates should know?
+      placeholder: |
+        - Previous projects or portfolio links
+        - Specific interests within fintech
+        - Post-hackathon collaboration interest
+        - Fun facts or personal interests
+        - Any special requirements or preferences

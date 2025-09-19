@@ -1,0 +1,190 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🎉 Excited to see what you're building! Use this template to showcase your Open Finance project and get valuable feedback from the community.
+
+  - type: input
+    id: project-name
+    attributes:
+      label: Project Name
+      description: What's your project called?
+      placeholder: "e.g., FinanceFlow, BudgetWise, PaymentPro"
+    validations:
+      required: true
+
+  - type: input
+    id: tagline
+    attributes:
+      label: Project Tagline
+      description: One-sentence description of your project
+      placeholder: "e.g., AI-powered personal finance management for millennials"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem it Solves
+      description: What Open Finance use case or financial problem does your project address?
+      placeholder: |
+        Describe the specific financial problem or opportunity your project tackles.
+        How does it use Open Finance APIs to create value?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tech-stack
+    attributes:
+      label: Tech Stack
+      description: What technologies are you using?
+      placeholder: |
+        **Frontend:** React + Next.js, Tailwind CSS
+        **Backend:** Node.js + Express, PostgreSQL
+        **APIs:** Open Finance Account Information, Payment Initiation
+        **Deployment:** Vercel + Railway
+        **Other:** Redis caching, Auth0 authentication
+      render: markdown
+
+  - type: input
+    id: demo-link
+    attributes:
+      label: Live Demo URL
+      description: Link to your working application (if available)
+      placeholder: "https://your-project.vercel.app"
+
+  - type: input
+    id: repo-link
+    attributes:
+      label: GitHub Repository
+      description: Link to your project repository
+      placeholder: "https://github.com/your-username/project-name"
+
+  - type: input
+    id: video-demo
+    attributes:
+      label: Video Demo
+      description: Link to a demo video or presentation (if available)
+      placeholder: "https://www.youtube.com/watch?v=... or https://www.loom.com/share/..."
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Visuals
+      description: Add screenshots, GIFs, or other visuals of your application
+      placeholder: |
+        ![Screenshot 1](https://your-image-url.com/screenshot1.png)
+        ![Feature Demo](https://your-image-url.com/demo.gif)
+
+        You can drag & drop images directly into this text area.
+      render: markdown
+
+  - type: textarea
+    id: key-features
+    attributes:
+      label: Key Features
+      description: What are the main features and capabilities?
+      placeholder: |
+        - Real-time account balance aggregation
+        - AI-powered spending categorization
+        - Automated bill payment scheduling
+        - Spending insights and budget recommendations
+        - Mobile-responsive design with offline support
+      render: markdown
+
+  - type: textarea
+    id: innovations
+    attributes:
+      label: What Makes It Special
+      description: What's innovative or unique about your approach?
+      placeholder: |
+        What sets your project apart? Novel use of APIs, unique user experience,
+        creative problem-solving, technical innovations, etc.
+
+  - type: dropdown
+    id: development-stage
+    attributes:
+      label: Development Stage
+      description: What stage is your project in?
+      options:
+        - "Concept/Planning - Early ideas and research"
+        - "MVP Development - Building core features"
+        - "Feature Development - Adding advanced functionality"
+        - "Polish/Testing - Refining and debugging"
+        - "Demo Ready - Prepared for presentation"
+        - "Production Ready - Fully functional application"
+    validations:
+      required: true
+
+  - type: textarea
+    id: challenges
+    attributes:
+      label: Technical Challenges & Solutions
+      description: What challenges did you face and how did you solve them?
+      placeholder: |
+        Share your biggest technical hurdles and how you overcame them.
+        This helps other developers learn from your experience!
+
+  - type: textarea
+    id: next-steps
+    attributes:
+      label: What's Next
+      description: Future features, improvements, or business plans
+      placeholder: |
+        - Features you plan to add
+        - Technical improvements needed
+        - Business development goals
+        - Post-hackathon plans
+
+  - type: textarea
+    id: feedback-wanted
+    attributes:
+      label: Looking for Feedback On
+      description: What specific areas would you like input on?
+      placeholder: |
+        - User experience and interface design
+        - Technical architecture decisions
+        - Business model viability
+        - Feature prioritization
+        - Performance optimization
+        - Security implementation
+      render: markdown
+
+  - type: checkboxes
+    id: team-info
+    attributes:
+      label: Team Information
+      description: Tell us about your team
+      options:
+        - label: Solo developer
+        - label: 2-person team
+        - label: 3-4 person team
+        - label: 5+ person team
+        - label: Mix of technical and non-technical members
+        - label: All developers
+        - label: First-time hackathon participants
+        - label: Experienced hackathon team
+
+  - type: checkboxes
+    id: open-source
+    attributes:
+      label: Project Status
+      description: What are your plans for this project?
+      options:
+        - label: Open source - others can contribute
+        - label: Planning to continue development after hackathon
+        - label: Interested in starting a company/business
+        - label: Looking for co-founders or team members
+        - label: Available for mentoring other teams
+        - label: Would like feedback from potential users
+
+  - type: textarea
+    id: acknowledgments
+    attributes:
+      label: Acknowledgments
+      description: Thank your mentors, resources used, or inspiration sources
+      placeholder: |
+        - Thanks to @mentor-name for help with authentication
+        - Inspired by the [project/resource name]
+        - Used the React template as a starting point
+        - Helpful resources: [links to tutorials, articles, etc.]

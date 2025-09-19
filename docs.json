@@ -102,7 +102,7 @@
       "anchors": [
         {
           "anchor": "GitHub Discussions",
-          "href": "https://github.com/open-finance-os/discussions",
+          "href": "https://github.com/open-finance-os/docs/discussions",
           "icon": "comments"
         },
         {
@@ -126,7 +126,7 @@
     "links": [
       {
         "label": "Get Support",
-        "href": "https://github.com/open-finance-os/discussions"
+        "href": "https://github.com/open-finance-os/docs/discussions"
       }
     ],
     "primary": {

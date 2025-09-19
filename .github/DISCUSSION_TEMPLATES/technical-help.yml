@@ -1,0 +1,104 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out for technical help! Please provide as much detail as possible so our mentors and community can assist you effectively.
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework/Technology
+      description: What framework or technology are you using?
+      placeholder: "e.g., React + Next.js, Node.js + Express, Python + FastAPI, React Native"
+    validations:
+      required: true
+
+  - type: input
+    id: template
+    attributes:
+      label: Starter Template
+      description: Are you using one of our starter templates?
+      placeholder: "e.g., React + Next.js Template, Custom setup, Modified template"
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Description
+      description: What are you trying to achieve? What's not working as expected?
+      placeholder: "Describe your problem clearly..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What I've Tried
+      description: What steps have you already taken to solve this issue?
+      placeholder: |
+        - Checked the documentation at...
+        - Tried following the guide at...
+        - Searched for similar issues...
+        - Attempted these solutions...
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code/Error Details
+      description: Share relevant code snippets, error messages, or screenshots
+      placeholder: |
+        ```javascript
+        // Your code here
+        ```
+
+        Error message:
+        ```
+        Paste your error message here
+        ```
+      render: markdown
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Information about your development environment
+      placeholder: |
+        - OS: (Windows/macOS/Linux)
+        - Node.js version:
+        - Browser: (if frontend issue)
+        - Open Finance API version:
+      render: markdown
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before Posting Checklist
+      description: Please confirm you've done these steps
+      options:
+        - label: I searched existing discussions for similar issues
+          required: true
+        - label: I checked the [FAQ](/support/faq) and documentation
+          required: true
+        - label: I included relevant code snippets and error messages
+          required: true
+        - label: I provided context about what I'm trying to achieve
+          required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency Level
+      description: How urgent is this issue for your hackathon progress?
+      options:
+        - "Low - Learning/exploring"
+        - "Medium - Blocking progress but have workarounds"
+        - "High - Completely stuck, need help to continue"
+        - "Critical - Hackathon deadline approaching"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other information that might help us assist you
+      placeholder: "Team size, experience level, specific hackathon goals, etc."
