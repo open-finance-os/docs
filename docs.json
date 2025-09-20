@@ -63,6 +63,19 @@
         ]
       },
       {
+        "tab": "Support",
+        "groups": [
+          {
+            "group": "Get Help",
+            "pages": [
+              "support/index",
+              "support/faq",
+              "support/hackathon-help"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {
