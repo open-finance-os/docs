@@ -1,0 +1,1370 @@
+---
+title: "API Quick Reference"
+description: "Copy-paste ready code examples for the easiest UAE government APIs to integrate"
+---
+
+# API Quick Reference
+
+Ready-to-use code snippets for the 10 easiest government APIs to integrate into your hackathon project.
+
+<Info>
+  **⚡ Quick Start**: All examples are tested and ready to copy-paste. Most require no authentication for public data.
+</Info>
+
+## 1. Dubai Pulse Universal API
+
+**The easiest starting point - 3000+ datasets with consistent API structure**
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    // Dubai Pulse API Client
+    class DubaiPulseAPI {
+      constructor() {
+        this.baseURL = 'https://www.dubaipulse.gov.ae/api';
+      }
+
+      async fetchDataset(datasetId, params = {}) {
+        const url = new URL(`${this.baseURL}/dataset/${datasetId}`);
+        Object.entries(params).forEach(([key, value]) => {
+          url.searchParams.append(key, value);
+        });
+
+        const response = await fetch(url, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
+        }
+
+        return response.json();
+      }
+    }
+
+    // Usage examples
+    const api = new DubaiPulseAPI();
+
+    // Get DED business licenses
+    const businesses = await api.fetchDataset('ded-business-licences', {
+      area: 'Dubai Marina',
+      sector: 'Technology',
+      status: 'Active',
+      limit: 100
+    });
+
+    // Get DLD property transactions
+    const properties = await api.fetchDataset('dld-real-estate-transactions', {
+      property_type: 'Apartment',
+      year: 2024,
+      area: 'Downtown Dubai'
+    });
+
+    // Get RTA metro ridership
+    const ridership = await api.fetchDataset('rta-metro-ridership', {
+      station: 'Burj Khalifa/Dubai Mall',
+      month: '2024-01'
+    });
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import requests
+    from typing import Dict, Any, Optional
+
+    class DubaiPulseAPI:
+        def __init__(self):
+            self.base_url = "https://www.dubaipulse.gov.ae/api"
+            self.session = requests.Session()
+            self.session.headers.update({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            })
+
+        def fetch_dataset(self, dataset_id: str, params: Optional[Dict] = None) -> Dict[str, Any]:
+            """Fetch data from Dubai Pulse API"""
+            url = f"{self.base_url}/dataset/{dataset_id}"
+
+            try:
+                response = self.session.get(url, params=params or {})
+                response.raise_for_status()
+                return response.json()
+            except requests.exceptions.RequestException as e:
+                print(f"Error fetching data: {e}")
+                return {}
+
+    # Usage examples
+    api = DubaiPulseAPI()
+
+    # Get business licenses
+    businesses = api.fetch_dataset('ded-business-licences', {
+        'area': 'Dubai Marina',
+        'sector': 'Technology',
+        'status': 'Active',
+        'limit': 100
+    })
+
+    # Get property transactions
+    properties = api.fetch_dataset('dld-real-estate-transactions', {
+        'property_type': 'Apartment',
+        'year': 2024,
+        'area': 'Downtown Dubai'
+    })
+
+    # Analyze the data with pandas
+    import pandas as pd
+
+    df_businesses = pd.DataFrame(businesses['data'])
+    print(f"Found {len(df_businesses)} businesses")
+    print(df_businesses.groupby('sub_sector').size().sort_values(descending=True))
+    ```
+  </Tab>
+
+  <Tab title="cURL">
+    ```bash
+    # Get business licenses
+    curl -X GET \
+      "https://www.dubaipulse.gov.ae/api/dataset/ded-business-licences?area=Dubai%20Marina&sector=Technology&limit=10" \
+      -H "Accept: application/json"
+
+    # Get property transactions
+    curl -X GET \
+      "https://www.dubaipulse.gov.ae/api/dataset/dld-real-estate-transactions?year=2024&property_type=Apartment" \
+      -H "Accept: application/json"
+
+    # Get RTA data
+    curl -X GET \
+      "https://www.dubaipulse.gov.ae/api/dataset/rta-metro-ridership?month=2024-01" \
+      -H "Accept: application/json"
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 2. DLD Property Transactions
+
+**Real estate data with prices, areas, and property details**
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    // DLD Property Data Fetcher
+    async function getPropertyData(area, propertyType = 'all') {
+      const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/dld-real-estate-transactions';
+
+      const params = new URLSearchParams({
+        area: area,
+        property_type: propertyType,
+        year: new Date().getFullYear(),
+        limit: 1000
+      });
+
+      try {
+        const response = await fetch(`${endpoint}?${params}`);
+        const data = await response.json();
+
+        // Process and analyze the data
+        const analysis = {
+          totalTransactions: data.length,
+          averagePrice: calculateAverage(data, 'price'),
+          pricePerSqFt: calculateAverage(data, 'price_per_sqft'),
+          topProjects: getTopProjects(data, 5),
+          priceRange: {
+            min: Math.min(...data.map(d => d.price)),
+            max: Math.max(...data.map(d => d.price))
+          },
+          monthlyTrend: groupByMonth(data)
+        };
+
+        return { raw: data, analysis };
+      } catch (error) {
+        console.error('Error fetching property data:', error);
+        return null;
+      }
+    }
+
+    // Helper functions
+    function calculateAverage(data, field) {
+      const sum = data.reduce((acc, item) => acc + (item[field] || 0), 0);
+      return sum / data.length;
+    }
+
+    function getTopProjects(data, limit) {
+      const projects = {};
+      data.forEach(item => {
+        projects[item.project] = (projects[item.project] || 0) + 1;
+      });
+
+      return Object.entries(projects)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([name, count]) => ({ name, count }));
+    }
+
+    function groupByMonth(data) {
+      const monthly = {};
+      data.forEach(item => {
+        const month = item.date.substring(0, 7); // YYYY-MM
+        if (!monthly[month]) {
+          monthly[month] = { count: 0, total: 0 };
+        }
+        monthly[month].count++;
+        monthly[month].total += item.price;
+      });
+
+      return Object.entries(monthly).map(([month, stats]) => ({
+        month,
+        transactions: stats.count,
+        avgPrice: stats.total / stats.count
+      }));
+    }
+
+    // Usage
+    const dubaiMarinaData = await getPropertyData('Dubai Marina', 'Apartment');
+    console.log(`Average price: AED ${dubaiMarinaData.analysis.averagePrice.toLocaleString()}`);
+    console.log(`Price per sq ft: AED ${dubaiMarinaData.analysis.pricePerSqFt}`);
+    ```
+  </Tab>
+
+  <Tab title="React Hook">
+    ```jsx
+    // Custom React hook for property data
+    import { useState, useEffect } from 'react';
+
+    function usePropertyData(area, propertyType) {
+      const [data, setData] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+
+      useEffect(() => {
+        async function fetchData() {
+          setLoading(true);
+          try {
+            const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/dld-real-estate-transactions';
+            const params = new URLSearchParams({
+              area,
+              property_type: propertyType,
+              year: new Date().getFullYear()
+            });
+
+            const response = await fetch(`${endpoint}?${params}`);
+            const jsonData = await response.json();
+
+            setData(processPropertyData(jsonData));
+            setError(null);
+          } catch (err) {
+            setError(err.message);
+            setData(null);
+          } finally {
+            setLoading(false);
+          }
+        }
+
+        if (area) fetchData();
+      }, [area, propertyType]);
+
+      return { data, loading, error };
+    }
+
+    // Component using the hook
+    function PropertyInsights({ area }) {
+      const { data, loading, error } = usePropertyData(area, 'Apartment');
+
+      if (loading) return <div>Loading property data...</div>;
+      if (error) return <div>Error: {error}</div>;
+      if (!data) return null;
+
+      return (
+        <div className="property-insights">
+          <h3>{area} Property Market</h3>
+          <div className="metrics">
+            <div>Avg Price: AED {data.avgPrice.toLocaleString()}</div>
+            <div>Total Sales: {data.totalTransactions}</div>
+            <div>Price/SqFt: AED {data.pricePerSqFt}</div>
+          </div>
+          <PriceChart data={data.monthlyTrend} />
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 3. DED Business Licenses
+
+**Complete business registration data for Dubai**
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    // Business Data API
+    class BusinessDataAPI {
+      async searchBusinesses(filters) {
+        const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/ded-business-licences';
+
+        const response = await fetch(`${endpoint}?${new URLSearchParams(filters)}`);
+        const data = await response.json();
+
+        return this.processBusinessData(data);
+      }
+
+      processBusinessData(data) {
+        // Group by sector
+        const bySector = data.reduce((acc, business) => {
+          const sector = business.sector || 'Unknown';
+          if (!acc[sector]) acc[sector] = [];
+          acc[sector].push(business);
+          return acc;
+        }, {});
+
+        // Group by area
+        const byArea = data.reduce((acc, business) => {
+          const area = business.area || 'Unknown';
+          if (!acc[area]) acc[area] = 0;
+          acc[area]++;
+          return acc;
+        }, {});
+
+        // Find top sub-sectors
+        const subSectorCount = {};
+        data.forEach(business => {
+          const subSector = business.sub_sector || 'Unknown';
+          subSectorCount[subSector] = (subSectorCount[subSector] || 0) + 1;
+        });
+
+        const topSubSectors = Object.entries(subSectorCount)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10)
+          .map(([name, count]) => ({ name, count }));
+
+        return {
+          total: data.length,
+          bySector,
+          byArea,
+          topSubSectors,
+          raw: data
+        };
+      }
+
+      async getCompetitors(sector, area) {
+        return this.searchBusinesses({
+          sector,
+          area,
+          status: 'Active',
+          limit: 500
+        });
+      }
+
+      async analyzeMark
+
+etSaturation(sector, area) {
+        const competitors = await this.getCompetitors(sector, area);
+
+        // Estimate market size (simplified)
+        const populationEstimate = 50000; // Per area estimate
+        const businessesPerCapita = competitors.total / populationEstimate;
+
+        return {
+          competitorCount: competitors.total,
+          saturationIndex: businessesPerCapita * 1000, // Per 1000 people
+          topCompetitors: competitors.raw.slice(0, 10),
+          subSectorBreakdown: competitors.topSubSectors,
+          recommendation: this.getMarketRecommendation(businessesPerCapita)
+        };
+      }
+
+      getMarketRecommendation(saturation) {
+        if (saturation < 0.5) return 'Low competition - good opportunity';
+        if (saturation < 1.5) return 'Moderate competition - differentiation needed';
+        return 'High saturation - consider different area or niche';
+      }
+    }
+
+    // Usage
+    const businessAPI = new BusinessDataAPI();
+
+    // Search for tech companies in DIFC
+    const techCompanies = await businessAPI.searchBusinesses({
+      sector: 'Information and Communication',
+      area: 'DIFC',
+      status: 'Active'
+    });
+
+    // Analyze restaurant market in JBR
+    const marketAnalysis = await businessAPI.analyzeMarketSaturation(
+      'Accommodation and Food Service',
+      'JBR'
+    );
+
+    console.log(`Found ${techCompanies.total} tech companies`);
+    console.log(`Market saturation: ${marketAnalysis.saturationIndex.toFixed(2)} businesses per 1000 people`);
+    console.log(`Recommendation: ${marketAnalysis.recommendation}`);
+    ```
+  </Tab>
+
+  <Tab title="Python">
+    ```python
+    import requests
+    import pandas as pd
+    from collections import Counter
+
+    class BusinessDataAnalyzer:
+        def __init__(self):
+            self.base_url = "https://www.dubaipulse.gov.ae/api/dataset/ded-business-licences"
+
+        def search_businesses(self, **filters):
+            """Search for businesses with filters"""
+            response = requests.get(self.base_url, params=filters)
+            data = response.json()
+            return pd.DataFrame(data)
+
+        def analyze_sector(self, sector, area=None):
+            """Analyze a specific business sector"""
+            filters = {'sector': sector, 'status': 'Active'}
+            if area:
+                filters['area'] = area
+
+            df = self.search_businesses(**filters)
+
+            analysis = {
+                'total_businesses': len(df),
+                'top_sub_sectors': df['sub_sector'].value_counts().head(10).to_dict(),
+                'areas': df['area'].value_counts().to_dict(),
+                'establishment_years': df['establishment_year'].value_counts().sort_index().to_dict()
+            }
+
+            # Growth trend
+            if 'establishment_year' in df.columns:
+                recent_years = df[df['establishment_year'] >= 2020]
+                analysis['recent_growth'] = len(recent_years) / len(df) * 100
+
+            return analysis
+
+        def find_market_gaps(self, area):
+            """Identify underserved sectors in an area"""
+            df = self.search_businesses(area=area, status='Active')
+
+            # Get sector distribution
+            sector_counts = df['sector'].value_counts()
+
+            # Compare with Dubai average (simplified)
+            dubai_avg = self.search_businesses(status='Active')['sector'].value_counts(normalize=True)
+
+            gaps = []
+            for sector in dubai_avg.index:
+                if sector in sector_counts.index:
+                    local_ratio = sector_counts[sector] / len(df)
+                    dubai_ratio = dubai_avg[sector]
+
+                    if local_ratio < dubai_ratio * 0.7:  # 30% below average
+                        gaps.append({
+                            'sector': sector,
+                            'gap_size': dubai_ratio - local_ratio,
+                            'opportunity': 'High'
+                        })
+
+            return sorted(gaps, key=lambda x: x['gap_size'], reverse=True)
+
+    # Usage
+    analyzer = BusinessDataAnalyzer()
+
+    # Analyze tech sector in Business Bay
+    tech_analysis = analyzer.analyze_sector(
+        'Information and Communication',
+        'Business Bay'
+    )
+    print(f"Total tech companies: {tech_analysis['total_businesses']}")
+    print(f"Recent growth: {tech_analysis.get('recent_growth', 0):.1f}%")
+
+    # Find market gaps in Dubai Marina
+    gaps = analyzer.find_market_gaps('Dubai Marina')
+    print("\nMarket opportunities in Dubai Marina:")
+    for gap in gaps[:5]:
+        print(f"- {gap['sector']}: {gap['opportunity']} opportunity")
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 4. RTA Transportation Data
+
+**Public transport, traffic, and mobility information**
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    // RTA Data Integration
+    class RTADataService {
+      constructor() {
+        this.baseURL = 'https://www.dubaipulse.gov.ae/api/dataset';
+      }
+
+      async getMetroRidership(station, period = 'monthly') {
+        const endpoint = `${this.baseURL}/rta-metro-ridership`;
+        const params = new URLSearchParams({
+          station: station,
+          period: period,
+          year: new Date().getFullYear()
+        });
+
+        const response = await fetch(`${endpoint}?${params}`);
+        const data = await response.json();
+
+        return this.processRidershipData(data);
+      }
+
+      async getTrafficFlow(road, timeOfDay) {
+        const endpoint = `${this.baseURL}/rta-traffic-flow`;
+        const params = new URLSearchParams({
+          road: road,
+          time: timeOfDay
+        });
+
+        const response = await fetch(`${endpoint}?${params}`);
+        return response.json();
+      }
+
+      async calculateCommuteTime(origin, destination, mode = 'car') {
+        // Simplified commute calculation
+        const trafficData = await this.getTrafficFlow(
+          'Sheikh Zayed Road',
+          new Date().getHours()
+        );
+
+        const baseTime = this.getBaseTime(origin, destination, mode);
+        const congestionFactor = trafficData.congestion_level || 1;
+
+        return {
+          estimatedTime: baseTime * congestionFactor,
+          mode: mode,
+          alternativeRoutes: await this.getAlternativeRoutes(origin, destination),
+          publicTransport: await this.getPublicTransportOptions(origin, destination)
+        };
+      }
+
+      async getPublicTransportOptions(origin, destination) {
+        // Get metro stations near origin and destination
+        const options = [];
+
+        // Check metro availability
+        const metroRoute = this.findMetroRoute(origin, destination);
+        if (metroRoute) {
+          options.push({
+            type: 'metro',
+            duration: metroRoute.duration,
+            cost: metroRoute.cost,
+            stations: metroRoute.stations
+          });
+        }
+
+        // Check bus routes
+        const busRoutes = await this.findBusRoutes(origin, destination);
+        options.push(...busRoutes);
+
+        return options;
+      }
+
+      processRidershipData(data) {
+        // Calculate statistics
+        const totalRiders = data.reduce((sum, d) => sum + d.ridership, 0);
+        const avgDaily = totalRiders / data.length;
+
+        // Peak hours analysis
+        const peakHours = data
+          .filter(d => d.hour >= 7 && d.hour <= 9 || d.hour >= 17 && d.hour <= 19)
+          .reduce((sum, d) => sum + d.ridership, 0);
+
+        const offPeakHours = totalRiders - peakHours;
+
+        return {
+          total: totalRiders,
+          dailyAverage: avgDaily,
+          peakHoursPercentage: (peakHours / totalRiders * 100).toFixed(1),
+          busiestDay: this.findBusiestDay(data),
+          trend: this.calculateTrend(data)
+        };
+      }
+
+      findBusiestDay(data) {
+        const byDay = {};
+        data.forEach(d => {
+          byDay[d.day] = (byDay[d.day] || 0) + d.ridership;
+        });
+
+        return Object.entries(byDay)
+          .sort((a, b) => b[1] - a[1])[0];
+      }
+
+      calculateTrend(data) {
+        // Simple trend calculation
+        const firstHalf = data.slice(0, data.length / 2);
+        const secondHalf = data.slice(data.length / 2);
+
+        const firstAvg = firstHalf.reduce((sum, d) => sum + d.ridership, 0) / firstHalf.length;
+        const secondAvg = secondHalf.reduce((sum, d) => sum + d.ridership, 0) / secondHalf.length;
+
+        const change = ((secondAvg - firstAvg) / firstAvg * 100).toFixed(1);
+        return {
+          direction: change > 0 ? 'increasing' : 'decreasing',
+          percentage: Math.abs(change)
+        };
+      }
+    }
+
+    // Usage
+    const rta = new RTADataService();
+
+    // Get metro ridership for Burj Khalifa station
+    const ridership = await rta.getMetroRidership('Burj Khalifa/Dubai Mall');
+    console.log(`Daily average: ${ridership.dailyAverage.toLocaleString()} riders`);
+    console.log(`Peak hours: ${ridership.peakHoursPercentage}% of traffic`);
+
+    // Calculate commute options
+    const commute = await rta.calculateCommuteTime(
+      'Dubai Marina',
+      'DIFC',
+      'car'
+    );
+    console.log(`Estimated time: ${commute.estimatedTime} minutes`);
+    console.log(`Public transport options: ${commute.publicTransport.length}`);
+    ```
+  </Tab>
+
+  <Tab title="React Component">
+    ```jsx
+    // Commute Calculator Component
+    function CommuteCalculator() {
+      const [origin, setOrigin] = useState('');
+      const [destination, setDestination] = useState('');
+      const [results, setResults] = useState(null);
+      const [loading, setLoading] = useState(false);
+
+      const calculateCommute = async () => {
+        setLoading(true);
+        try {
+          const rta = new RTADataService();
+          const data = await rta.calculateCommuteTime(origin, destination);
+
+          // Add cost calculations
+          const costs = {
+            car: calculateDrivingCost(data.estimatedTime),
+            metro: 5, // AED
+            bus: 3, // AED
+            taxi: data.estimatedTime * 2 // Rough estimate
+          };
+
+          setResults({ ...data, costs });
+        } catch (error) {
+          console.error('Error calculating commute:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const calculateDrivingCost = (minutes) => {
+        const kmEstimate = minutes * 0.5; // Rough conversion
+        const fuelCost = kmEstimate * 0.3; // AED per km
+        const parking = 20; // Daily parking estimate
+        return fuelCost + parking;
+      };
+
+      return (
+        <div className="commute-calculator">
+          <h2>Commute Calculator</h2>
+
+          <input
+            type="text"
+            placeholder="Origin (e.g., Dubai Marina)"
+            value={origin}
+            onChange={(e) => setOrigin(e.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Destination (e.g., DIFC)"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+          />
+
+          <button onClick={calculateCommute} disabled={loading}>
+            {loading ? 'Calculating...' : 'Calculate'}
+          </button>
+
+          {results && (
+            <div className="results">
+              <h3>Commute Options</h3>
+
+              <div className="option">
+                <h4>Driving</h4>
+                <p>Time: {results.estimatedTime} minutes</p>
+                <p>Cost: AED {results.costs.car.toFixed(2)}</p>
+              </div>
+
+              {results.publicTransport.map((option, index) => (
+                <div key={index} className="option">
+                  <h4>{option.type}</h4>
+                  <p>Time: {option.duration} minutes</p>
+                  <p>Cost: AED {option.cost}</p>
+                </div>
+              ))}
+
+              <div className="recommendation">
+                <h4>Recommendation</h4>
+                <p>{getRecommendation(results)}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function getRecommendation(results) {
+      const publicTransport = results.publicTransport[0];
+      if (!publicTransport) return 'Driving is your best option';
+
+      const timeDiff = results.estimatedTime - publicTransport.duration;
+      const costDiff = results.costs.car - publicTransport.cost;
+
+      if (timeDiff < 10 && costDiff > 10) {
+        return `Take ${publicTransport.type} - save AED ${costDiff.toFixed(2)} with similar travel time`;
+      } else if (costDiff > 20) {
+        return `${publicTransport.type} is more economical - save AED ${costDiff.toFixed(2)} daily`;
+      } else {
+        return 'Choose based on your priority: time or cost';
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 5. Tourism & Visitor Statistics
+
+**Tourist arrivals, hotel occupancy, and tourism trends**
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    // Tourism Data API
+    class TourismDataAPI {
+      async getVisitorStats(period = 'monthly') {
+        const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/det-visitor-statistics';
+        const year = new Date().getFullYear();
+
+        const response = await fetch(`${endpoint}?year=${year}&period=${period}`);
+        const data = await response.json();
+
+        return this.analyzeTourismData(data);
+      }
+
+      async getHotelOccupancy(area) {
+        const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/det-hotel-occupancy';
+
+        const params = new URLSearchParams({
+          area: area,
+          year: new Date().getFullYear()
+        });
+
+        const response = await fetch(`${endpoint}?${params}`);
+        return response.json();
+      }
+
+      analyzeTourismData(data) {
+        // Group by nationality
+        const byNationality = {};
+        data.forEach(visitor => {
+          const country = visitor.nationality;
+          byNationality[country] = (byNationality[country] || 0) + visitor.count;
+        });
+
+        // Top source markets
+        const topMarkets = Object.entries(byNationality)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10)
+          .map(([country, visitors]) => ({
+            country,
+            visitors,
+            percentage: (visitors / data.reduce((sum, d) => sum + d.count, 0) * 100).toFixed(1)
+          }));
+
+        // Monthly trend
+        const monthlyTrend = data.reduce((acc, item) => {
+          const month = item.month;
+          if (!acc[month]) acc[month] = 0;
+          acc[month] += item.count;
+          return acc;
+        }, {});
+
+        // Year-over-year growth
+        const currentYear = data.filter(d => d.year === new Date().getFullYear());
+        const previousYear = data.filter(d => d.year === new Date().getFullYear() - 1);
+
+        const growth = previousYear.length > 0
+          ? ((currentYear.length - previousYear.length) / previousYear.length * 100).toFixed(1)
+          : 0;
+
+        return {
+          totalVisitors: data.reduce((sum, d) => sum + d.count, 0),
+          topMarkets,
+          monthlyTrend,
+          yearOverYearGrowth: growth,
+          averageStayDuration: this.calculateAverageStay(data),
+          seasonality: this.analyzeSeasonality(monthlyTrend)
+        };
+      }
+
+      calculateAverageStay(data) {
+        const totalNights = data.reduce((sum, d) => sum + (d.nights || 0), 0);
+        const totalVisitors = data.reduce((sum, d) => sum + d.count, 0);
+        return (totalNights / totalVisitors).toFixed(1);
+      }
+
+      analyzeSeasonality(monthlyData) {
+        const months = Object.values(monthlyData);
+        const average = months.reduce((sum, val) => sum + val, 0) / months.length;
+
+        const peak = Math.max(...months);
+        const low = Math.min(...months);
+
+        return {
+          peakMonth: Object.keys(monthlyData).find(key => monthlyData[key] === peak),
+          lowMonth: Object.keys(monthlyData).find(key => monthlyData[key] === low),
+          variation: ((peak - low) / average * 100).toFixed(1)
+        };
+      }
+
+      async predictDemand(business, location) {
+        const [visitors, occupancy] = await Promise.all([
+          this.getVisitorStats(),
+          this.getHotelOccupancy(location)
+        ]);
+
+        // Simple demand prediction based on visitor trends
+        const demandScore = this.calculateDemandScore(visitors, occupancy, business);
+
+        return {
+          currentDemand: demandScore,
+          trend: visitors.yearOverYearGrowth > 0 ? 'growing' : 'declining',
+          seasonality: visitors.seasonality,
+          recommendation: this.getDemandRecommendation(demandScore, visitors.seasonality)
+        };
+      }
+
+      calculateDemandScore(visitors, occupancy, businessType) {
+        // Simplified scoring
+        let score = 50; // Base score
+
+        // Adjust based on visitor growth
+        score += visitors.yearOverYearGrowth * 0.5;
+
+        // Adjust based on occupancy
+        if (occupancy.rate) {
+          score += (occupancy.rate - 70) * 0.3; // 70% is baseline
+        }
+
+        // Business type adjustments
+        if (businessType.includes('tourism') || businessType.includes('hotel')) {
+          score *= 1.2;
+        }
+
+        return Math.min(100, Math.max(0, score));
+      }
+
+      getDemandRecommendation(score, seasonality) {
+        const recommendations = [];
+
+        if (score > 75) {
+          recommendations.push('High demand - consider premium pricing');
+        } else if (score < 40) {
+          recommendations.push('Low demand - focus on promotions');
+        }
+
+        if (seasonality.variation > 30) {
+          recommendations.push(`Prepare for seasonal variations - peak in ${seasonality.peakMonth}`);
+        }
+
+        return recommendations;
+      }
+    }
+
+    // Usage
+    const tourismAPI = new TourismDataAPI();
+
+    // Get visitor statistics
+    const visitors = await tourismAPI.getVisitorStats();
+    console.log(`Total visitors: ${visitors.totalVisitors.toLocaleString()}`);
+    console.log(`YoY Growth: ${visitors.yearOverYearGrowth}%`);
+    console.log('Top markets:', visitors.topMarkets.slice(0, 3));
+
+    // Predict demand for a hotel business
+    const demand = await tourismAPI.predictDemand('Luxury Hotel', 'JBR');
+    console.log(`Demand score: ${demand.currentDemand}/100`);
+    console.log('Recommendations:', demand.recommendation);
+    ```
+  </Tab>
+
+  <Tab title="Python Analysis">
+    ```python
+    import requests
+    import pandas as pd
+    import numpy as np
+    from datetime import datetime, timedelta
+
+    class TourismAnalyzer:
+        def __init__(self):
+            self.base_url = "https://www.dubaipulse.gov.ae/api/dataset"
+
+        def get_visitor_data(self, start_year=2020):
+            """Fetch visitor statistics"""
+            endpoint = f"{self.base_url}/det-visitor-statistics"
+            params = {
+                'start_year': start_year,
+                'end_year': datetime.now().year
+            }
+
+            response = requests.get(endpoint, params=params)
+            return pd.DataFrame(response.json())
+
+        def analyze_market_segments(self, df):
+            """Analyze visitor segments and patterns"""
+            # Group by nationality and purpose
+            segments = df.groupby(['nationality', 'purpose']).agg({
+                'count': 'sum',
+                'nights': 'mean',
+                'spending': 'mean'
+            }).reset_index()
+
+            # Calculate market value
+            segments['market_value'] = segments['count'] * segments['spending']
+
+            # Identify high-value segments
+            segments['value_tier'] = pd.qcut(
+                segments['market_value'],
+                q=[0, 0.33, 0.66, 1.0],
+                labels=['Low', 'Medium', 'High']
+            )
+
+            return segments.sort_values('market_value', ascending=False)
+
+        def forecast_visitors(self, df, months_ahead=6):
+            """Simple visitor forecast using moving average"""
+            monthly = df.groupby('month')['count'].sum().reset_index()
+
+            # Calculate moving average
+            monthly['ma_3'] = monthly['count'].rolling(window=3).mean()
+            monthly['ma_6'] = monthly['count'].rolling(window=6).mean()
+
+            # Simple trend projection
+            recent_trend = (monthly['ma_3'].iloc[-1] - monthly['ma_6'].iloc[-1]) / monthly['ma_6'].iloc[-1]
+
+            forecast = []
+            last_value = monthly['count'].iloc[-1]
+
+            for i in range(months_ahead):
+                next_value = last_value * (1 + recent_trend)
+                forecast.append({
+                    'month': i + 1,
+                    'forecast': int(next_value),
+                    'confidence_low': int(next_value * 0.9),
+                    'confidence_high': int(next_value * 1.1)
+                })
+                last_value = next_value
+
+            return pd.DataFrame(forecast)
+
+        def identify_opportunities(self, visitor_df, business_type):
+            """Identify business opportunities based on visitor patterns"""
+            opportunities = []
+
+            # Analyze by nationality
+            top_nationalities = visitor_df.groupby('nationality')['count'].sum().nlargest(10)
+
+            for nationality in top_nationalities.index:
+                nat_data = visitor_df[visitor_df['nationality'] == nationality]
+
+                opportunity = {
+                    'market': nationality,
+                    'visitors': nat_data['count'].sum(),
+                    'avg_spend': nat_data['spending'].mean(),
+                    'avg_nights': nat_data['nights'].mean(),
+                    'growth': self.calculate_growth(nat_data),
+                    'opportunity_score': 0
+                }
+
+                # Calculate opportunity score
+                score = 0
+                if opportunity['growth'] > 10:
+                    score += 30
+                if opportunity['avg_spend'] > visitor_df['spending'].median():
+                    score += 20
+                if opportunity['avg_nights'] > visitor_df['nights'].median():
+                    score += 20
+
+                # Business type specific scoring
+                if business_type == 'luxury' and opportunity['avg_spend'] > visitor_df['spending'].quantile(0.75):
+                    score += 30
+                elif business_type == 'budget' and opportunity['visitors'] > visitor_df['count'].quantile(0.75):
+                    score += 30
+
+                opportunity['opportunity_score'] = score
+                opportunities.append(opportunity)
+
+            return pd.DataFrame(opportunities).sort_values('opportunity_score', ascending=False)
+
+        def calculate_growth(self, df):
+            """Calculate year-over-year growth"""
+            if len(df['year'].unique()) < 2:
+                return 0
+
+            current_year = df[df['year'] == df['year'].max()]['count'].sum()
+            previous_year = df[df['year'] == df['year'].max() - 1]['count'].sum()
+
+            if previous_year == 0:
+                return 100
+            return ((current_year - previous_year) / previous_year * 100)
+
+    # Usage
+    analyzer = TourismAnalyzer()
+
+    # Get and analyze visitor data
+    visitors_df = analyzer.get_visitor_data()
+    segments = analyzer.analyze_market_segments(visitors_df)
+
+    print("Top 5 High-Value Market Segments:")
+    print(segments.head())
+
+    # Forecast future visitors
+    forecast = analyzer.forecast_visitors(visitors_df, months_ahead=6)
+    print("\n6-Month Visitor Forecast:")
+    print(forecast)
+
+    # Identify opportunities for luxury hotels
+    opportunities = analyzer.identify_opportunities(visitors_df, 'luxury')
+    print("\nTop Opportunities for Luxury Segment:")
+    print(opportunities[['market', 'visitors', 'avg_spend', 'opportunity_score']].head())
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## 6. Air Quality Data
+
+**Real-time air quality indices from monitoring stations**
+
+```javascript
+// Air Quality Monitor
+class AirQualityService {
+  async getCurrentAQI(location) {
+    const endpoint = 'https://www.ead.gov.ae/api/airquality/current';
+
+    const response = await fetch(`${endpoint}?location=${location}`);
+    const data = await response.json();
+
+    return {
+      aqi: data.aqi,
+      level: this.getAQILevel(data.aqi),
+      pollutants: {
+        pm25: data.pm25,
+        pm10: data.pm10,
+        no2: data.no2,
+        o3: data.o3
+      },
+      healthAdvice: this.getHealthAdvice(data.aqi),
+      timestamp: data.timestamp
+    };
+  }
+
+  getAQILevel(aqi) {
+    if (aqi <= 50) return 'Good';
+    if (aqi <= 100) return 'Moderate';
+    if (aqi <= 150) return 'Unhealthy for Sensitive Groups';
+    if (aqi <= 200) return 'Unhealthy';
+    if (aqi <= 300) return 'Very Unhealthy';
+    return 'Hazardous';
+  }
+
+  getHealthAdvice(aqi) {
+    if (aqi <= 50) return 'Air quality is satisfactory';
+    if (aqi <= 100) return 'Acceptable for most, sensitive individuals may experience minor issues';
+    if (aqi <= 150) return 'Sensitive groups should limit outdoor activities';
+    return 'Everyone should limit outdoor activities';
+  }
+}
+```
+
+---
+
+## 7. Energy Consumption (DEWA)
+
+**Electricity and water consumption statistics**
+
+```javascript
+// DEWA Energy Data
+async function getEnergyData(sector, year) {
+  const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/dewa-consumption';
+
+  const params = new URLSearchParams({
+    sector: sector, // 'residential', 'commercial', 'industrial'
+    year: year,
+    metric: 'monthly'
+  });
+
+  const response = await fetch(`${endpoint}?${params}`);
+  const data = await response.json();
+
+  // Calculate insights
+  const totalConsumption = data.reduce((sum, month) => sum + month.consumption, 0);
+  const avgMonthly = totalConsumption / data.length;
+  const peakMonth = data.reduce((max, month) =>
+    month.consumption > max.consumption ? month : max
+  );
+
+  return {
+    total: totalConsumption,
+    average: avgMonthly,
+    peak: peakMonth,
+    data: data,
+    costEstimate: totalConsumption * 0.38 // AED per kWh average
+  };
+}
+
+// Usage
+const energyData = await getEnergyData('commercial', 2024);
+console.log(`Annual consumption: ${energyData.total.toLocaleString()} kWh`);
+console.log(`Estimated cost: AED ${energyData.costEstimate.toLocaleString()}`);
+```
+
+---
+
+## 8. Weather Data
+
+**Current weather and forecasts**
+
+```javascript
+// Weather API Integration
+class WeatherService {
+  async getWeather(emirate) {
+    const endpoint = 'https://api.ncm.ae/weather/current';
+
+    const response = await fetch(`${endpoint}?emirate=${emirate}`);
+    const weather = await response.json();
+
+    return {
+      temperature: weather.temp,
+      humidity: weather.humidity,
+      windSpeed: weather.wind_speed,
+      visibility: weather.visibility,
+      conditions: weather.conditions,
+      forecast: await this.getForecast(emirate)
+    };
+  }
+
+  async getForecast(emirate, days = 5) {
+    const endpoint = 'https://api.ncm.ae/weather/forecast';
+
+    const response = await fetch(`${endpoint}?emirate=${emirate}&days=${days}`);
+    return response.json();
+  }
+}
+```
+
+---
+
+## 9. Business Performance Indicators
+
+**Economic indicators and business statistics**
+
+```javascript
+// Economic Indicators API
+async function getEconomicIndicators() {
+  const endpoint = 'https://api.fcsc.gov.ae/indicators';
+
+  const response = await fetch(endpoint);
+  const data = await response.json();
+
+  return {
+    gdpGrowth: data.gdp_growth_rate,
+    inflation: data.cpi_inflation,
+    unemployment: data.unemployment_rate,
+    fdi: data.foreign_direct_investment,
+    exports: data.total_exports,
+    imports: data.total_imports,
+    populationGrowth: data.population_growth_rate
+  };
+}
+
+// Sector performance
+async function getSectorPerformance(sector) {
+  const indicators = await getEconomicIndicators();
+  const businesses = await searchBusinesses({ sector });
+
+  return {
+    sectorGrowth: calculateSectorGrowth(businesses),
+    economicContext: indicators,
+    marketSize: estimateMarketSize(businesses, indicators),
+    opportunities: identifyOpportunities(businesses, indicators)
+  };
+}
+```
+
+---
+
+## 10. School & Education Data
+
+**School information, ratings, and fees**
+
+```javascript
+// KHDA School Data
+async function getSchoolData(curriculum, area) {
+  const endpoint = 'https://www.dubaipulse.gov.ae/api/dataset/khda-schools';
+
+  const params = new URLSearchParams({
+    curriculum: curriculum, // 'British', 'American', 'IB', etc.
+    area: area,
+    fields: 'name,rating,fees,location'
+  });
+
+  const response = await fetch(`${endpoint}?${params}`);
+  const schools = await response.json();
+
+  // Analyze school data
+  const analysis = {
+    totalSchools: schools.length,
+    avgFees: schools.reduce((sum, s) => sum + s.annual_fees, 0) / schools.length,
+    byRating: groupByRating(schools),
+    feeRange: {
+      min: Math.min(...schools.map(s => s.annual_fees)),
+      max: Math.max(...schools.map(s => s.annual_fees))
+    }
+  };
+
+  return { schools, analysis };
+}
+
+function groupByRating(schools) {
+  const ratings = {};
+  schools.forEach(school => {
+    const rating = school.rating || 'Not Rated';
+    ratings[rating] = (ratings[rating] || 0) + 1;
+  });
+  return ratings;
+}
+```
+
+---
+
+## 🚀 Quick Integration Guide
+
+### Step 1: Test APIs in Browser
+```javascript
+// Quick test - paste in browser console
+fetch('https://www.dubaipulse.gov.ae/api/dataset/ded-business-licences?limit=5')
+  .then(r => r.json())
+  .then(data => console.log(data));
+```
+
+### Step 2: Handle CORS Issues
+```javascript
+// If CORS blocked, use a proxy
+const PROXY = 'https://api.allorigins.win/get?url=';
+const API_URL = 'https://www.dubaipulse.gov.ae/api/dataset/ded-business-licences';
+
+fetch(PROXY + encodeURIComponent(API_URL))
+  .then(r => r.json())
+  .then(data => JSON.parse(data.contents));
+```
+
+### Step 3: Implement Caching
+```javascript
+// Simple caching wrapper
+const cachedFetch = (() => {
+  const cache = new Map();
+
+  return async (url, ttl = 300000) => { // 5 min default
+    if (cache.has(url)) {
+      const { data, timestamp } = cache.get(url);
+      if (Date.now() - timestamp < ttl) {
+        return data;
+      }
+    }
+
+    const data = await fetch(url).then(r => r.json());
+    cache.set(url, { data, timestamp: Date.now() });
+    return data;
+  };
+})();
+```
+
+### Step 4: Error Handling
+```javascript
+// Robust API wrapper
+async function apiCall(url, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i)));
+    }
+  }
+}
+```
+
+## 📦 npm Package
+
+For quick integration, install our helper package:
+
+```bash
+# Coming soon - UAE Open Data SDK
+npm install @uae-opendata/sdk
+```
+
+```javascript
+import { DubaiPulse, DLD, RTA, DET } from '@uae-opendata/sdk';
+
+const dubaiPulse = new DubaiPulse();
+const businesses = await dubaiPulse.getBusinesses({ sector: 'Technology' });
+const properties = await dubaiPulse.getProperties({ area: 'Downtown' });
+```
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="View Categories"
+    icon="folder"
+    href="/additional-info/datasets-categories"
+  >
+    Explore all datasets by domain
+  </Card>
+  <Card
+    title="See Mashups"
+    icon="lightbulb"
+    href="/additional-info/datasets-mashups"
+  >
+    Combine APIs for powerful solutions
+  </Card>
+  <Card
+    title="Start Building"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Begin your Open Finance integration
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro Tip**: Start with Dubai Pulse APIs - they're the most consistent and well-documented. Once working, expand to other sources.
+</Tip>

@@ -56,6 +56,10 @@
             "group": "Power Tools",
             "pages": [
               "additional-info/mcps",
+              "additional-info/datasets",
+              "additional-info/datasets-categories",
+              "additional-info/datasets-mashups",
+              "additional-info/datasets-apis",
               "additional-info/existing-projects",
               "additional-info/deployments"
             ]

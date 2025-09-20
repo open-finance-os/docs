@@ -1,0 +1,637 @@
+---
+title: "Dataset Categories & APIs"
+description: "Comprehensive guide to UAE government datasets organized by domain with API endpoints"
+---
+
+# UAE Dataset Categories & APIs
+
+Explore government datasets organized by category with direct links, API endpoints, and integration examples.
+
+<Info>
+  **💡 Quick Tip**: Each dataset includes sample API calls you can test immediately in your browser or Postman.
+</Info>
+
+## 💰 Finance, Economy & Business
+
+### Central Bank of the UAE (CBUAE)
+**Banking indicators, financial stability, monetary statistics**
+
+- **Website**: [CBUAE Statistics](https://www.centralbank.ae/en/statistics)
+- **Data Format**: Excel, PDF (quarterly reports)
+- **Update Frequency**: Monthly/Quarterly
+- **Key Datasets**:
+  - Banking indicators by emirate
+  - Financial Stability Indicators (FSIs)
+  - Money supply (M0, M1, M2, M3)
+  - Credit and deposits by sector
+  - Interest rates and exchange rates
+
+**Integration Example**:
+```javascript
+// Parse CBUAE Excel data (after download)
+import * as XLSX from 'xlsx';
+
+async function parseCBUAEData(filePath) {
+  const workbook = XLSX.readFile(filePath);
+  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const data = XLSX.utils.sheet_to_json(sheet);
+
+  return data.map(row => ({
+    indicator: row['Indicator'],
+    value: parseFloat(row['Value']),
+    date: row['Date'],
+    emirate: row['Emirate']
+  }));
+}
+```
+
+### Ministry of Finance
+**Federal budgets, government financial statistics**
+
+- **Website**: [MOF Open Data](https://www.mof.gov.ae/en/statistics)
+- **Data Format**: PDF, Excel
+- **Update Frequency**: Annual
+- **Key Datasets**:
+  - Federal budget allocations
+  - Government revenue and expenditure
+  - GFS time series data
+
+### Dubai Financial Market (DFM)
+**Market indices, trading volumes, listed companies**
+
+- **API Endpoint**: Via Dubai Pulse
+- **Sample Request**:
+```javascript
+// Fetch DFM index data from Dubai Pulse
+const DFM_API = 'https://www.dubaipulse.gov.ae/api/dataset/dfm-indices';
+
+async function getDFMIndex() {
+  const response = await fetch(DFM_API, {
+    headers: { 'Accept': 'application/json' }
+  });
+  return response.json();
+}
+```
+
+### Dubai DED Business Licenses
+**Complete business registration data for Dubai**
+
+- **API**: [Dubai Pulse DED Dataset](https://www.dubaipulse.gov.ae/data/ded-business-licences)
+- **Real-time API**: Available
+- **Sample Request**:
+```javascript
+// Search businesses by sector
+const DED_API = 'https://api.dubaipulse.gov.ae/v1/ded/businesses';
+
+async function searchBusinesses(sector, area) {
+  const params = new URLSearchParams({
+    sector: sector,
+    area: area,
+    limit: 100
+  });
+
+  const response = await fetch(`${DED_API}?${params}`);
+  return response.json();
+}
+```
+
+### National Economic Register (NER)
+**Unified business registry across UAE**
+
+- **Website**: [NER Portal](https://ner.economy.ae)
+- **Access**: Public search (no bulk API)
+- **Use Case**: KYB verification, business validation
+
+## 🏠 Real Estate & Urban Development
+
+### Dubai Land Department (DLD)
+**Property transactions, prices, ownership data**
+
+- **API**: [Dubai Pulse DLD Transactions](https://www.dubaipulse.gov.ae/data/dld-transactions)
+- **Update Frequency**: Daily
+- **Sample Request**:
+```javascript
+const DLD_API = 'https://api.dubaipulse.gov.ae/v1/dld/transactions';
+
+async function getPropertyTransactions(area, propertyType) {
+  const params = new URLSearchParams({
+    area: area,
+    property_type: propertyType,
+    year: 2024,
+    limit: 500
+  });
+
+  const response = await fetch(`${DLD_API}?${params}`);
+  const data = await response.json();
+
+  // Calculate average price per sqft
+  const avgPrice = data.reduce((sum, t) => sum + t.price_per_sqft, 0) / data.length;
+
+  return { transactions: data, avgPricePerSqft: avgPrice };
+}
+
+// Example: Get Palm Jumeirah apartment prices
+getPropertyTransactions('Palm Jumeirah', 'Apartment');
+```
+
+### Rental Market Data
+**Rental prices, contracts, trends**
+
+- **API**: Dubai Pulse Rental Index
+- **Sample Data Structure**:
+```json
+{
+  "area": "Dubai Marina",
+  "property_type": "1BR Apartment",
+  "avg_annual_rent": 95000,
+  "min_rent": 75000,
+  "max_rent": 120000,
+  "sample_size": 450,
+  "last_updated": "2024-01-15"
+}
+```
+
+### Abu Dhabi Municipality
+**Property data for Abu Dhabi emirate**
+
+- **Portal**: [Abu Dhabi Open Data](https://bayanat.ae)
+- **Datasets**: Building permits, land use, property registrations
+
+## 🚗 Transport & Mobility
+
+### RTA Dubai
+**Public transport ridership, traffic, parking**
+
+- **API Base**: `https://api.dubaipulse.gov.ae/v1/rta/`
+- **Available Endpoints**:
+```javascript
+// Metro ridership data
+const METRO_API = 'https://api.dubaipulse.gov.ae/v1/rta/metro/ridership';
+
+async function getMetroRidership(station, month) {
+  const response = await fetch(`${METRO_API}?station=${station}&month=${month}`);
+  return response.json();
+}
+
+// Parking availability
+const PARKING_API = 'https://api.dubaipulse.gov.ae/v1/rta/parking/availability';
+
+async function getParkingAvailability(zone) {
+  const response = await fetch(`${PARKING_API}?zone=${zone}`);
+  return response.json();
+}
+```
+
+### Dubai Police Traffic Incidents
+**Real-time traffic incidents, accident hotspots**
+
+- **API**: Contact center incident logs via Dubai Pulse
+- **Sample Request**:
+```javascript
+const TRAFFIC_API = 'https://api.dubaipulse.gov.ae/v1/police/traffic-incidents';
+
+async function getTrafficIncidents(date, area) {
+  const params = new URLSearchParams({
+    date: date,
+    area: area,
+    severity: 'all'
+  });
+
+  const response = await fetch(`${TRAFFIC_API}?${params}`);
+  const incidents = await response.json();
+
+  // Create heatmap data
+  return incidents.map(i => ({
+    lat: i.latitude,
+    lng: i.longitude,
+    severity: i.severity,
+    time: i.incident_time
+  }));
+}
+```
+
+## 🏨 Tourism & Retail
+
+### Dubai Tourism (DET)
+**Visitor statistics, hotel data, events**
+
+- **API**: [DET Open Data](https://www.visitdubai.com/en/open-data)
+- **Monthly Statistics API**:
+```javascript
+const DET_API = 'https://api.dubaipulse.gov.ae/v1/tourism/';
+
+async function getTourismStats(year, month) {
+  const endpoints = [
+    `${DET_API}visitors?year=${year}&month=${month}`,
+    `${DET_API}hotels/occupancy?year=${year}&month=${month}`,
+    `${DET_API}visitors/nationality?year=${year}&month=${month}`
+  ];
+
+  const [visitors, occupancy, nationality] = await Promise.all(
+    endpoints.map(url => fetch(url).then(r => r.json()))
+  );
+
+  return {
+    totalVisitors: visitors.total,
+    hotelOccupancy: occupancy.rate,
+    topMarkets: nationality.slice(0, 10)
+  };
+}
+```
+
+### Retail Footfall Data
+**Mall visitors, retail trends**
+
+- **Source**: Dubai Statistics Center
+- **Access**: Quarterly reports, some API access via Dubai Pulse
+
+## 👥 Demographics & Social
+
+### Federal Competitiveness & Statistics Centre (FCSC)
+**Population, employment, social indicators**
+
+- **API**: [FCSC Open Data](https://fcsc.gov.ae/en-us/Pages/Statistics)
+- **Key Endpoints**:
+```javascript
+const FCSC_API = 'https://api.fcsc.gov.ae/v1/';
+
+// Population by emirate
+async function getPopulationData() {
+  const response = await fetch(`${FCSC_API}population/emirates`);
+  return response.json();
+}
+
+// CPI and inflation
+async function getInflationData(year) {
+  const response = await fetch(`${FCSC_API}economy/cpi?year=${year}`);
+  return response.json();
+}
+```
+
+### KHDA Education Data
+**School information, fees, performance**
+
+- **Dataset**: [KHDA School Data](https://www.khda.gov.ae/en/opendata)
+- **API via Dubai Pulse**:
+```javascript
+const KHDA_API = 'https://api.dubaipulse.gov.ae/v1/khda/schools';
+
+async function getSchoolData(curriculum, rating) {
+  const params = new URLSearchParams({
+    curriculum: curriculum, // 'British', 'American', 'IB', etc.
+    rating: rating, // 'Outstanding', 'Good', etc.
+    fields: 'name,fees,location,rating'
+  });
+
+  const response = await fetch(`${KHDA_API}?${params}`);
+  return response.json();
+}
+```
+
+### Health Statistics
+**Healthcare facilities, disease statistics**
+
+- **MOHAP**: [National health statistics](https://mohap.gov.ae/en/open-data)
+- **DoH Abu Dhabi**: [Health indicators](https://doh.gov.ae/en/opendata)
+
+## 🌿 Environment & Energy
+
+### Dubai Electricity & Water Authority (DEWA)
+**Energy consumption, generation, tariffs**
+
+- **Portal**: [DEWA Statistics](https://www.dewa.gov.ae/en/about-us/media-publications/statistics)
+- **API Sample**:
+```javascript
+const DEWA_API = 'https://api.dubaipulse.gov.ae/v1/dewa/';
+
+// Electricity consumption by sector
+async function getEnergyConsumption(year, sector) {
+  const response = await fetch(
+    `${DEWA_API}consumption?year=${year}&sector=${sector}`
+  );
+  return response.json();
+}
+
+// Green energy statistics
+async function getGreenEnergy() {
+  const response = await fetch(`${DEWA_API}renewable/statistics`);
+  return response.json();
+}
+```
+
+### Air Quality Data
+**Real-time air quality indices**
+
+- **EAD Abu Dhabi**: [Air Quality Portal](https://www.ead.gov.ae/air-quality)
+- **National Platform**: [UAE Air Quality](https://airquality.ncm.gov.ae)
+- **API Example**:
+```javascript
+const AIR_QUALITY_API = 'https://api.ead.gov.ae/v1/airquality/';
+
+async function getAirQuality(station) {
+  const response = await fetch(`${AIR_QUALITY_API}stations/${station}/current`);
+  const data = await response.json();
+
+  return {
+    aqi: data.aqi,
+    pm25: data.pm25,
+    pm10: data.pm10,
+    quality: data.aqi < 50 ? 'Good' : data.aqi < 100 ? 'Moderate' : 'Poor'
+  };
+}
+```
+
+### Weather & Climate
+**Weather data, forecasts, historical climate**
+
+- **NCM**: [National Center of Meteorology](https://www.ncm.ae)
+- **Weather API**:
+```javascript
+const WEATHER_API = 'https://api.ncm.ae/v1/weather/';
+
+async function getWeatherData(emirate) {
+  const current = await fetch(`${WEATHER_API}current?emirate=${emirate}`);
+  const forecast = await fetch(`${WEATHER_API}forecast?emirate=${emirate}&days=5`);
+
+  return {
+    current: await current.json(),
+    forecast: await forecast.json()
+  };
+}
+```
+
+## 🏛️ One-Stop Government Hubs
+
+### Dubai Pulse
+**3000+ datasets, unified API access**
+
+- **Portal**: [Dubai Pulse](https://www.dubaipulse.gov.ae)
+- **API Documentation**: [Developer Guide](https://www.dubaipulse.gov.ae/developers)
+- **Authentication**: None required for public datasets
+- **Rate Limits**: 1000 requests/hour per IP
+
+**Universal API Pattern**:
+```javascript
+class DubaiPulseClient {
+  constructor() {
+    this.baseURL = 'https://api.dubaipulse.gov.ae/v1';
+    this.cache = new Map();
+  }
+
+  async fetchDataset(path, params = {}) {
+    const url = new URL(`${this.baseURL}/${path}`);
+    Object.entries(params).forEach(([key, value]) => {
+      url.searchParams.append(key, value);
+    });
+
+    // Check cache
+    const cacheKey = url.toString();
+    if (this.cache.has(cacheKey)) {
+      return this.cache.get(cacheKey);
+    }
+
+    // Fetch with retry logic
+    let retries = 3;
+    while (retries > 0) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        this.cache.set(cacheKey, data);
+
+        // Clear cache after 5 minutes
+        setTimeout(() => this.cache.delete(cacheKey), 300000);
+
+        return data;
+      } catch (error) {
+        retries--;
+        if (retries === 0) throw error;
+        await new Promise(r => setTimeout(r, 1000)); // Wait 1 second
+      }
+    }
+  }
+}
+
+// Usage
+const client = new DubaiPulseClient();
+const businesses = await client.fetchDataset('ded/businesses', {
+  sector: 'Technology',
+  limit: 100
+});
+```
+
+### Bayanat (UAE Federal Portal)
+**National statistics, cross-emirate data**
+
+- **Portal**: [Bayanat.ae](https://bayanat.ae)
+- **Features**:
+  - Bilingual datasets (AR/EN)
+  - Federal statistics
+  - Time series data
+  - Excel/CSV downloads
+
+### Abu Dhabi Open Data
+**Abu Dhabi emirate-specific datasets**
+
+- **Portal**: [Abu Dhabi Data](https://data.abudhabi)
+- **Categories**: Government, economy, environment, social
+- **Formats**: CSV, JSON, GeoJSON for maps
+
+## 🔧 Integration Patterns
+
+### Batch Data Fetching
+```javascript
+// Fetch multiple datasets efficiently
+async function fetchMultipleDatasets() {
+  const datasets = [
+    { name: 'businesses', url: 'ded/businesses', params: { limit: 100 } },
+    { name: 'properties', url: 'dld/transactions', params: { year: 2024 } },
+    { name: 'tourism', url: 'tourism/visitors', params: { month: 'latest' } }
+  ];
+
+  const results = await Promise.allSettled(
+    datasets.map(async (dataset) => {
+      const data = await fetch(
+        `https://api.dubaipulse.gov.ae/v1/${dataset.url}?${new URLSearchParams(dataset.params)}`
+      ).then(r => r.json());
+      return { name: dataset.name, data };
+    })
+  );
+
+  return results.reduce((acc, result) => {
+    if (result.status === 'fulfilled') {
+      acc[result.value.name] = result.value.data;
+    }
+    return acc;
+  }, {});
+}
+```
+
+### Error Handling & Fallbacks
+```javascript
+// Robust data fetching with fallbacks
+class DataService {
+  constructor() {
+    this.fallbackData = {
+      businesses: [], // Load from local JSON
+      properties: [],
+      tourism: []
+    };
+  }
+
+  async getData(dataset, params) {
+    try {
+      // Try primary API
+      return await this.fetchFromAPI(dataset, params);
+    } catch (error) {
+      console.warn(`API failed for ${dataset}, using fallback`, error);
+
+      // Try alternative source
+      try {
+        return await this.fetchFromAlternative(dataset, params);
+      } catch (altError) {
+        // Use cached/fallback data
+        return this.fallbackData[dataset] || [];
+      }
+    }
+  }
+
+  async fetchFromAPI(dataset, params) {
+    const response = await fetch(
+      `https://api.dubaipulse.gov.ae/v1/${dataset}`,
+      { signal: AbortSignal.timeout(5000) } // 5 second timeout
+    );
+
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async fetchFromAlternative(dataset, params) {
+    // Implement alternative data source
+    // Could be another API, cached data, or synthetic data
+    return [];
+  }
+}
+```
+
+## 📊 Data Visualization Tips
+
+### Creating Interactive Maps
+```javascript
+// Plot businesses on map using Leaflet
+function plotBusinessLocations(businesses) {
+  const map = L.map('map').setView([25.2048, 55.2708], 11); // Dubai coordinates
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+  // Group by sector for different colors
+  const sectors = [...new Set(businesses.map(b => b.sector))];
+  const colors = ['red', 'blue', 'green', 'purple', 'orange'];
+
+  businesses.forEach(business => {
+    const color = colors[sectors.indexOf(business.sector) % colors.length];
+
+    L.circleMarker([business.lat, business.lng], {
+      radius: 5,
+      fillColor: color,
+      fillOpacity: 0.7
+    })
+    .bindPopup(`<b>${business.name}</b><br>${business.sector}`)
+    .addTo(map);
+  });
+}
+```
+
+### Time Series Analysis
+```javascript
+// Analyze property price trends
+function analyzePropertyTrends(transactions) {
+  // Group by month
+  const monthlyData = transactions.reduce((acc, t) => {
+    const month = t.date.substring(0, 7); // YYYY-MM
+    if (!acc[month]) {
+      acc[month] = { total: 0, count: 0 };
+    }
+    acc[month].total += t.price;
+    acc[month].count++;
+    return acc;
+  }, {});
+
+  // Calculate averages
+  return Object.entries(monthlyData).map(([month, data]) => ({
+    month,
+    avgPrice: data.total / data.count,
+    volume: data.count
+  })).sort((a, b) => a.month.localeCompare(b.month));
+}
+```
+
+## 🚀 Quick Start Templates
+
+### Personal Finance Dashboard
+```javascript
+// Combine financial and real estate data
+async function createDashboard(userIncome, userArea) {
+  const [properties, businesses, cpi] = await Promise.all([
+    fetch(`${DLD_API}?area=${userArea}`).then(r => r.json()),
+    fetch(`${DED_API}?area=${userArea}`).then(r => r.json()),
+    fetch(`${FCSC_API}economy/cpi`).then(r => r.json())
+  ]);
+
+  return {
+    affordabilityIndex: calculateAffordability(userIncome, properties.avgPrice),
+    localBusinesses: businesses.filter(b => b.sector === 'Retail').length,
+    inflationAdjustedIncome: userIncome / (1 + cpi.rate / 100)
+  };
+}
+```
+
+### SME Risk Assessment
+```javascript
+// Analyze business environment
+async function assessSMERisk(businessSector, location) {
+  const [sectorData, tourismData, propertyData] = await Promise.all([
+    fetch(`${DED_API}?sector=${businessSector}`).then(r => r.json()),
+    fetch(`${DET_API}visitors/monthly`).then(r => r.json()),
+    fetch(`${DLD_API}?area=${location}&type=commercial`).then(r => r.json())
+  ]);
+
+  return {
+    marketSaturation: sectorData.length / 1000, // Businesses per 1000 population
+    demandTrend: calculateTrend(tourismData),
+    rentAffordability: propertyData.avgRent / averageRevenue,
+    riskScore: calculateRiskScore(/* factors */)
+  };
+}
+```
+
+## Support & Documentation
+
+<CardGroup cols={2}>
+  <Card
+    title="Dubai Pulse Developers"
+    icon="code"
+    href="https://www.dubaipulse.gov.ae/developers"
+  >
+    API documentation and examples
+  </Card>
+  <Card
+    title="Bayanat Support"
+    icon="life-ring"
+    href="https://bayanat.ae/en/support"
+  >
+    Federal data portal assistance
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Performance Tip**: Always implement caching for government APIs. Use localStorage for client-side apps or Redis for server-side to avoid rate limits and improve response times.
+</Tip>
+
+<Warning>
+  **Important**: Some datasets require Arabic text handling. Ensure your application properly supports UTF-8 encoding and right-to-left (RTL) text display when working with bilingual data.
+</Warning>

@@ -1,0 +1,399 @@
+---
+title: "UAE Open Data Sources"
+description: "Free government datasets to enhance your Open Finance hackathon project with local context"
+---
+
+# UAE Open Data Sources for Hackathons
+
+Supercharge your Open Finance application with rich, contextual data from UAE government sources. All datasets listed are **free to use** and provide **English documentation**.
+
+<Info>
+  **🎯 Hackathon Advantage**: Combining Open Finance APIs with UAE government data creates unique, locally-relevant solutions that stand out to judges.
+</Info>
+
+## Why Use Government Data?
+
+### **Competitive Edge**
+- **Local relevance**: Address real UAE market needs with actual data
+- **Rich context**: Enhance financial insights with demographics, real estate, and economic indicators
+- **Innovation opportunities**: Create mashups no one has built before
+- **Professional credibility**: Show judges you understand the market
+
+### **Quick Integration**
+- Most datasets offer **REST APIs** with JSON responses
+- **No authentication** required for public datasets
+- **CORS-friendly** endpoints available through Dubai Pulse
+- **Sample data** included for offline development
+
+## 🚀 Quick Start
+
+<Steps>
+  <Step title="Choose Your Datasets">
+    Browse our [categorized datasets](/additional-info/datasets-categories) to find data that enhances your use case
+  </Step>
+
+  <Step title="Test the APIs">
+    Use our [API quick reference](/additional-info/datasets-apis) with copy-paste code examples
+  </Step>
+
+  <Step title="Build Your Mashup">
+    Explore [proven combinations](/additional-info/datasets-mashups) that win hackathons
+  </Step>
+</Steps>
+
+## Featured Dataset Combinations
+
+These high-impact mashups combine Open Finance with government data:
+
+<CardGroup cols={2}>
+  <Card
+    title="ESG PFM Coach"
+    icon="leaf"
+    href="/additional-info/datasets-mashups"
+  >
+    Card spending × Air quality × Energy consumption
+  </Card>
+  <Card
+    title="Rent-to-Income Advisor"
+    icon="home"
+    href="/additional-info/datasets-mashups"
+  >
+    Income data × Property prices × Commute times
+  </Card>
+  <Card
+    title="SME Risk Radar"
+    icon="chart-line"
+    href="/additional-info/datasets-mashups"
+  >
+    Business accounts × License data × Tourism trends
+  </Card>
+  <Card
+    title="Safe-Drive Insurance"
+    icon="car"
+    href="/additional-info/datasets-mashups"
+  >
+    Auto spending × Traffic incidents × Weather
+  </Card>
+</CardGroup>
+
+## Primary Data Sources
+
+### 🏛️ **Central Bank of the UAE (CBUAE)**
+- **Banking indicators** by bank type and emirate
+- **Financial stability indicators** (FSIs)
+- **Money supply and credit** statistics
+- **Quarterly economic reports**
+- [Access CBUAE Open Data →](https://www.centralbank.ae/en/statistics)
+
+### 🏙️ **Dubai Pulse (Digital Dubai)**
+- **3,000+ datasets** across all domains
+- **REST APIs** with JSON responses
+- **Real-time data** updates
+- **CORS-enabled** for frontend access
+- [Browse Dubai Pulse →](https://www.dubaipulse.gov.ae)
+
+### 🇦🇪 **Bayanat (UAE Federal Portal)**
+- **National statistics** and indicators
+- **Cross-emirate data** harmonization
+- **Historical time series**
+- **Bilingual datasets** (English/Arabic)
+- [Explore Bayanat →](https://bayanat.ae)
+
+### 🏢 **Dubai DED Business Data**
+- **Business license** master list
+- **Company registrations** by sector
+- **SME statistics** and trends
+- **API access** for bulk queries
+- [Access via Dubai Pulse API →](https://www.dubaipulse.gov.ae/data/ded-business-licences)
+
+### 🏠 **Dubai Land Department**
+- **Real estate transactions**
+- **Property prices** and trends
+- **Rental market** data
+- **Project registrations**
+- [DLD Open Data →](https://www.dubaipulse.gov.ae/data/dld-transactions)
+
+## Data Categories
+
+<AccordionGroup>
+  <Accordion title="Finance & Economy" icon="chart-line">
+    - CBUAE banking statistics
+    - Ministry of Finance budgets
+    - DFM/ADX market indices
+    - FDI and trade data
+    - Inflation and CPI metrics
+  </Accordion>
+
+  <Accordion title="Real Estate & Urban" icon="building">
+    - Property transactions (DLD)
+    - Rental prices and trends
+    - Construction permits
+    - Urban planning zones
+    - Housing affordability indices
+  </Accordion>
+
+  <Accordion title="Business & SME" icon="briefcase">
+    - Business licenses (DED)
+    - National Economic Register
+    - Company formations
+    - Sector classifications
+    - Free zone statistics
+  </Accordion>
+
+  <Accordion title="Tourism & Retail" icon="plane">
+    - Visitor arrivals (DET)
+    - Hotel occupancy rates
+    - Tourist spending patterns
+    - Event calendars
+    - Retail footfall data
+  </Accordion>
+
+  <Accordion title="Transport & Mobility" icon="train">
+    - RTA ridership statistics
+    - Traffic incident data
+    - Parking availability
+    - Public transport routes
+    - Vehicle registrations
+  </Accordion>
+
+  <Accordion title="Demographics & Social" icon="users">
+    - Population statistics
+    - Education indicators (KHDA)
+    - Health statistics (MOHAP)
+    - Employment data
+    - Age and gender distributions
+  </Accordion>
+
+  <Accordion title="Environment & Energy" icon="solar-panel">
+    - Air quality indices (EAD)
+    - Energy consumption (DEWA)
+    - Water usage statistics
+    - Weather data (NCM)
+    - Sustainability metrics
+  </Accordion>
+</AccordionGroup>
+
+## Implementation Tips
+
+### **API Best Practices**
+```javascript
+// Cache API responses to avoid rate limits
+const cache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+async function fetchWithCache(url) {
+  const cached = cache.get(url);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  cache.set(url, { data, timestamp: Date.now() });
+  return data;
+}
+```
+
+### **CORS Handling**
+```javascript
+// For APIs without CORS headers, use a proxy
+const PROXY_URL = 'https://api.allorigins.win/get?url=';
+
+async function fetchWithProxy(url) {
+  const response = await fetch(PROXY_URL + encodeURIComponent(url));
+  const data = await response.json();
+  return JSON.parse(data.contents);
+}
+```
+
+### **Data Filtering**
+```javascript
+// Filter large datasets client-side for better UX
+function filterByEmirate(data, emirate) {
+  return data.filter(item =>
+    item.emirate?.toLowerCase() === emirate.toLowerCase()
+  );
+}
+
+// Paginate results for performance
+function paginate(data, page = 1, pageSize = 20) {
+  const start = (page - 1) * pageSize;
+  return data.slice(start, start + pageSize);
+}
+```
+
+## Licensing & Attribution
+
+### **Open Data Policy**
+- All listed datasets follow UAE's **Open Data policy**
+- **Free for commercial use** in hackathon projects
+- **No API keys required** for public datasets
+- **Attribution appreciated** but not always mandatory
+
+### **Best Practices**
+1. **Cite sources** in your README and presentation
+2. **Check individual dataset licenses** for specific requirements
+3. **Use official endpoints** rather than scraping
+4. **Respect rate limits** to ensure fair access
+
+### **Example Attribution**
+```markdown
+## Data Sources
+- Banking statistics: Central Bank of the UAE Open Data
+- Property prices: Dubai Land Department via Dubai Pulse
+- Business licenses: Dubai DED Open Data Portal
+```
+
+## Performance Optimization
+
+<Tabs>
+  <Tab title="Frontend Caching">
+    ```javascript
+    // Use localStorage for persistent caching
+    class DataCache {
+      constructor(prefix = 'uae_data_') {
+        this.prefix = prefix;
+      }
+
+      set(key, data, ttl = 3600000) { // 1 hour default
+        const item = {
+          data,
+          expiry: Date.now() + ttl
+        };
+        localStorage.setItem(this.prefix + key, JSON.stringify(item));
+      }
+
+      get(key) {
+        const item = localStorage.getItem(this.prefix + key);
+        if (!item) return null;
+
+        const { data, expiry } = JSON.parse(item);
+        if (Date.now() > expiry) {
+          localStorage.removeItem(this.prefix + key);
+          return null;
+        }
+
+        return data;
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Backend Optimization">
+    ```javascript
+    // Node.js with Redis caching
+    const redis = require('redis');
+    const client = redis.createClient();
+
+    async function getDataWithCache(dataSource, params) {
+      const cacheKey = `${dataSource}:${JSON.stringify(params)}`;
+
+      // Check cache first
+      const cached = await client.get(cacheKey);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+
+      // Fetch from API
+      const data = await fetchFromAPI(dataSource, params);
+
+      // Store in cache with TTL
+      await client.setex(cacheKey, 300, JSON.stringify(data)); // 5 min TTL
+
+      return data;
+    }
+    ```
+  </Tab>
+
+  <Tab title="Batch Processing">
+    ```python
+    # Python with pandas for large datasets
+    import pandas as pd
+    import requests
+    from concurrent.futures import ThreadPoolExecutor
+
+    def fetch_batch_data(endpoints):
+        """Fetch multiple datasets in parallel"""
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            responses = executor.map(requests.get, endpoints)
+            return [r.json() for r in responses if r.status_code == 200]
+
+    # Process large datasets efficiently
+    def process_transactions(df):
+        return df.groupby(['category', 'emirate']).agg({
+            'amount': ['sum', 'mean', 'count'],
+            'date': ['min', 'max']
+        }).reset_index()
+    ```
+  </Tab>
+</Tabs>
+
+## Hackathon Quick Wins
+
+### **🏆 Judge-Impressing Features**
+1. **Heat maps** using geographic data from Dubai Pulse
+2. **Trend predictions** using historical CBUAE statistics
+3. **Affordability scores** combining income and DLD property data
+4. **Risk assessments** using traffic and weather correlations
+5. **Sustainability metrics** from DEWA and EAD data
+
+### **⚡ Time-Saving Shortcuts**
+- Start with **Dubai Pulse** - most comprehensive and API-ready
+- Use **sample datasets** for initial development
+- Implement **graceful fallbacks** when APIs are slow
+- **Cache aggressively** during development
+- Keep **backup data files** for demo reliability
+
+## Next Steps
+
+<CardGroup cols={3}>
+  <Card
+    title="Browse Categories"
+    icon="folder"
+    href="/additional-info/datasets-categories"
+  >
+    Explore all available datasets by domain
+  </Card>
+  <Card
+    title="View Mashup Ideas"
+    icon="lightbulb"
+    href="/additional-info/datasets-mashups"
+  >
+    See winning combinations and implementations
+  </Card>
+  <Card
+    title="API Examples"
+    icon="code"
+    href="/additional-info/datasets-apis"
+  >
+    Copy-paste code for quick integration
+  </Card>
+</CardGroup>
+
+## Support & Resources
+
+<CardGroup cols={2}>
+  <Card
+    title="Dubai Pulse Support"
+    icon="life-ring"
+    href="https://www.dubaipulse.gov.ae/contact"
+  >
+    Get help with Dubai Pulse APIs
+  </Card>
+  <Card
+    title="Community Discussion"
+    icon="comments"
+    href="https://github.com/open-finance-os/docs/discussions"
+  >
+    Share dataset tips with other teams
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro Tip**: Judges love seeing real UAE data in action. Even simple visualizations of government data can elevate your project above generic solutions.
+</Tip>
+
+<Warning>
+  **Rate Limits**: While most APIs are free, they may have rate limits. Implement caching and consider downloading bulk datasets for intensive processing.
+</Warning>
