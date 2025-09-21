@@ -8,18 +8,27 @@ description: "Get started with Open Finance APIs in minutes"
 Get your Open Finance integration up and running quickly.
 
 <Steps>
-  <Step title="Get API Access">
-    ### Register for Sandbox Access
+  <Step title="Get API Access (Hackathon Teams)">
+    ### Credentials Provided by Nebras
 
-    1. Visit the [Open Finance Sandbox](https://sandbox.openfinance.ae)
-    2. Register for a developer account
-    3. Obtain your API credentials:
-       - Client ID
-       - Client Secret
-       - API Key
+    <Info>
+      **For ADCB & Nebras Hackathon participants**: All credentials will be provided by Nebras before the hackathon kickoff. No registration required!
+    </Info>
+
+    **What you'll receive:**
+    - TPP Application credentials (Client ID, Client Secret)
+    - Transport & Signing certificates
+    - API Hub Sandbox access
+    - Claude Code Bedrock API keys
+
+    **Sandbox Environment:**
+    - **Latest Version**: [API Hub Sandbox 2025.35.0](https://openfinanceuae.atlassian.net/wiki/spaces/OF/pages/589332481/API+Hub+Sandbox+2025.35.0)
+    - **Base URL**: `https://sandbox.openfinance.ae/api/v1`
+    - **Test Data**: Pre-configured with synthetic sample data
+    - **Model LFIs**: Fully functioning API resources for testing
 
     <Note>
-      Save your credentials securely - you'll need them for all API calls.
+      Save your provided credentials securely - you'll need them for all API calls during the hackathon.
     </Note>
   </Step>
 
@@ -48,8 +57,17 @@ Get your Open Finance integration up and running quickly.
     OPENFINANCE_BASE_URL=https://sandbox.openfinance.ae/api/v1
     ```
 
+    ### Using Postman for Quick Testing
+
+    For rapid API testing during the hackathon:
+
+    1. **Download Postman Collection**: Available through the sandbox portal
+    2. **Import Environment**: Use provided environment settings
+    3. **Configure Variables**: Set your provided credentials
+    4. **Test Endpoints**: Validate API calls before coding
+
     <Tip>
-      Never commit your `.env` file to version control!
+      Never commit your `.env` file to version control! Use the provided test credentials only in the sandbox environment.
     </Tip>
   </Step>
 

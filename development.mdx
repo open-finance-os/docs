@@ -62,11 +62,24 @@ Get your development environment ready for building Open Finance applications.
 
     Add to `.env`:
     ```bash
-    # Open Finance API Configuration
-    OPENFINANCE_CLIENT_ID=your_client_id
-    OPENFINANCE_CLIENT_SECRET=your_client_secret
-    OPENFINANCE_API_KEY=your_api_key
+    # Open Finance Sandbox Configuration (Provided by Nebras)
+    OPENFINANCE_CLIENT_ID=your_provided_client_id
+    OPENFINANCE_CLIENT_SECRET=your_provided_client_secret
     OPENFINANCE_BASE_URL=https://sandbox.openfinance.ae/api/v1
+
+    # TPP Certificates (Provided by Nebras)
+    TRANSPORT_CERT_PATH=./certs/transport.pem
+    TRANSPORT_KEY_PATH=./certs/transport.key
+    SIGNING_CERT_PATH=./certs/signing.pem
+    SIGNING_KEY_PATH=./certs/signing.key
+
+    # Claude Code Bedrock (Provided by Nebras)
+    AWS_BEARER_TOKEN_BEDROCK=your_bedrock_api_key
+    CLAUDE_CODE_USE_BEDROCK=1
+    AWS_REGION=us-west-2
+    ANTHROPIC_MODEL='us.anthropic.claude-sonnet-4-20250514-v1:0'
+    CLAUDE_CODE_MAX_OUTPUT_TOKENS=4096
+    MAX_THINKING_TOKENS=1024
 
     # Development Settings
     NODE_ENV=development
@@ -78,6 +91,12 @@ Get your development environment ready for building Open Finance applications.
     # Environment variables
     .env
     .env.local
+
+    # TPP Certificates (Never commit!)
+    certs/
+    *.pem
+    *.key
+    *.p12
 
     # Dependencies
     node_modules/
@@ -95,6 +114,10 @@ Get your development environment ready for building Open Finance applications.
     .DS_Store
     Thumbs.db
     ```
+
+    <Warning>
+      **Security Critical**: Never commit certificates or private keys to version control. Store them securely and only use provided credentials in the sandbox environment.
+    </Warning>
   </Step>
 
   <Step title="Install AI Development Tools (Optional)">

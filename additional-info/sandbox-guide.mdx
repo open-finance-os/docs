@@ -1,0 +1,400 @@
+---
+title: "API Hub Sandbox Guide"
+description: "Comprehensive guide to using the Open Finance API Hub Sandbox for hackathon teams"
+---
+
+# API Hub Sandbox Guide for Hackathon Teams
+
+Everything you need to know about using the Open Finance API Hub Sandbox during the ADCB & Nebras hackathon.
+
+<Info>
+  **Hackathon Participants**: Your TPP credentials and sandbox access will be provided by Nebras before the hackathon kickoff. This guide assumes you have received your credentials.
+</Info>
+
+## What is the API Hub Sandbox?
+
+The API Hub Sandbox contains Model Licensed Financial Institutions (LFIs) with:
+
+1. **Fully functioning API resources** aligned to [Open Finance Standards](https://openfinanceuae.atlassian.net/wiki/spaces/OF/pages/6258951/Standards)
+2. **Synthetic sample data** for testing (usernames, passwords, accounts, transactions)
+3. **Production-like behavior** without real customer data
+
+This environment lets you test applications safely and demonstrate compliance with Open Finance Standards.
+
+## Current Sandbox Version
+
+**Latest**: [API Hub Sandbox 2025.35.0](https://openfinanceuae.atlassian.net/wiki/spaces/OF/pages/589332481/API+Hub+Sandbox+2025.35.0)
+- **Publication Date**: September 8, 2025
+- **Features**: Support for v1.2 & v2.0 APIs
+- **Base URL**: `https://sandbox.openfinance.ae/api/v1`
+
+## Quick Setup for Hackathon Teams
+
+<Steps>
+  <Step title="Verify Your Credentials">
+    **Provided by Nebras:**
+    - TPP Application Client ID & Secret
+    - Transport Certificate & Key
+    - Signing Certificate & Key
+    - Claude Code Bedrock API keys
+
+    **Store securely in `.env`:**
+    ```bash
+    # Open Finance Sandbox
+    OPENFINANCE_CLIENT_ID=your_provided_client_id
+    OPENFINANCE_CLIENT_SECRET=your_provided_client_secret
+    OPENFINANCE_BASE_URL=https://sandbox.openfinance.ae/api/v1
+
+    # Certificates (paths to provided files)
+    TRANSPORT_CERT_PATH=./certs/transport.pem
+    TRANSPORT_KEY_PATH=./certs/transport.key
+    SIGNING_CERT_PATH=./certs/signing.pem
+    SIGNING_KEY_PATH=./certs/signing.key
+
+    # Claude Code Bedrock (provided by Nebras)
+    AWS_BEARER_TOKEN_BEDROCK=your_bedrock_key
+    CLAUDE_CODE_USE_BEDROCK=1
+    AWS_REGION=us-west-2
+    ANTHROPIC_MODEL='us.anthropic.claude-sonnet-4-20250514-v1:0'
+    ```
+  </Step>
+
+  <Step title="Set Up Postman (Recommended)">
+    ### Download Postman Collection
+
+    1. **Get Collection**: Download from sandbox portal or Nebras
+    2. **Import into Postman**: File → Import → Select collection file
+    3. **Configure Environment**:
+       ```json
+       {
+         "client_id": "{{your_client_id}}",
+         "client_secret": "{{your_client_secret}}",
+         "base_url": "https://sandbox.openfinance.ae/api/v1",
+         "access_token": ""
+       }
+       ```
+
+    ### Quick API Test
+
+    1. **Get Access Token**: Run the OAuth token request
+    2. **Test Account Endpoint**: Try fetching account information
+    3. **Verify Response**: Confirm you're getting synthetic test data
+
+    <Tip>
+      Use Postman's pre-request scripts to automatically refresh tokens and handle certificate authentication.
+    </Tip>
+  </Step>
+
+  <Step title="Test First API Call">
+    ### Authentication Flow
+
+    ```javascript
+    const axios = require('axios');
+    const fs = require('fs');
+    const https = require('https');
+
+    // Load certificates (provided by Nebras)
+    const httpsAgent = new https.Agent({
+      cert: fs.readFileSync(process.env.TRANSPORT_CERT_PATH),
+      key: fs.readFileSync(process.env.TRANSPORT_KEY_PATH),
+      rejectUnauthorized: false // Sandbox only
+    });
+
+    async function getAccessToken() {
+      try {
+        const response = await axios.post(
+          `${process.env.OPENFINANCE_BASE_URL}/oauth/token`,
+          {
+            client_id: process.env.OPENFINANCE_CLIENT_ID,
+            client_secret: process.env.OPENFINANCE_CLIENT_SECRET,
+            grant_type: 'client_credentials',
+            scope: 'accounts payments'
+          },
+          {
+            httpsAgent,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+        );
+
+        console.log('✅ Authentication successful!');
+        return response.data.access_token;
+      } catch (error) {
+        console.error('❌ Authentication failed:', error.response?.data || error.message);
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Available APIs in Sandbox
+
+### Bank Data Sharing APIs
+- **Account Information**: `/accounts`, `/accounts/{id}/balances`, `/accounts/{id}/transactions`
+- **ATM Services**: `/atms`, `/atms/{id}`
+- **Product Information**: `/products`, `/products/{id}`
+
+### Bank Service Initiation APIs
+- **Account Opening**: `/account-opening/applications`
+- **Payment Initiation**: `/payments`, `/payments/{id}`
+- **Confirmation of Payee**: `/payee-verification`
+- **FX Services**: `/fx/quotes`, `/fx/transfers`
+
+### Insurance APIs
+- **Policies**: `/insurance/policies`, `/insurance/policies/{id}`
+- **Claims**: `/insurance/claims`, `/insurance/claims/{id}`
+- **Quotes**: `/insurance/quotes`
+
+## Sample Test Data
+
+The sandbox includes synthetic data for testing:
+
+### Test Accounts
+```json
+{
+  "account_id": "ACC_001_SANDBOX",
+  "account_type": "Personal",
+  "balance": {
+    "amount": "15,432.50",
+    "currency": "AED"
+  },
+  "account_holder": "John Doe",
+  "bank_code": "ADCB_SANDBOX"
+}
+```
+
+### Test Transactions
+```json
+{
+  "transaction_id": "TXN_001_SANDBOX",
+  "amount": "-250.00",
+  "currency": "AED",
+  "description": "Grocery Store Purchase",
+  "date": "2025-09-20T14:30:00Z",
+  "merchant": "Carrefour UAE"
+}
+```
+
+### Test User Credentials
+- **Username**: `hackathon_user_001`
+- **Password**: `Sandbox2025!`
+- **OTP**: `123456` (static for testing)
+
+<Warning>
+  These are synthetic credentials for sandbox testing only. Never use in production environments.
+</Warning>
+
+## Common API Patterns for Hackathon
+
+### 1. Account Data Aggregation
+```javascript
+async function getCustomerFinancialSnapshot(token, customerId) {
+  const accounts = await fetchAccounts(token, customerId);
+  const balances = await Promise.all(
+    accounts.map(acc => fetchAccountBalance(token, acc.id))
+  );
+  const recentTransactions = await Promise.all(
+    accounts.map(acc => fetchRecentTransactions(token, acc.id, 10))
+  );
+
+  return {
+    accounts,
+    totalBalance: balances.reduce((sum, bal) => sum + bal.amount, 0),
+    recentActivity: recentTransactions.flat()
+  };
+}
+```
+
+### 2. Payment Workflow
+```javascript
+async function initiatePayment(token, paymentRequest) {
+  // 1. Validate payee
+  const payeeVerification = await axios.post(
+    `${baseUrl}/payee-verification`,
+    { account_number: paymentRequest.to_account },
+    { headers: { Authorization: `Bearer ${token}` }}
+  );
+
+  // 2. Create payment
+  const payment = await axios.post(
+    `${baseUrl}/payments`,
+    paymentRequest,
+    { headers: { Authorization: `Bearer ${token}` }}
+  );
+
+  // 3. Monitor status
+  return payment.data;
+}
+```
+
+### 3. Insurance Integration
+```javascript
+async function getInsurancePortfolio(token, customerId) {
+  const policies = await axios.get(
+    `${baseUrl}/insurance/policies?customer_id=${customerId}`,
+    { headers: { Authorization: `Bearer ${token}` }}
+  );
+
+  return policies.data.map(policy => ({
+    type: policy.product_type,
+    coverage: policy.coverage_amount,
+    premium: policy.monthly_premium,
+    status: policy.status
+  }));
+}
+```
+
+## Troubleshooting Guide
+
+### Authentication Issues
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid credentials | Verify client_id and client_secret from Nebras |
+| 403 Forbidden | Missing certificates | Ensure transport/signing certs are properly loaded |
+| SSL/TLS errors | Certificate issues | Check certificate paths and format |
+
+### API Call Issues
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 404 Not Found | Incorrect endpoint | Verify API version and endpoint path |
+| 429 Rate Limited | Too many requests | Implement exponential backoff |
+| 500 Server Error | Sandbox issue | Check sandbox status or try again |
+
+### Development Tips
+
+```javascript
+// Add request/response logging
+axios.interceptors.request.use(request => {
+  console.log('API Request:', request.method?.toUpperCase(), request.url);
+  return request;
+});
+
+axios.interceptors.response.use(
+  response => {
+    console.log('API Response:', response.status, response.data);
+    return response;
+  },
+  error => {
+    console.error('API Error:', error.response?.status, error.response?.data);
+    return Promise.reject(error);
+  }
+);
+
+// Token refresh helper
+async function withTokenRefresh(apiCall) {
+  try {
+    return await apiCall();
+  } catch (error) {
+    if (error.response?.status === 401) {
+      console.log('Token expired, refreshing...');
+      const newToken = await getAccessToken();
+      return await apiCall(newToken);
+    }
+    throw error;
+  }
+}
+```
+
+## Hackathon-Specific Features
+
+### Rapid Prototyping Mode
+- **Mock Data**: Rich synthetic datasets for realistic testing
+- **No Rate Limits**: Higher limits for hackathon development
+- **Debug Headers**: Additional response headers for troubleshooting
+
+### AI Integration Support
+- **Claude Code Integration**: Pre-configured Bedrock access
+- **API Documentation**: AI-readable OpenAPI specs
+- **Code Generation**: Template-friendly response formats
+
+### Team Collaboration
+- **Shared Credentials**: Team-level access for all members
+- **Environment Isolation**: Separate data per team
+- **Real-time Monitoring**: Track API usage across team
+
+## Quick Reference
+
+### Essential Endpoints
+```bash
+# Authentication
+POST /oauth/token
+
+# Account Data
+GET /accounts
+GET /accounts/{id}/balances
+GET /accounts/{id}/transactions
+
+# Payments
+POST /payments
+GET /payments/{id}
+
+# Insurance
+GET /insurance/policies
+POST /insurance/claims
+```
+
+### Response Format
+All APIs return data in this structure:
+```json
+{
+  "status": "success",
+  "data": { /* actual data */ },
+  "meta": {
+    "request_id": "req_123456",
+    "timestamp": "2025-09-21T10:00:00Z"
+  }
+}
+```
+
+## Support During Hackathon
+
+### Get Help Fast
+1. **Check this guide first** - Most common issues covered
+2. **Use GitHub Discussions** - [Community support](https://github.com/open-finance-os/docs/discussions)
+3. **Claude Code assistance** - AI help with API integration
+4. **Nebras support team** - For credential/access issues
+
+### Escalation Path
+- **Level 1**: Documentation and community
+- **Level 2**: GitHub issues for technical problems
+- **Level 3**: Direct Nebras support for urgent hackathon blockers
+
+<Note>
+  **Hackathon Tip**: Start with simple API calls to verify your setup, then build complexity. The sandbox is designed for rapid iteration and testing!
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Start Building"
+    icon="rocket"
+    href="/quickstart"
+  >
+    Jump into the quick start guide
+  </Card>
+  <Card
+    title="Explore Templates"
+    icon="code"
+    href="/templates"
+  >
+    Use ready-made code templates
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/introduction"
+  >
+    Complete API documentation
+  </Card>
+  <Card
+    title="Get Support"
+    icon="life-ring"
+    href="/support"
+  >
+    Join community discussions
+  </Card>
+</CardGroup>

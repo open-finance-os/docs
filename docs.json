@@ -55,6 +55,7 @@
           {
             "group": "Power Tools",
             "pages": [
+              "additional-info/sandbox-guide",
               "additional-info/mcps",
               "additional-info/datasets",
               "additional-info/datasets-categories",
