@@ -1,4 +1,4 @@
-# UAE Open Finance Hackathon Documentation
+# ADCB & Nebras UAE Open Finance Hackathon Documentation
 
 Comprehensive documentation and resources for building innovative financial applications using Open Finance APIs in the UAE.
 
@@ -12,7 +12,7 @@ Comprehensive documentation and resources for building innovative financial appl
 
 ## 🚀 For Hackathon Participants
 
-This documentation is specifically designed for the UAE Open Finance Hackathon. Whether you're building personal finance tools, business banking solutions, or insurtech applications, you'll find everything you need here.
+This documentation is specifically designed for the ADCB & Nebras UAE Open Finance Hackathon. Whether you're building personal finance tools, business banking solutions, or insurtech applications, you'll find everything you need here.
 
 ### Quick Links
 - **[Hackathon Website](https://preview--uae-open-finance-hackathon.lovable.app/)** - Register and learn more
@@ -112,5 +112,5 @@ This documentation is open source and available under the [MIT License](LICENSE)
 
 ---
 
-**Built for the UAE Open Finance Hackathon** 🇦🇪
+**Built for the ADCB & Nebras UAE Open Finance Hackathon** 🇦🇪
 *Empowering developers to build the future of finance*
