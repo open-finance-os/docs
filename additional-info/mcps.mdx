@@ -7,8 +7,12 @@ description: "Supercharge your Open Finance development with Model Context Proto
 
 Accelerate your development with Model Context Protocol (MCP) servers that integrate directly with Claude Code for enhanced productivity.
 
+<Warning>
+  **📖 Official Documentation**: This guide supplements the [official Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp). For authoritative information and the latest updates, always refer to the official docs.
+</Warning>
+
 <Info>
-  **🚀 New from GitHub**: The [GitHub MCP Registry](https://github.blog/ai-and-ml/github-copilot/meet-the-github-mcp-registry-the-fastest-way-to-discover-mcp-servers/) is now live! Discover and use production-ready MCP servers for your hackathon project.
+  **🎯 Hackathon-Specific**: This guide provides tested, practical examples specifically for the ADCB & Nebras UAE Open Finance Hackathon, including real setup commands that work with the current Claude Code CLI.
 </Info>
 
 ## What are MCP Servers?
@@ -28,33 +32,73 @@ MCP servers extend Claude Code's capabilities by providing direct access to exte
 
 <AccordionGroup>
   <Accordion title="GitHub MCP Server" icon="github">
-    **Use Case**: Repository management, issue tracking, automated deployments
+    **Use Case**: Repository management, issue tracking, code navigation
 
-    **Setup:**
+    **Setup (Tested & Working):**
     ```bash
     # Install GitHub MCP Server
-    npx @modelcontextprotocol/create-server github
+    claude mcp add github npx @modelcontextprotocol/server-github
 
-    # Configure with your repository
-    claude config --mcp github --repo "open-finance-os/your-project"
+    # Verify installation
+    claude mcp list
+    claude mcp get github
     ```
 
-    **Hackathon Examples:**
-    ```bash
-    # Create automated deployment workflow
-    @claude use github-mcp to set up CI/CD for our Open Finance app
-
-    # Manage project issues and milestones
-    @claude use github-mcp to create hackathon milestone with submission deadline
-
-    # Code review and collaboration
-    @claude use github-mcp to review this payment integration PR
+    **What You'll See:**
     ```
+    ✓ Connected github: npx @modelcontextprotocol/server-github
+    ```
+
+    **Real Hackathon Usage:**
+    - Browse repository files and structure
+    - Search through code and documentation
+    - Navigate project history and changes
+    - Understand codebase context for AI assistance
 
     **Team Benefits:**
-    - Automated commit messages and PR descriptions
-    - Issue tracking for hackathon tasks
-    - Deployment pipeline setup in minutes
+    - Enhanced code understanding for AI assistance
+    - Better context for code generation
+    - Improved navigation of project structure
+    - Faster onboarding for team members
+
+    <Warning>
+      **Note**: Some advanced GitHub operations may require additional configuration. For basic repository browsing and code context, the default setup works immediately.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Filesystem MCP Server" icon="folder">
+    **Use Case**: Enhanced file operations, directory browsing, project structure analysis
+
+    **Setup (Tested & Working):**
+    ```bash
+    # Install Filesystem MCP Server with project access
+    claude mcp add filesystem npx @modelcontextprotocol/server-filesystem /Users/michartmann/Documents/GitHub
+
+    # Verify installation
+    claude mcp list
+    claude mcp get filesystem
+    ```
+
+    **What You'll See:**
+    ```
+    ✓ Connected filesystem: npx @modelcontextprotocol/server-filesystem /Users/michartmann/Documents/GitHub
+    ```
+
+    **Real Hackathon Usage:**
+    - Advanced file operations beyond standard read/write
+    - Intelligent directory traversal and analysis
+    - Project structure understanding for AI
+    - Enhanced code navigation capabilities
+
+    **Team Benefits:**
+    - Faster project exploration and understanding
+    - Better context for AI-assisted development
+    - Improved file management during rapid development
+    - Enhanced code organization insights
+
+    <Tip>
+      **Hackathon Tip**: Set the path to your main development directory to give Claude Code comprehensive access to your project files and structure.
+    </Tip>
   </Accordion>
 
   <Accordion title="Docker MCP Server" icon="docker">
@@ -62,29 +106,28 @@ MCP servers extend Claude Code's capabilities by providing direct access to exte
 
     **Setup:**
     ```bash
-    # Install Docker MCP Server
-    npm install @modelcontextprotocol/server-docker
+    # Note: Docker MCP setup may require additional configuration
+    # Check official docs: https://docs.claude.com/en/docs/claude-code/mcp
+    claude mcp add docker npx @modelcontextprotocol/server-docker
 
-    # Configure Docker integration
-    claude config --mcp docker
+    # Verify Docker is running
+    docker --version
+    claude mcp list
     ```
 
-    **Hackathon Examples:**
-    ```bash
-    # Create production-ready containers
-    @claude use docker-mcp to containerize our Next.js Open Finance app
-
-    # Set up development environment
-    @claude use docker-mcp to create dev environment with PostgreSQL and Redis
-
-    # Multi-service deployment
-    @claude use docker-mcp to orchestrate frontend, backend, and database
-    ```
+    **Real Hackathon Usage:**
+    - Container management for consistent environments
+    - Development environment standardization
+    - Simplified deployment workflows
 
     **Team Benefits:**
-    - Consistent development environments
-    - One-click deployment setup
-    - Easy scaling for demo day
+    - Consistent development environments across team
+    - Easier environment setup for new team members
+    - Simplified deployment for demo day
+
+    <Warning>
+      **Complexity Note**: Docker MCP setup may require additional configuration and Docker daemon access. Consider using templates with pre-configured Docker setups from the hackathon starter repository.
+    </Warning>
   </Accordion>
 
   <Accordion title="PostgreSQL MCP Server" icon="database">
@@ -301,59 +344,134 @@ All essential + high-value MCPs
 @claude use slack-mcp to coordinate across frontend and backend work
 ```
 
-## Quick Setup Guide
+## Practical Setup Guide (Tested for Hackathon)
 
 <Steps>
-  <Step title="Install Claude Code">
+  <Step title="Prerequisites Check">
     ```bash
-    npm install -g @anthropic-ai/claude-code
+    # Ensure Claude Code is installed and working
+    claude --version
+
+    # Check MCP command availability
+    claude mcp --help
+    ```
+
+    If Claude Code is not installed, follow the [official installation guide](https://docs.claude.com/en/docs/claude-code/mcp).
+  </Step>
+
+  <Step title="Install Essential MCPs">
+    **GitHub MCP (Recommended for all teams):**
+    ```bash
+    # Install GitHub MCP Server
+    claude mcp add github npx @modelcontextprotocol/server-github
+    ```
+
+    **Filesystem MCP (Recommended for all teams):**
+    ```bash
+    # Install with your project directory path
+    claude mcp add filesystem npx @modelcontextprotocol/server-filesystem /path/to/your/hackathon/project
+    ```
+
+    <Tip>
+      **For Hackathon**: These two MCPs provide the most immediate value for development acceleration.
+    </Tip>
+  </Step>
+
+  <Step title="Verify Installation">
+    ```bash
+    # Check all configured MCP servers
+    claude mcp list
+    ```
+
+    **Expected Output:**
+    ```
+    Checking MCP server health...
+
+    github: npx @modelcontextprotocol/server-github - ✓ Connected
+    filesystem: npx @modelcontextprotocol/server-filesystem /your/path - ✓ Connected
+    ```
+
+    **Get detailed info:**
+    ```bash
+    claude mcp get github
+    claude mcp get filesystem
     ```
   </Step>
 
-  <Step title="Configure Essential MCPs">
-    ```bash
-    # GitHub (replace with your repo)
-    claude config --mcp github --repo "your-username/hackathon-project"
+  <Step title="Test Integration">
+    Open Claude Code in your project and test MCP functionality:
 
-    # Docker (if using containers)
-    claude config --mcp docker
+    **Test file access:**
+    - Ask Claude about your project structure
+    - Request file analysis or code review
+    - Ask for help with specific files in your project
 
-    # Database (if using PostgreSQL)
-    claude config --mcp postgres --url "your-database-url"
-    ```
+    **Test GitHub integration:**
+    - Ask Claude about repository structure
+    - Request code analysis across the project
+    - Get help understanding the codebase
+
+    <Warning>
+      **If you see deprecation warnings**: These are normal and don't affect functionality. The MCP servers will continue to work despite warning messages.
+    </Warning>
   </Step>
 
-  <Step title="Test MCP Integration">
-    ```bash
-    # Test GitHub integration
-    @claude use github-mcp to create a new issue for "Setup Open Finance API integration"
-
-    # Test Docker integration
-    @claude use docker-mcp to show current container status
-
-    # Test database integration
-    @claude use postgres-mcp to list all tables in our database
-    ```
-  </Step>
-
-  <Step title="Start Building">
-    Now you can use natural language to interact with all your development tools through Claude Code!
+  <Step title="Ready for Hackathon">
+    With GitHub and Filesystem MCPs configured, you now have:
+    - Enhanced code understanding for AI assistance
+    - Better project navigation and context
+    - Improved code generation capabilities
+    - Faster development workflow
   </Step>
 </Steps>
 
-## Real-World MCP Examples
+## Real-World Hackathon Examples
 
-### **Automated Development Workflow**
-```bash
-# Complete feature development cycle
-@claude use github-mcp to create feature branch for "payment-integration"
-@claude use postgres-mcp to create schema for payment transactions
-@claude use openai-mcp to generate validation logic for payment data
-@claude use docker-mcp to test the integration in development environment
-@claude use vercel-mcp to deploy preview for team testing
-@claude use slack-mcp to notify team that feature is ready for review
-@claude use github-mcp to create pull request with detailed description
+### **Open Finance API Integration Workflow**
+**With GitHub and Filesystem MCPs:**
 ```
+# Ask Claude about your project structure
+"Can you analyze my project structure and suggest how to organize my Open Finance API integration?"
+
+# Get help with existing code
+"Look at my auth.js file and help me improve the OAuth implementation for the sandbox"
+
+# Understand the hackathon starter repository
+"Analyze the examples folder and explain how the payment flow works"
+
+# Code review and improvements
+"Review my account data fetching code and suggest optimizations"
+```
+
+**Realistic AI Assistance:**
+- **Project Analysis**: Claude can understand your file structure and suggest improvements
+- **Code Enhancement**: Get help with specific files in your project
+- **API Integration**: Ask for help implementing Open Finance API patterns
+- **Error Debugging**: Share error messages and get context-aware solutions
+
+### **Hackathon Starter Repository Integration**
+**Using MCPs with the [Hackathon Starter](https://github.com/open-finance-os/open-finance-hackathon-starter):**
+
+```
+# After forking the starter repository
+"Analyze the hackathon starter repository structure and explain how I should organize my team's code"
+
+# Understanding the examples
+"Look at the examples/auth.js file and help me adapt it for our specific use case"
+
+# Extending the starter code
+"Based on the examples/payments.js, help me add recurring payment functionality"
+
+# Environment setup
+"Review my .env file and ensure I have all required variables for the sandbox"
+```
+
+**MCP-Enhanced Development Flow:**
+1. **Fork** the hackathon starter repository
+2. **Set up MCPs** pointing to your forked repository
+3. **Ask Claude** to analyze the starter code and suggest customizations
+4. **Iterate rapidly** with AI assistance on your specific features
+5. **Debug issues** with context-aware help from your project files
 
 ### **Data Analysis Pipeline**
 ```bash
@@ -403,25 +521,41 @@ All essential + high-value MCPs
 ### **MCP Connection Problems**
 ```bash
 # Check MCP server status
-claude mcp status
+claude mcp list
 
-# Restart MCP server
-claude mcp restart github
+# Get detailed info about a specific server
+claude mcp get github
 
-# Reset MCP configuration
-claude config --reset-mcp github
+# Remove and re-add problematic server
+claude mcp remove github
+claude mcp add github npx @modelcontextprotocol/server-github
 ```
 
-### **Authentication Issues**
+### **Deprecation Warnings**
+**Issue**: You may see warnings like "Package no longer supported"
+
+**Solution**: These warnings are normal and don't affect functionality. The MCP servers continue to work despite deprecation warnings.
+
 ```bash
-# Refresh GitHub token
-claude config --mcp github --refresh-token
+# Example warning you might see:
+npm warn deprecated @modelcontextprotocol/server-github@2025.4.8: Package no longer supported
 
-# Update AWS credentials
-claude config --mcp aws --profile hackathon
+# This is expected - the server still works
+```
 
-# Test OpenAI API key
-claude config --mcp openai --test-connection
+### **Path Issues (Filesystem MCP)**
+**Issue**: Filesystem MCP can't access your project files
+
+**Solution**: Ensure the path is correct and accessible
+```bash
+# Check your current directory
+pwd
+
+# Use absolute path when adding filesystem MCP
+claude mcp add filesystem npx @modelcontextprotocol/server-filesystem /full/path/to/project
+
+# For hackathon teams, typically:
+claude mcp add filesystem npx @modelcontextprotocol/server-filesystem /Users/yourname/hackathon-project
 ```
 
 ## Getting Help
