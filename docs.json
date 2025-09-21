@@ -74,8 +74,7 @@
             "group": "Get Help",
             "pages": [
               "support/index",
-              "support/faq",
-              "support/hackathon-help"
+              "support/faq"
             ]
           }
         ]
