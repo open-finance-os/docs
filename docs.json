@@ -120,9 +120,9 @@
           "icon": "comments"
         },
         {
-          "anchor": "Hackathon",
-          "href": "https://preview--uae-open-finance-hackathon.lovable.app/",
-          "icon": "trophy"
+          "anchor": "Open Finance Standards",
+          "href": "https://openfinanceuae.atlassian.net/wiki/spaces/OF/overview?mode=global",
+          "icon": "book"
         }
       ]
     }
