@@ -24,10 +24,10 @@
         ]
       },
       {
-        "tab": "Starter Templates",
+        "tab": "Framework Guides",
         "groups": [
           {
-            "group": "Ready-to-Use Templates",
+            "group": "Hackathon Starter & Framework Guides",
             "pages": [
               "templates/index",
               "templates/react-nextjs",

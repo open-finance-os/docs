@@ -1,19 +1,23 @@
 ---
-title: "Python + FastAPI Template"
-description: "ML-ready backend template for financial data analysis and insights"
+title: "Python + FastAPI Adaptation Guide"
+description: "Convert the hackathon starter to Python for ML and data analysis"
 ---
 
-# Python + FastAPI Starter Template
+# Python + FastAPI Framework Guide
 
-A high-performance backend template built with FastAPI, perfect for financial data analysis, machine learning, and API development.
+Convert the [Open Finance Hackathon Starter](https://github.com/open-finance-os/open-finance-hackathon-starter) from Node.js to Python + FastAPI for machine learning, data analysis, and high-performance APIs.
+
+<Info>
+  **Perfect For**: Teams focusing on financial data analysis, ML-powered insights, fraud detection, or algorithmic trading.
+</Info>
 
 <CardGroup cols={2}>
   <Card
-    title="Fork on GitHub"
+    title="Hackathon Starter"
     icon="github"
-    href="https://github.com/open-finance-os/template-python-fastapi"
+    href="https://github.com/open-finance-os/open-finance-hackathon-starter"
   >
-    Production-ready Python API template
+    Start with the Node.js examples, then convert to Python
   </Card>
   <Card
     title="API Reference"
@@ -24,34 +28,181 @@ A high-performance backend template built with FastAPI, perfect for financial da
   </Card>
 </CardGroup>
 
-## What's Included
+## Python Conversion Benefits
 
-### 🛠️ **Tech Stack**
+### 🤖 **ML & Analytics Advantages**
+- **Pandas** - Superior financial data analysis
+- **NumPy** - High-performance numerical computing
+- **scikit-learn** - Machine learning for fraud detection
+- **Matplotlib/Plotly** - Advanced data visualization
+- **TensorFlow/PyTorch** - Deep learning capabilities
+
+### 🛠️ **Recommended Tech Stack**
 - **FastAPI** - Modern, fast web framework
 - **Python 3.11+** - Latest Python features
-- **SQLAlchemy** - SQL toolkit and ORM
+- **httpx** - Async HTTP client (replaces Node.js axios)
 - **Pydantic** - Data validation using Python type hints
-- **Pandas** - Data analysis and manipulation
-- **NumPy** - Numerical computing
-- **scikit-learn** - Machine learning library
+- **SQLAlchemy** - Database ORM (optional)
 
-### 🤖 **ML & Analytics**
-- Financial data analysis tools
-- Spending pattern detection
-- Risk assessment algorithms
-- Predictive modeling pipelines
-- Real-time fraud detection
+### 🔐 **API Integration**
+- Convert Node.js examples to Python
+- Use httpx for async HTTP requests
+- Implement OAuth2 with Python libraries
+- Handle TPP certificates with Python ssl module
 
-### 🔐 **Security & Performance**
-- OAuth2 with JWT tokens
-- API rate limiting
-- Request validation
-- Background tasks with Celery
-- Async database operations
-
-## Quick Setup
+## Python Conversion Steps
 
 <Steps>
+  <Step title="Analyze Node.js Examples">
+    ```bash
+    # First, understand the working Node.js examples
+    git clone https://github.com/YOUR_USERNAME/open-finance-hackathon-starter.git
+    cd open-finance-hackathon-starter
+
+    # Study the working examples
+    cat examples/auth.js
+    cat examples/accounts.js
+    cat examples/payments.js
+    ```
+  </Step>
+
+  <Step title="Setup Python Environment">
+    ```bash
+    # Create new Python project
+    mkdir openfinance-python
+    cd openfinance-python
+    python -m venv venv
+    source venv/bin/activate  # or venv\Scripts\activate on Windows
+
+    # Install dependencies
+    pip install fastapi uvicorn httpx python-dotenv cryptography
+    ```
+  </Step>
+
+  <Step title="Convert Authentication">
+    ```python
+    # auth.py - Convert from examples/auth.js
+    import httpx
+    import ssl
+    from pathlib import Path
+
+    async def get_access_token():
+        # Convert the Node.js auth example to Python
+        # Use httpx instead of axios
+        # Handle certificates with ssl module
+        pass
+    ```
+  </Step>
+
+  <Step title="Create FastAPI Server">
+    ```python
+    # main.py
+    from fastapi import FastAPI
+    from auth import get_access_token
+
+    app = FastAPI(title="Open Finance API")
+
+    @app.get("/accounts")
+    async def get_accounts():
+        # Convert examples/accounts.js logic
+        token = await get_access_token()
+        # Make API calls using httpx
+        return {"accounts": []}
+    ```
+  </Step>
+
+  <Step title="Add ML Features">
+    ```python
+    # analytics.py - Add Python-specific ML features
+    import pandas as pd
+    import numpy as np
+    from sklearn.cluster import KMeans
+
+    def analyze_spending_patterns(transactions):
+        df = pd.DataFrame(transactions)
+        # Perform analysis that would be complex in Node.js
+        return insights
+    ```
+  </Step>
+</Steps>
+
+## Python-Specific Code Examples
+
+### 🔐 **Converting Authentication**
+```python
+# Convert from examples/auth.js
+import httpx
+import ssl
+from pathlib import Path
+
+async def get_access_token():
+    # Load certificates (convert from Node.js approach)
+    cert_path = Path("certs/transport.pem")
+    key_path = Path("certs/transport-key.pem")
+
+    # Create SSL context
+    ssl_context = ssl.create_default_context()
+    ssl_context.load_cert_chain(cert_path, key_path)
+
+    async with httpx.AsyncClient(verify=ssl_context) as client:
+        response = await client.post(
+            f"{os.getenv('OPENFINANCE_BASE_URL')}/oauth/token",
+            data={
+                "client_id": os.getenv("OPENFINANCE_CLIENT_ID"),
+                "client_secret": os.getenv("OPENFINANCE_CLIENT_SECRET"),
+                "grant_type": "client_credentials",
+                "scope": "accounts"
+            }
+        )
+    return response.json()
+```
+
+### 📊 **Financial Data Analysis**
+```python
+# Python excels at financial analysis
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+
+def analyze_spending_patterns(transactions):
+    df = pd.DataFrame(transactions)
+
+    # Group by category and analyze
+    spending_by_category = df.groupby('category')['amount'].sum()
+
+    # Detect unusual spending patterns
+    amounts = df['amount'].values.reshape(-1, 1)
+    kmeans = KMeans(n_clusters=3)
+    clusters = kmeans.fit_predict(amounts)
+
+    return {
+        "spending_by_category": spending_by_category.to_dict(),
+        "unusual_transactions": df[clusters == 2].to_dict('records')
+    }
+```
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Hackathon Starter"
+    icon="github"
+    href="https://github.com/open-finance-os/open-finance-hackathon-starter"
+  >
+    Return to the Node.js examples for reference
+  </Card>
+  <Card
+    title="Get Support"
+    icon="comments"
+    href="/support"
+  >
+    Hackathon support and community discussions
+  </Card>
+</CardGroup>
+
+<Tip>
+  **ML Advantage**: Python's data science ecosystem makes it perfect for building intelligent financial insights that would be difficult to implement in other languages.
+</Tip>
   <Step title="Fork & Clone">
     ```bash
     git clone https://github.com/YOUR_USERNAME/template-python-fastapi.git

@@ -1,690 +1,274 @@
 ---
-title: "React Native Mobile Template"
-description: "Production-ready React Native template for Open Finance mobile applications"
+title: "React Native Adaptation Guide"
+description: "Build mobile banking apps using the hackathon starter as foundation"
 ---
 
-# React Native Mobile Banking Template
+# React Native Mobile App Guide
 
-A comprehensive React Native starter template for building secure, production-ready mobile banking applications with Open Finance APIs.
+Create a mobile banking application using the [Open Finance Hackathon Starter](https://github.com/open-finance-os/open-finance-hackathon-starter) as your API foundation and React Native for the mobile frontend.
+
+<Warning>
+  **Mobile Complexity**: React Native requires additional setup and mobile development experience. Consider web-first approach if your team is new to mobile development.
+</Warning>
 
 <CardGroup cols={2}>
   <Card
-    title="Fork Template"
+    title="Hackathon Starter"
     icon="github"
-    href="https://github.com/open-finance-os/template-react-native"
+    href="https://github.com/open-finance-os/open-finance-hackathon-starter"
   >
-    Ready-to-use React Native template with banking features
+    Use the Node.js backend as your mobile API server
   </Card>
   <Card
-    title="Live Demo"
+    title="Business Demo"
     icon="mobile"
-    href="https://expo.dev/@openfinance/mobile-banking-template"
+    href="https://business-banking-demo.vercel.app"
   >
-    Try the Expo demo on your device
+    See mobile banking UX patterns in action
   </Card>
 </CardGroup>
 
-## 🚀 Quick Start
+## Mobile App Development Approach
+
+### 🔄 **Recommended Architecture**
+1. **Backend**: Use hackathon starter as API server
+2. **Mobile**: React Native app that calls your backend
+3. **Authentication**: Handle certificates on backend, not mobile
+4. **Deployment**: Backend on Railway/Heroku, mobile via Expo
+
+### 🚀 **Setup Steps**
 
 <Steps>
-  <Step title="Fork & Clone">
+  <Step title="Setup Backend API">
     ```bash
-    # Fork the repository on GitHub, then clone
-    git clone https://github.com/your-username/template-react-native.git
-    cd template-react-native
-    ```
-  </Step>
-
-  <Step title="Install Dependencies">
-    ```bash
-    # Install npm dependencies
+    # First, get the hackathon starter running as your API
+    git clone https://github.com/YOUR_USERNAME/open-finance-hackathon-starter.git
+    cd open-finance-hackathon-starter
     npm install
+    npm run test:connection
 
-    # iOS setup (macOS only)
-    cd ios && pod install && cd ..
-
-    # Install Expo CLI if using Expo
-    npm install -g expo-cli
+    # Deploy to Railway or Heroku for mobile access
     ```
   </Step>
 
-  <Step title="Configure Environment">
+  <Step title="Create React Native App">
     ```bash
-    # Create environment configuration
-    cp .env.example .env
+    # Create new React Native app with Expo (easier)
+    npx create-expo-app OpenFinanceMobile
+    cd OpenFinanceMobile
 
-    # Configure your API credentials
-    OPENFINANCE_CLIENT_ID=your_client_id
-    OPENFINANCE_CLIENT_SECRET=your_client_secret
-    OPENFINANCE_BASE_URL=https://sandbox.openfinance.ae/api/v1
+    # Install dependencies for API calls and navigation
+    npx expo install axios react-navigation
     ```
   </Step>
 
-  <Step title="Run Application">
+  <Step title="Connect to Backend">
+    ```javascript
+    // services/api.js
+    import axios from 'axios';
+
+    const API_BASE = 'https://your-backend.railway.app'; // Your deployed backend
+
+    export const getAccounts = async () => {
+      const response = await axios.get(`${API_BASE}/api/accounts`);
+      return response.data;
+    };
+    ```
+  </Step>
+
+  <Step title="Build Mobile UI">
+    ```javascript
+    // screens/AccountsScreen.js
+    import React, { useEffect, useState } from 'react';
+    import { View, Text, FlatList } from 'react-native';
+    import { getAccounts } from '../services/api';
+
+    export default function AccountsScreen() {
+      const [accounts, setAccounts] = useState([]);
+
+      useEffect(() => {
+        getAccounts().then(setAccounts);
+      }, []);
+
+      return (
+        <View>
+          <FlatList
+            data={accounts}
+            renderItem={({ item }) => (
+              <Text>{item.account_name}: {item.balance.amount}</Text>
+            )}
+          />
+        </View>
+      );
+    }
+    ```
+  </Step>
+
+  <Step title="Run and Test">
     ```bash
-    # Start Metro bundler
-    npx react-native start
+    # Start the Expo development server
+    npx expo start
 
-    # Run on iOS (in new terminal)
-    npx react-native run-ios
-
-    # Run on Android (in new terminal)
-    npx react-native run-android
-
-    # Or use Expo (if Expo variant)
-    expo start
+    # Test on your device using Expo Go app
+    # Or use iOS Simulator / Android Emulator
     ```
   </Step>
 </Steps>
 
-## 📱 Template Features
-
-### **Authentication & Security**
-- **Biometric Authentication**: Face ID, Touch ID, Fingerprint support
-- **Multi-Factor Authentication**: SMS and email verification
-- **Secure Storage**: Keychain/Keystore integration for sensitive data
-- **Session Management**: Automatic logout and token refresh
-
-### **Banking Features**
-- **Account Overview**: Multi-account balance display
-- **Transaction History**: Infinite scroll with search and filters
-- **Quick Transfers**: Between accounts and to contacts
-- **Bill Payments**: Scheduled and recurring payments
-- **ATM Locator**: Find nearby ATMs and branches
-
-### **Mobile-First Design**
-- **Responsive UI**: Adaptive layouts for phones and tablets
-- **Dark Mode**: Automatic system theme detection
-- **Accessibility**: WCAG compliant with screen reader support
-- **Offline Mode**: Local data caching and sync
-
-### **Developer Experience**
-- **TypeScript**: Full type safety and IntelliSense
-- **Testing**: Jest + React Native Testing Library setup
-- **Code Quality**: ESLint, Prettier, and Husky pre-commit hooks
-- **CI/CD**: GitHub Actions for automated testing and deployment
-
-## 🏗️ Project Structure
-
-```
-src/
-├── components/         # Reusable UI components
-│   ├── common/        # Basic components (Button, Input, etc.)
-│   ├── forms/         # Form components
-│   └── charts/        # Data visualization components
-├── screens/           # Screen components
-│   ├── auth/         # Authentication screens
-│   ├── banking/      # Banking feature screens
-│   └── settings/     # Settings and profile screens
-├── navigation/        # Navigation configuration
-│   ├── AppNavigator.tsx
-│   ├── AuthNavigator.tsx
-│   └── TabNavigator.tsx
-├── services/          # API and external services
-│   ├── api/          # Open Finance API client
-│   ├── auth/         # Authentication service
-│   └── storage/      # Local storage service
-├── store/             # Redux store and slices
-│   ├── slices/       # Redux Toolkit slices
-│   └── middleware/   # Custom middleware
-├── utils/             # Utility functions
-│   ├── formatters/   # Data formatting utilities
-│   ├── validators/   # Input validation
-│   └── constants/    # App constants
-├── hooks/             # Custom React hooks
-├── types/             # TypeScript type definitions
-└── assets/            # Images, fonts, and static assets
-```
-
-## 🔧 Configuration
-
-### **Environment Variables**
-```bash
-# API Configuration
-OPENFINANCE_CLIENT_ID=your_client_id
-OPENFINANCE_CLIENT_SECRET=your_client_secret
-OPENFINANCE_BASE_URL=https://sandbox.openfinance.ae/api/v1
-
-# App Configuration
-APP_NAME=MyBankingApp
-APP_SCHEME=mybankingapp
-API_TIMEOUT=10000
-
-# Security Configuration
-BIOMETRIC_PROMPT_TITLE=Authenticate
-BIOMETRIC_PROMPT_SUBTITLE=Use your biometric to access your account
-SESSION_TIMEOUT=300000
-
-# Feature Flags
-ENABLE_BIOMETRIC_AUTH=true
-ENABLE_OFFLINE_MODE=true
-ENABLE_PUSH_NOTIFICATIONS=true
-ENABLE_CRASH_REPORTING=true
-```
-
-### **Native Configuration**
-
-**iOS (`ios/Info.plist`)**:
-```xml
-<key>NSFaceIDUsageDescription</key>
-<string>Use Face ID to securely access your banking information</string>
-<key>NSCameraUsageDescription</key>
-<string>Use camera to capture check deposits and documents</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Find nearby ATMs and bank branches</string>
-<key>NSContactsUsageDescription</key>
-<string>Select contacts for money transfers</string>
-```
-
-**Android (`android/app/src/main/AndroidManifest.xml`)**:
-```xml
-<uses-permission android:name="android.permission.USE_FINGERPRINT" />
-<uses-permission android:name="android.permission.USE_BIOMETRIC" />
-<uses-permission android:name="android.permission.CAMERA" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<uses-permission android:name="android.permission.READ_CONTACTS" />
-```
-
-## 🔐 Security Implementation
-
-### **Biometric Authentication**
-```typescript
-// services/auth/BiometricAuth.ts
-import TouchID from 'react-native-touch-id';
-import { Alert } from 'react-native';
-
-export class BiometricAuth {
-  static async isSupported(): Promise<boolean> {
-    try {
-      const biometryType = await TouchID.isSupported();
-      return !!biometryType;
-    } catch {
-      return false;
-    }
-  }
-
-  static async authenticate(): Promise<boolean> {
-    try {
-      await TouchID.authenticate('Access your banking app', {
-        title: 'Biometric Authentication',
-        subtitle: 'Scan your biometric to continue',
-        description: 'This app uses biometric authentication for security',
-        fallbackLabel: 'Use Passcode',
-        cancelLabel: 'Cancel',
-        passcodeFallback: true,
-      });
-      return true;
-    } catch (error) {
-      if (error.name === 'LAErrorUserFallback') {
-        // User chose to use passcode
-        return this.authenticateWithPasscode();
-      }
-      Alert.alert('Authentication Failed', 'Please try again');
-      return false;
-    }
-  }
-
-  private static async authenticateWithPasscode(): Promise<boolean> {
-    // Implement passcode authentication
-    return new Promise((resolve) => {
-      // Show passcode modal
-      resolve(true);
-    });
-  }
-}
-```
-
-### **Secure Storage**
-```typescript
-// services/storage/SecureStorage.ts
-import Keychain from 'react-native-keychain';
-
-export class SecureStorage {
-  static async setItem(key: string, value: string): Promise<void> {
-    await Keychain.setInternetCredentials(
-      key,
-      'user',
-      value,
-      {
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
-        accessGroup: 'group.com.yourapp.shared',
-        authenticatePrompt: 'Authenticate to access secure data',
-      }
-    );
-  }
-
-  static async getItem(key: string): Promise<string | null> {
-    try {
-      const credentials = await Keychain.getInternetCredentials(key);
-      return credentials ? credentials.password : null;
-    } catch {
-      return null;
-    }
-  }
-
-  static async removeItem(key: string): Promise<void> {
-    await Keychain.resetInternetCredentials(key);
-  }
-}
-```
-
-## 🏦 Banking Features Implementation
-
-### **Account Overview Screen**
-```typescript
-// screens/banking/AccountOverviewScreen.tsx
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-} from 'react-native';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { fetchAccounts } from '../../store/slices/accountsSlice';
-import { AccountCard } from '../../components/banking/AccountCard';
-import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-
-export const AccountOverviewScreen: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { accounts, loading, error } = useAppSelector(state => state.accounts);
-  const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchAccounts());
-  }, [dispatch]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await dispatch(fetchAccounts());
-    setRefreshing(false);
-  };
-
-  const renderAccount = ({ item }: { item: Account }) => (
-    <AccountCard
-      account={item}
-      onPress={() => navigateToAccountDetails(item.id)}
-    />
-  );
-
-  if (loading && !refreshing) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={accounts}
-        renderItem={renderAccount}
-        keyExtractor={item => item.id}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#007AFF"
-          />
-        }
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  listContainer: {
-    padding: 16,
-  },
-});
-```
-
-### **Transaction History with Infinite Scroll**
-```typescript
-// components/banking/TransactionList.tsx
-import React, { useCallback, useState } from 'react';
-import {
-  FlatList,
-  ActivityIndicator,
-  View,
-  Text,
-} from 'react-native';
-import { Transaction } from '../../types/banking';
-import { TransactionItem } from './TransactionItem';
-
-interface Props {
-  accountId: string;
-  transactions: Transaction[];
-  onLoadMore: () => void;
-  hasMore: boolean;
-  loading: boolean;
-}
-
-export const TransactionList: React.FC<Props> = ({
-  accountId,
-  transactions,
-  onLoadMore,
-  hasMore,
-  loading,
-}) => {
-  const renderTransaction = useCallback(
-    ({ item }: { item: Transaction }) => (
-      <TransactionItem transaction={item} />
-    ),
-    []
-  );
-
-  const renderFooter = () => {
-    if (!loading) return null;
-    return (
-      <View style={styles.footer}>
-        <ActivityIndicator size="small" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading more transactions...</Text>
-      </View>
-    );
-  };
-
-  const handleEndReached = () => {
-    if (hasMore && !loading) {
-      onLoadMore();
-    }
-  };
-
-  return (
-    <FlatList
-      data={transactions}
-      renderItem={renderTransaction}
-      keyExtractor={item => item.id}
-      onEndReached={handleEndReached}
-      onEndReachedThreshold={0.1}
-      ListFooterComponent={renderFooter}
-      showsVerticalScrollIndicator={false}
-    />
-  );
-};
-```
-
-## 📊 State Management
-
-### **Redux Store Configuration**
-```typescript
-// store/index.ts
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { combineReducers } from 'redux';
-
-import authSlice from './slices/authSlice';
-import accountsSlice from './slices/accountsSlice';
-import transactionsSlice from './slices/transactionsSlice';
-import settingsSlice from './slices/settingsSlice';
-
-const persistConfig = {
-  key: 'root',
-  storage: AsyncStorage,
-  whitelist: ['auth', 'settings'], // Only persist these slices
-  blacklist: ['accounts', 'transactions'], // Don't persist sensitive data
-};
-
-const rootReducer = combineReducers({
-  auth: authSlice,
-  accounts: accountsSlice,
-  transactions: transactionsSlice,
-  settings: settingsSlice,
-});
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
-      },
-    }),
-});
-
-export const persistor = persistStore(store);
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-```
-
-## 🧪 Testing Strategy
-
-### **Component Testing**
-```typescript
-// __tests__/components/AccountCard.test.tsx
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import { AccountCard } from '../../src/components/banking/AccountCard';
-import { mockAccount } from '../__mocks__/accounts';
-
-describe('AccountCard', () => {
-  it('renders account information correctly', () => {
-    const { getByText } = render(
-      <AccountCard account={mockAccount} onPress={() => {}} />
-    );
-
-    expect(getByText(mockAccount.name)).toBeTruthy();
-    expect(getByText(`$${mockAccount.balance.toFixed(2)}`)).toBeTruthy();
-  });
-
-  it('calls onPress when tapped', () => {
-    const onPress = jest.fn();
-    const { getByTestId } = render(
-      <AccountCard account={mockAccount} onPress={onPress} />
-    );
-
-    fireEvent.press(getByTestId('account-card'));
-    expect(onPress).toHaveBeenCalledWith(mockAccount.id);
-  });
-});
-```
-
-### **API Testing**
-```typescript
-// __tests__/services/api/OpenFinanceAPI.test.ts
-import { OpenFinanceAPI } from '../../src/services/api/OpenFinanceAPI';
-import { mockAccounts } from '../__mocks__/accounts';
-
-jest.mock('react-native-config', () => ({
-  OPENFINANCE_BASE_URL: 'https://sandbox.openfinance.ae/api/v1',
-  OPENFINANCE_CLIENT_ID: 'test_client_id',
-}));
-
-describe('OpenFinanceAPI', () => {
-  beforeEach(() => {
-    fetch.resetMocks();
-  });
-
-  it('fetches accounts successfully', async () => {
-    fetch.mockResponseOnce(JSON.stringify(mockAccounts));
-
-    const api = new OpenFinanceAPI();
-    const accounts = await api.getAccounts();
-
-    expect(accounts).toEqual(mockAccounts);
-    expect(fetch).toHaveBeenCalledWith(
-      'https://sandbox.openfinance.ae/api/v1/accounts',
-      expect.objectContaining({
-        headers: expect.objectContaining({
-          'Authorization': expect.stringContaining('Bearer'),
-        }),
-      })
-    );
-  });
-});
-```
-
-## 🚀 Deployment
-
-### **iOS App Store**
-```bash
-# Build for production
-npx react-native run-ios --configuration Release
-
-# Create archive in Xcode
-# Product → Archive → Distribute App
-```
-
-### **Google Play Store**
-```bash
-# Generate signed APK
-cd android
-./gradlew assembleRelease
-
-# Generate App Bundle (recommended)
-./gradlew bundleRelease
-```
-
-### **Expo Deployment**
+## Mobile-Specific Considerations
+
+### 🔐 **Security for Mobile**
+- **Never store certificates** on mobile devices
+- **Use backend proxy** for all Open Finance API calls
+- **Implement biometric authentication** for user security
+- **Use secure storage** for session tokens
+
+### 📱 **UX Best Practices**
+- **Offline support** for account balances
+- **Loading states** for API calls
+- **Error handling** with user-friendly messages
+- **Touch-friendly** button sizes and spacing
+
+### 🚀 **Deployment**
 ```bash
 # Build for app stores
-expo build:ios
-expo build:android
+npx expo build:ios
+npx expo build:android
 
-# Publish to Expo
-expo publish
+# Or publish to Expo for easy testing
+npx expo publish
 ```
 
-## 🔧 Customization Guide
+## Code Examples
 
-### **Theming**
-```typescript
-// src/theme/colors.ts
-export const colors = {
-  primary: '#007AFF',
-  secondary: '#5856D6',
-  success: '#34C759',
-  warning: '#FF9500',
-  error: '#FF3B30',
-  background: '#F2F2F7',
-  surface: '#FFFFFF',
-  text: '#000000',
-  textSecondary: '#6D6D80',
-  border: '#C6C6C8',
-};
-
-// Dark mode colors
-export const darkColors = {
-  ...colors,
-  background: '#000000',
-  surface: '#1C1C1E',
-  text: '#FFFFFF',
-  textSecondary: '#8E8E93',
-  border: '#38383A',
-};
-```
-
-### **Adding New Screens**
-```typescript
-// src/screens/NewFeatureScreen.tsx
+### 📊 **Account Balance Component**
+```javascript
+// components/AccountCard.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { ScreenHeader } from '../components/common/ScreenHeader';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export const NewFeatureScreen: React.FC = () => {
+export function AccountCard({ account, onPress }) {
   return (
-    <View style={styles.container}>
-      <ScreenHeader title="New Feature" />
-      <View style={styles.content}>
-        <Text style={styles.title}>Your New Feature</Text>
-        {/* Feature implementation */}
-      </View>
-    </View>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Text style={styles.accountName}>{account.account_name}</Text>
+      <Text style={styles.balance}>
+        {account.balance.currency} {account.balance.amount}
+      </Text>
+      <Text style={styles.accountNumber}>****{account.account_number.slice(-4)}</Text>
+    </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  content: {
-    flex: 1,
+  card: {
+    backgroundColor: '#fff',
     padding: 16,
+    margin: 8,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  title: {
-    fontSize: 24,
+  accountName: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  balance: {
+    fontSize: 24,
+    color: '#007AFF',
+    marginBottom: 4,
+  },
+  accountNumber: {
+    fontSize: 14,
+    color: '#666',
   },
 });
 ```
 
-## 📚 Additional Resources
+### 💸 **Payment Form**
+```javascript
+// components/PaymentForm.js
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import { initiatePayment } from '../services/api';
+
+export function PaymentForm({ onSuccess }) {
+  const [amount, setAmount] = useState('');
+  const [recipient, setRecipient] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!amount || !recipient) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await initiatePayment({
+        amount: parseFloat(amount),
+        recipient,
+        reference: `Mobile payment ${Date.now()}`,
+      });
+      Alert.alert('Success', 'Payment initiated successfully');
+      onSuccess(result);
+    } catch (error) {
+      Alert.alert('Error', 'Payment failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <View style={styles.form}>
+      <TextInput
+        style={styles.input}
+        placeholder="Amount"
+        value={amount}
+        onChangeText={setAmount}
+        keyboardType="decimal-pad"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Recipient Account"
+        value={recipient}
+        onChangeText={setRecipient}
+      />
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleSubmit}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? 'Processing...' : 'Send Payment'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+```
+
+## Need Help?
 
 <CardGroup cols={2}>
   <Card
-    title="React Native Docs"
-    icon="book"
-    href="https://reactnative.dev/docs/getting-started"
+    title="Hackathon Starter"
+    icon="github"
+    href="https://github.com/open-finance-os/open-finance-hackathon-starter"
   >
-    Official React Native documentation
+    Use as your mobile app's backend API
   </Card>
   <Card
-    title="Open Finance APIs"
-    icon="api"
-    href="/api-reference/introduction"
+    title="Get Support"
+    icon="comments"
+    href="/support"
   >
-    Complete API documentation
-  </Card>
-  <Card
-    title="Testing Guide"
-    icon="flask"
-    href="https://callstack.github.io/react-native-testing-library/"
-  >
-    React Native Testing Library
-  </Card>
-  <Card
-    title="App Store Guidelines"
-    icon="mobile"
-    href="https://developer.apple.com/app-store/review/guidelines/"
-  >
-    iOS App Store review guidelines
+    Hackathon support and community discussions
   </Card>
 </CardGroup>
 
-## 🆘 Common Issues
-
-### **Build Errors**
-```bash
-# Clear React Native cache
-npx react-native start --reset-cache
-
-# Clean builds
-# iOS
-cd ios && xcodebuild clean && cd ..
-
-# Android
-cd android && ./gradlew clean && cd ..
-```
-
-### **Metro Bundler Issues**
-```bash
-# Reset Metro cache
-rm -rf /tmp/metro-*
-npx react-native start --reset-cache
-```
-
-### **Dependency Conflicts**
-```bash
-# Reset node modules
-rm -rf node_modules package-lock.json
-npm install
-
-# iOS pods
-cd ios && rm -rf Pods Podfile.lock && pod install && cd ..
-```
-
-<Warning>
-  **Security Notice**: This template handles sensitive financial data. Ensure proper testing, security reviews, and compliance with app store guidelines before production deployment.
-</Warning>
-
 <Tip>
-  **Development Tip**: Use Flipper for debugging React Native apps. It provides network inspection, layout debugging, and crash reporting capabilities.
+  **Hackathon Strategy**: Start with a web app first, then add mobile if time permits. Mobile development can consume significant time during a hackathon.
 </Tip>

@@ -1,57 +1,134 @@
 ---
-title: "Node.js + Express Template"
-description: "Backend API template for Open Finance applications"
+title: "Node.js + Express Adaptation Guide"
+description: "Extend the hackathon starter with Express backend features"
 ---
 
-# Node.js + Express Starter Template
+# Node.js + Express Framework Guide
 
-A production-ready backend API template for building Open Finance services with Node.js, Express, and TypeScript.
+The [Open Finance Hackathon Starter](https://github.com/open-finance-os/open-finance-hackathon-starter) already includes Node.js examples. This guide shows how to extend it with Express framework features for production-ready APIs.
+
+<Info>
+  **Good News**: The starter repository is already Node.js-based! You can use it directly or extend it with Express for more advanced features.
+</Info>
 
 <CardGroup cols={2}>
   <Card
-    title="Fork on GitHub"
+    title="Hackathon Starter"
     icon="github"
-    href="https://github.com/open-finance-os/template-nodejs-express"
+    href="https://github.com/open-finance-os/open-finance-hackathon-starter"
   >
-    Ready-to-fork backend API repository
+    Start with the Node.js examples (already working!)
   </Card>
   <Card
-    title="API Documentation"
-    icon="book"
-    href="https://api-docs.openfinance-demo.com"
+    title="Live Example"
+    icon="external-link"
+    href="https://openfinance-frontend.onrender.com"
   >
-    Interactive API documentation with examples
+    See a production API built with Open Finance
   </Card>
 </CardGroup>
 
-## What's Included
+## Express Extensions
 
-### 🛠️ **Tech Stack**
-- **Node.js 18+** - JavaScript runtime
-- **Express.js** - Web framework
-- **TypeScript** - Type safety
-- **Prisma** - Database ORM
-- **Redis** - Caching and session storage
-- **Jest** - Testing framework
-- **Docker** - Containerization
+### 🚀 **Starting Point**
+The hackathon starter includes:
+- Working Node.js examples (`examples/auth.js`, `examples/accounts.js`, `examples/payments.js`)
+- Environment configuration
+- TPP certificate handling
+- Connection testing scripts
 
-### 🔐 **Security Features**
+### 🛠️ **Express Enhancements**
+Add these features to create a production API:
+
+- **Express.js** - RESTful API framework
+- **Middleware** - Authentication, validation, logging
+- **Error Handling** - Centralized error management
+- **Rate Limiting** - API protection
+- **Documentation** - Swagger/OpenAPI integration
+
+### 🔐 **Production Features**
 - JWT authentication with refresh tokens
-- Rate limiting and request throttling
 - Input validation and sanitization
 - CORS configuration
-- Helmet.js security headers
+- Security headers with Helmet.js
 - API key management
 
-### 📊 **Database & Caching**
-- PostgreSQL database with Prisma ORM
-- Redis caching for API responses
-- Database migrations and seeding
-- Connection pooling and optimization
-
-## Quick Setup
+## Express Conversion Steps
 
 <Steps>
+  <Step title="Start with Hackathon Starter">
+    ```bash
+    # Clone the starter repository
+    git clone https://github.com/YOUR_USERNAME/open-finance-hackathon-starter.git
+    cd open-finance-hackathon-starter
+
+    # Test the existing examples
+    npm install
+    npm run test:connection
+    npm run example:auth
+    ```
+  </Step>
+
+  <Step title="Add Express Framework">
+    ```bash
+    # Install Express and middleware
+    npm install express helmet cors express-rate-limit
+    npm install -D @types/express @types/cors
+    ```
+  </Step>
+
+  <Step title="Create Express Server">
+    ```javascript
+    // server.js
+    const express = require('express');
+    const helmet = require('helmet');
+    const cors = require('cors');
+    const rateLimit = require('express-rate-limit');
+    const { getAccessToken } = require('./examples/auth');
+
+    const app = express();
+
+    app.use(helmet());
+    app.use(cors());
+    app.use(express.json());
+    app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+
+    // Convert examples to API routes
+    app.get('/api/accounts', async (req, res) => {
+      // Use code from examples/accounts.js
+    });
+
+    app.listen(3000, () => console.log('Server running on port 3000'));
+    ```
+  </Step>
+
+  <Step title="Convert Examples to Routes">
+    Transform the existing examples into Express routes using the working code as a foundation.
+  </Step>
+</Steps>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Hackathon Starter"
+    icon="github"
+    href="https://github.com/open-finance-os/open-finance-hackathon-starter"
+  >
+    Return to the base starter repository
+  </Card>
+  <Card
+    title="Get Support"
+    icon="comments"
+    href="/support"
+  >
+    Hackathon support and community discussions
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Quick Start**: The hackathon starter's Node.js examples are perfect for the hackathon. Only add Express if you need advanced API features!
+</Tip>
   <Step title="Fork & Clone">
     ```bash
     git clone https://github.com/YOUR_USERNAME/template-nodejs-express.git
