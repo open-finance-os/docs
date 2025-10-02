@@ -2,9 +2,9 @@ openapi: 3.0.0
 info:
   title: UAE Account Information API
   description: '## UAE Open Finance Account Information API Specification'
-  version: v1.1
+  version: v1.2
 servers:
-  - url: /open-finance/account-information/v1.1
+  - url: /open-finance/account-information/v1.2
 tags:
   - name: Account Access
     description: Account Access Consents Resource
@@ -567,51 +567,6 @@ paths:
         - UserOAuth2Security:
             - openid
             - accounts
-  /accounts/{AccountId}/consents:
-    get:
-      tags:
-        - Consents
-      summary: Get Consents
-      description: >
-        **The list below outlines the Consent Permissions that are applicable to
-        this resource:**          
-
-        * ReadConsents
-
-
-        Refer to *Customer Experience Guidelines*, *Account Information*, *Data
-        Groups* for further information.
-      operationId: GetAccountsAccountIdConsents
-      parameters:
-        - $ref: '#/components/parameters/AccountId'
-        - $ref: '#/components/parameters/x-fapi-auth-date'
-        - $ref: '#/components/parameters/x-fapi-customer-ip-address'
-        - $ref: '#/components/parameters/x-fapi-interaction-id'
-        - $ref: '#/components/parameters/Authorization'
-        - $ref: '#/components/parameters/x-customer-user-agent'
-      responses:
-        '200':
-          $ref: '#/components/responses/200AccountsAccountIdConsentsRead'
-        '400':
-          $ref: '#/components/responses/400Error'
-        '401':
-          $ref: '#/components/responses/401Error'
-        '403':
-          $ref: '#/components/responses/403Error'
-        '404':
-          $ref: '#/components/responses/404Error'
-        '405':
-          $ref: '#/components/responses/405Error'
-        '406':
-          $ref: '#/components/responses/406Error'
-        '429':
-          $ref: '#/components/responses/429Error'
-        '500':
-          $ref: '#/components/responses/500Error'
-      security:
-        - UserOAuth2Security:
-            - openid
-            - accounts
   /accounts/{AccountId}/parties:
     get:
       tags:
@@ -921,14 +876,6 @@ paths:
             - accounts
 components:
   responses:
-    TPPWebhookResponse:
-      description: Response Status Code
-      headers:
-        x-fapi-interaction-id:
-          description: An RFC4122 UID used as a correlation id.
-          schema:
-            type: string
-          required: true
     403Error:
       description: Forbidden
       headers:
@@ -1222,24 +1169,6 @@ components:
         application/jwt:
           schema:
             $ref: '#/components/schemas/AEReadAccountSigned'
-    200AccountsAccountIdConsentsRead:
-      description: Consents Read
-      headers:
-        x-fapi-interaction-id:
-          description: An RFC4122 UID used as a correlation id.
-          required: true
-          schema:
-            type: string
-      content:
-        application/json; charset=utf-8:
-          schema:
-            $ref: '#/components/schemas/AEReadConsent'
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AEReadConsent'
-        application/jwt:
-          schema:
-            $ref: '#/components/schemas/AEReadConsentSigned'
     200BaseConsentIdConsentsRetrieve:
       description: Retrieve Payment Consents by BaseConsentId
       headers:
@@ -1322,16 +1251,6 @@ components:
           properties:
             message:
               $ref: '#/components/schemas/AEErrorResponse'
-          required:
-            - message
-          additionalProperties: false
-    WebhookEventSigned:
-      allOf:
-        - $ref: '#/components/schemas/Jwt'
-        - type: object
-          properties:
-            message:
-              $ref: '#/components/schemas/WebhookEvent'
           required:
             - message
           additionalProperties: false
@@ -1449,54 +1368,6 @@ components:
                 Webhook URL
               type: boolean
               example: false
-          additionalProperties: false
-      additionalProperties: false
-    WebhookEvent:
-      type: object
-      description: Webhook Event
-      required:
-        - Data
-        - EventMeta
-      properties:
-        Data:
-          type: object
-          description: >-
-            Event Data. This Data Object will contain the same API resource and
-            Schema that has triggered the Event.
-          additionalProperties: false
-        Links:
-          $ref: '#/components/schemas/LinksSelf'
-        EventMeta:
-          type: object
-          description: Event Metadata
-          required:
-            - EventDateTime
-            - EventResource
-            - EventType
-            - ConsentId
-          properties:
-            EventDateTime:
-              type: string
-              format: date-time
-              description: Date Time of the first Event in the Message
-            EventResource:
-              type: string
-              description: The API resource to which the Event itself is associated
-              example: /accounts/123
-            EventType:
-              type: string
-              enum:
-                - Resource.Created
-                - Resource.Updated
-                - Resource.Deleted
-              description: The Type of Event
-            ConsentId:
-              description: >-
-                Unique identification as assigned to identify the consents
-                resource.
-              type: string
-              minLength: 1
-              maxLength: 128
           additionalProperties: false
       additionalProperties: false
     OnBehalfOf:
@@ -2246,11 +2117,8 @@ components:
         - Frequency
         - StandingOrderId
         - FirstPaymentDateTime
-        - FinalPaymentDateTime
-        - NumberOfPayments
         - StandingOrderStatusCode
         - FirstPaymentAmount
-        - FinalPaymentAmount
       properties:
         StandingOrderId:
           $ref: '#/components/schemas/StandingOrderId'
@@ -2916,7 +2784,6 @@ components:
           - ReadDirectDebits
           - ReadStandingOrdersBasic
           - ReadStandingOrdersDetail
-          - ReadConsents
           - ReadPartyUser
           - ReadPartyUserIdentity
           - ReadParty
@@ -4124,130 +3991,6 @@ components:
           description: Longitude in degrees
           type: string
       additionalProperties: false
-    AEAccountAccessAuthorizationDetail:
-      description: The schema for account access object in the authorization_details
-      type: object
-      required:
-        - type
-        - consent
-      properties:
-        type:
-          type: string
-          description: The type of the account access object
-          enum:
-            - urn:openfinanceuae:account-access-consent:v1.1
-        consent:
-          type: object
-          description: Primary data for the resource
-          required:
-            - ConsentId
-            - Permissions
-            - OpenFinanceBilling
-          properties:
-            ConsentId:
-              $ref: '#/components/schemas/AEConsentId'
-            BaseConsentId:
-              $ref: '#/components/schemas/AEBaseConsentId'
-            Permissions:
-              $ref: '#/components/schemas/AEConsentPermissions'
-            ExpirationDateTime:
-              description: >-
-                Specified date and time the permissions will expire.
-
-                All date-time fields in responses must include the timezone. An
-                example is below:
-
-                2017-04-05T10:43:07+00:00
-              type: string
-              format: date-time
-            TransactionFromDateTime:
-              description: >-
-                Specified start date and time for the transaction query period.
-
-                If this is not populated, the start date will be open ended, and
-                data will be returned from the earliest available
-                transaction.All dates in the JSON payloads are represented in
-                ISO 8601 date-time format. 
-
-                All date-time fields in responses must include the timezone. An
-                example is below:
-
-                2017-04-05T10:43:07+00:00
-              type: string
-              format: date-time
-            TransactionToDateTime:
-              description: >-
-                Specified end date and time for the transaction query period.
-
-                If this is not populated, the end date will be open ended, and
-                data will be returned to the latest available transaction.All
-                dates in the JSON payloads are represented in ISO 8601 date-time
-                format. 
-
-                All date-time fields in responses must include the timezone. An
-                example is below:
-
-                2017-04-05T10:43:07+00:00
-              type: string
-              format: date-time
-            AccountType:
-              type: array
-              items:
-                $ref: '#/components/schemas/AEExternalAccountTypeCode'
-            AccountSubType:
-              type: array
-              items:
-                $ref: '#/components/schemas/AEExternalAccountSubTypeCode'
-            OnBehalfOf:
-              $ref: '#/components/schemas/OnBehalfOf'
-            OpenFinanceBilling:
-              $ref: '#/components/schemas/AEAccountAccessOpenFinanceBilling'
-          additionalProperties: false
-        Subscription:
-          $ref: '#/components/schemas/EventNotification'
-      additionalProperties: false
-    AEReadConsentSigned:
-      allOf:
-        - $ref: '#/components/schemas/Jwt'
-        - type: object
-          properties:
-            message:
-              $ref: '#/components/schemas/AEReadConsent'
-          required:
-            - message
-          additionalProperties: false
-    AEReadConsent:
-      description: List of Standing Orders for an Account
-      type: object
-      required:
-        - Data
-        - Links
-        - Meta
-      properties:
-        Data:
-          type: object
-          description: Primary data for the resource
-          required:
-            - AccountId
-            - Consent
-          properties:
-            AccountId:
-              $ref: '#/components/schemas/AccountId'
-            Consent:
-              type: array
-              items:
-                type: object
-                additionalProperties: false
-                oneOf:
-                  - $ref: '#/components/schemas/AEAccountAccessAuthorizationDetail'
-                discriminator:
-                  propertyName: type
-          additionalProperties: false
-        Links:
-          $ref: '#/components/schemas/Links'
-        Meta:
-          $ref: '#/components/schemas/MetaTotalPages'
-      additionalProperties: false
     AEConsentId:
       description: >
         Unique identification assigned by the TPP to identify the consent
@@ -4270,15 +4013,13 @@ components:
       maxLength: 128
       example: abc-19877d98-ab0e-4758-92a7-vvffr1234abv
     AEPaymentPurposeCode:
-      description: >
-        A Category code, related to the type of services or goods that
-        corresponds to the underlying purpose of the Payment.
-
-        * The ISO20022 External code sets
+      description: A category code that relates to the type of services or goods that corresponds to 
+        the underlying purpose of the payment. The code must conform to the published 
+        Aani payment purpose code list.
       type: string
       minLength: 1
-      maxLength: 4
-      pattern: ^[A-Z]{4}$
+      maxLength: 3
+      pattern: ^[A-Z]{3}$
     AEDuration:
       description: |
         The period of time for which the credit line is available.
@@ -4440,6 +4181,40 @@ components:
       description: Signed error response payload
       additionalProperties: false
     AEExternalAccountRoleCode:
+      description: |
+        Specifies the Party's role with respect to the related account. Allowed values 
+        are defined based on ISO 20022 definitions as follows:
+
+          - Administrator: The party that administers the account and is not the 
+            account owner.
+          - Beneficiary: Ultimate party that is entitled to either receive the benefits 
+            of the ownership of the account.
+          - CustodianForMinor: Entity that holds the account on behalf of a legal 
+            minor. Although the account is registered under the name of the minor, 
+            the custodian retains control of the account.
+          - Granter: Granter role in the hedge funds industry.
+          - LegalGuardian: Party that has been appointed by a legal authority to act on 
+            behalf of a person judged to be incapacitated.
+          - OtherParty: An other type of party. Used when a given account role cannot 
+            be mapped to the role defined at the LFI.
+          - PowerOfAttorney: Power of attorney which is held by the party.
+          - Principal: Party acts as principal for the account for trading purposes.
+          - Protector: Person appointed under a trust instrument to direct or 
+            restrain the trustees in relation to their administration of an account 
+            held in trust. 
+          - RegisteredShareholderName: Party for which shares are to be registered,
+            for share holding accounts only.
+          - SecondaryOwner: Entity that is not the primary owner when the ownership of 
+            an investment account is split among several owners.
+          - SeniorManagingOfficial: Party that makes, or participates in the making of, 
+            decisions that affect the whole, or a substantial part, of the business of 
+            a customer of a reporting entity or that has the capacity to affect 
+            significantly the financial standing of a customer of a reporting entity.
+          - Settlor: Entity that creates a trust or contributes assets to the trust.
+          - SuccessorOnDeath: Deceased's estate, or successor, to whom account 
+            ownership will be transferred upon the death of one of the 
+            owners.
+
       type: string
       enum:
         - Administrator
@@ -4456,7 +4231,6 @@ components:
         - SeniorManagingOfficial
         - Settlor
         - SuccessorOnDeath
-      description: Specifies the Party's role with respect to the related account.
     AEExternalPartyTypeCode:
       type: string
       enum:
