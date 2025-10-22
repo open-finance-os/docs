@@ -128,8 +128,8 @@
     }
   },
   "logo": {
-    "light": "/logo/adcb-light.png",
-    "dark": "/logo/adcb-dark.png"
+    "light": "/logo/combined-light.png",
+    "dark": "/logo/combined-dark.png"
   },
   "navbar": {
     "links": [
@@ -141,7 +141,7 @@
     "primary": {
       "type": "button",
       "label": "Join Hackathon",
-      "href": "https://preview--uae-open-finance-hackathon.lovable.app/"
+      "href": "https://www.openfinance-hackathon.com/"
     }
   },
   "contextual": {

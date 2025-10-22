@@ -15,7 +15,7 @@ Comprehensive documentation and resources for building innovative financial appl
 This documentation is specifically designed for the ADCB & Nebras UAE Open Finance Hackathon. Whether you're building personal finance tools, business banking solutions, or insurtech applications, you'll find everything you need here.
 
 ### Quick Links
-- **[Hackathon Website](https://preview--uae-open-finance-hackathon.lovable.app/)** - Register and learn more
+- **[Hackathon Website](https://www.openfinance-hackathon.com/)** - Register and learn more
 - **[API Sandbox](https://sandbox.openfinance.ae)** - Test your integrations
 - **[Community Discussions](https://github.com/open-finance-os/docs/discussions)** - Get help and connect with other teams
 
@@ -96,7 +96,7 @@ We welcome contributions from the hackathon community! Here's how you can help:
 ## 🔗 Important Links
 
 - **Live Documentation**: [https://docs.openfinance.ae](https://docs.openfinance.ae)
-- **Hackathon Platform**: [https://preview--uae-open-finance-hackathon.lovable.app/](https://preview--uae-open-finance-hackathon.lovable.app/)
+- **Hackathon Platform**: [https://www.openfinance-hackathon.com/](https://www.openfinance-hackathon.com/)
 - **API Sandbox**: [https://sandbox.openfinance.ae](https://sandbox.openfinance.ae)
 - **Community**: [GitHub Discussions](https://github.com/open-finance-os/docs/discussions)
 
