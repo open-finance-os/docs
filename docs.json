@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "ADCB & Nebras | UAE Open Finance Hackathon",
   "colors": {
-    "primary": "#DC2626",
-    "light": "#EF4444",
-    "dark": "#991B1B"
+    "primary": "#0891B2",
+    "light": "#06B6D4",
+    "dark": "#0E7490"
   },
   "favicon": "/adcb-favicon.ico",
   "navigation": {
