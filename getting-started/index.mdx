@@ -1,104 +1,58 @@
 ---
 title: "Getting Started"
-description: "Step-by-step guide to registering your client and accessing the Open Finance Sandbox."
+description: "Learn two easy ways to explore and build with Open Finance APIs — using the Postman Collection or the Hackathon Starter Kit."
 ---
 
-# 🚀 Getting Started with Your Client Registration
+# 🚀 Getting Started with Open Finance APIs
 
-To begin working with the Open Finance Sandbox, you’ll need to **register the client** provided in your **Client Pack**.  
-This registration step links your application to the sandbox securely via the bank’s `registration_endpoint`, using your **TPP transport certificate** and **private key**.
+Hackathon teams have **two easy ways** to test, learn, and build with the **Open Finance APIs**:
 
----
-
-## 🧰 Prerequisites
-
-Before you begin, make sure you have:
-
-- **Client Pack** — includes your:
-  - Client ID  
-  - Redirect URI  
-  - Client Transport Certificate & Key  
-  - Signing Certificate & Key
-
-- One of the following setups:
-  - Installed and configured the [Postman Collection](/developer-tools/)
-  - Installed and run the [Hackathon Starter Kit](/developer-tools/starter-kit/)
+1. **Postman Collection** — explore and send example API requests.  
+2. **Hackathon Starter Kit** — run a full-stack sandbox app that demonstrates secure API usage.
 
 ---
 
-## 🔐 API Endpoint
+## 🧰 Option 1: Postman Collection
 
-### `POST /tpp-registration`
+The **Postman Collection** gives you a quick, hands-on way to experience the Open Finance API workflows.
 
-Use this endpoint to register your client with the Model Bank.
+It includes a **series of pre-configured requests** that walk you through:
+- Creating consents  
+- Exchanging tokens  
+- Accessing account, payment, and product data  
 
-#### Example Request
+You can view request–response examples step by step to understand how each Open Finance capability works in practice.
 
-```bash
-curl https://rs1.altareq1.sandbox.apihub.openfinance.ae/tpp-registration \
-  --request POST \
-  --header 'Content-Type: application/json' \
-  --cert path/to/your-cert.pem \
-  --key path/to/your-key.key \
-  --data '{}'
-```
-
-## 🔐 Certificate & Key
-
-This endpoint uses **mutual TLS (mTLS)** with transport-level certificates.
-
-| Flag | Description |
-|------|--------------|
-| `--cert` | Path to your **transport client certificate** (`.pem`) |
-| `--key` | Path to your **transport private key** (`.key`) |
-
-✅ Once registration is successful, you’ll receive a **204 No Content** response.  
-Your software statement is now registered, and you can begin communicating with the Model Bank.
+📘 See setup instructions in the [Postman Guide](/developer-tools/postman/).
 
 ---
 
-## 🧪 Registering via Postman
+## 💻 Option 2: Hackathon Starter Kit
 
-If you’re using **Postman**, follow the setup instructions in the [Postman Guide](/developer-tools/postman/).
+For those who want to **build and test full applications**, the **Starter Kit** provides a complete development environment.
 
-After setup:
+This starter kit gives teams a fast, full-stack head start for building applications with Open Finance APIs.  
+It includes:
+- A **Node.js backend** (Express.js) for API routing  
+- Secure handling of sensitive data using `crypto-js` and `jose` (for JWTs and encryption)  
+- **Axios utilities** for making API requests  
+- A **Vite-based frontend** for interactive testing and visualization  
 
-1. Open the **`/tpp-registration`** request.  
-2. Attach your **client certificate** and **private key**.  
-3. Send the request to complete registration.
+You can run the kit locally, explore sample integrations, and extend it with your own ideas.
 
-Once successful, Postman will display a **204 No Content** response — confirming that your client is registered.
-
-![Registering via Postman](/images/postman/Spotlight_10.png)
-
----
-
-## 💻 Registering via Starter Kit
-
-If you’re using the **Hackathon Starter Kit**, follow the setup steps outlined in the [Starter Kit Guide](/developer-tools/starter-kit/).
-
-After installation and setup:
-
-1. Run the Starter Kit locally.  
-2. Navigate to the **Client Registration** section.  
-3. Execute the registration request from the interface.
-
-Upon success, you’ll receive a **204 No Content** response.  
-Your software statement is now registered with the Model Bank.
-
-![Registering via Starter Kit](/images/starter-kit/register.png)
+📘 Follow the setup steps in the [Starter Kit Guide](/developer-tools/starter-kit/).
 
 ---
 
-## ✅ Next Steps
+## 💡 Recommendation
 
-Once registration is complete, you can:
+If you’re **new to Open Finance**, start with the **Hackathon Starter Kit**.  
+It’s the easiest way to see the end-to-end flow, understand how authentication and API calls work together, and start building something real.
 
-- Make your **first API call** to `/accounts`  
-- Explore **data-sharing** and **payment-initiation** APIs  
-- Continue with the [Quick Start Guide](/quickstart)
+Once you’re comfortable, use the **Postman Collection** to explore the APIs in more depth.
+
+---
 
 <Note>
-💡 **Tip:** Keep your transport certificates and keys secure. They’re required for all authenticated API interactions with the sandbox.
+💡 **Tip:** Both tools use the same Open Finance Sandbox — choose the one that fits your workflow best!
 </Note>
-

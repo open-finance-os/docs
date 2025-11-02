@@ -36,6 +36,14 @@
               "getting-started/starter-kit/api-cop",
               "getting-started/starter-kit/client"
             ]
+          },
+          {
+            "group": "Postman",
+            "pages": [
+              "getting-started/postman/index",
+              "getting-started/postman/registering-your-client",
+              "getting-started/postman/data-sharing"
+            ]
           }
         ]
       },
@@ -76,32 +84,6 @@
             "group": "Confirmation of Payee",
             "openapi": [
               "open-finance-api/yaml/uae-product-openapi.yaml"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Framework Guides",
-        "groups": [
-          {
-            "group": "Hackathon Starter & Framework Guides",
-            "pages": [
-              "templates/index",
-              "templates/react-nextjs",
-              "templates/nodejs-express",
-              "templates/python-fastapi",
-              "templates/react-native"
-            ]
-          },
-          {
-            "group": "Examples & Demos",
-            "pages": [
-              "examples/index",
-              "examples/personal-finance",
-              "examples/payment-app",
-              "examples/insurance-dashboard",
-              "examples/business-banking",
-              "examples/mobile-app"
             ]
           }
         ]
