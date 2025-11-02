@@ -11,14 +11,71 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Welcome",
+        "pages": [
+          "index"
+        ]
+      },
+      {
         "tab": "Getting Started",
         "groups": [
           {
-            "group": "Quick Start",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "getting-started/index"
+            ]
+          },
+          {
+            "group": "Starter Kit",
+            "pages": [
+              "getting-started/starter-kit/index",
+              "getting-started/starter-kit/registering-your-client",
+              "getting-started/starter-kit/api-bank-data",
+              "getting-started/starter-kit/api-payment-initiation",
+              "getting-started/starter-kit/api-products",
+              "getting-started/starter-kit/api-cop",
+              "getting-started/starter-kit/client"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Open Finance APIs",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "open-finance-api/index"
+            ]
+          },
+          {
+            "group": "PAR",
+            "openapi": [
+              "open-finance-api/yaml/uae-pushed-authorization-endpoint-openapi.yaml"
+            ]
+          },
+          {
+            "group": "Bank Data Sharing",
+            "openapi": [
+              "open-finance-api/yaml/uae-account-information-openapi.yaml"
+            ]
+          },
+          {
+            "group": "Payment Initiation",
+            "openapi": [
+              "open-finance-api/yaml/uae-bank-initiation-openapi.yaml"
+            ]
+          },
+          {
+            "group": "Products and Leads",
+            "openapi": [
+              "open-finance-api/yaml/uae-confirmation-of-payee-openapi.yaml"
+            ]
+          },
+          {
+            "group": "Confirmation of Payee",
+            "openapi": [
+              "open-finance-api/yaml/uae-product-openapi.yaml"
             ]
           }
         ]
@@ -69,47 +126,11 @@
       },
       {
         "tab": "Support",
-        "groups": [
-          {
-            "group": "Get Help",
+
             "pages": [
-              "support/index",
-              "support/faq"
+              "support/index"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Bank Data Sharing",
-        "openapi": [
-          "/api-reference/bank-data-sharing/uae-account-information-openapi.yaml",
-          "/api-reference/bank-data-sharing/uae-atm-openapi.yaml",
-          "/api-reference/bank-data-sharing/uae-product-openapi.yaml"
-        ]
-      },
-      {
-        "tab": "Bank Service Initiation",
-        "openapi": [
-          "/api-reference/bank-service-initiation/uae-account-opening-service-initiation-openapi.yaml",
-          "/api-reference/bank-service-initiation/uae-bank-initiation-openapi.yaml",
-          "/api-reference/bank-service-initiation/uae-confirmation-of-payee-openapi.yaml",
-          "/api-reference/bank-service-initiation/uae-fx-service-initiation-openapi.yaml"
-        ]
-      },
-      {
-        "tab": "Insurance",
-        "openapi": "/api-reference/insurance/uae-insurance-openapi.yaml"
+        
       }
     ],
     "global": {
@@ -146,11 +167,11 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   },
   "footer": {
     "socials": {

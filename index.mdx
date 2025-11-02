@@ -1,224 +1,108 @@
 ---
 title: "ADCB & Nebras | UAE Open Finance Hackathon"
-description: "Build innovative financial solutions with Open Finance APIs"
+description: "Your guide to building innovative financial solutions using Open Finance APIs."
 ---
 
 ## Welcome Hackathon Participants!
 
 Everything you need to build winning Open Finance applications for the ADCB & Nebras UAE hackathon.
 
-## 🎯 30-Second Demo: See What's Possible
+---
 
-<Card
-  title="🚀 Live Open Finance App"
-  icon="play"
-  href="https://openfinance-frontend.onrender.com"
-  horizontal
->
-  **See a real Open Finance application in action** - consent management, account data, payments. Built with the same APIs you'll use! [View source code →](https://github.com/open-finance-os/backoffice-portal)
-</Card>
+# 👋 Welcome, Hackathon Innovators!
 
-## ⚡ Your Path to Success
+Welcome to the **ADCB & Nebras UAE Open Finance Hackathon**!  
+This documentation is designed to **help your team get up and running fast** — from your first API call to your final demo.
 
-<Steps>
-  <Step title="Fork & Start (5 minutes)">
-    Get the complete hackathon starter with working API examples
+Here, you’ll find everything you need to:
 
-    **[🚀 Fork Hackathon Starter →](https://github.com/open-finance-os/open-finance-hackathon-starter)**
-  </Step>
-  <Step title="First API Call (15 minutes)">
-    Test your connection and make your first successful API call
+- Understand the **Open Finance Sandbox** and available APIs  
+- Learn how to use the **Starter Kit** (UI & API) and **Postman Collections**  
+- Explore examples, guides, and reference endpoints  
+- Access datasets, AI tools, and developer resources  
 
-    **[⚡ Quick Start Guide →](/quickstart)**
-  </Step>
-  <Step title="Choose Your Track (5 minutes)">
-    Pick your prize track and see track-specific examples
+Whether you’re building your first prototype or refining your winning pitch, these docs are your **technical home base** for the hackathon.
 
-    **[🏆 Prize Tracks & Examples →](/support#hackathon-participants)**
-  </Step>
-</Steps>
+---
 
-## Open Finance APIs
 
-Explore comprehensive banking, insurance, and payment APIs for the UAE market.
+## ⚡ Quick Links
 
 <CardGroup cols={3}>
   <Card
-    title="Bank Data Sharing"
-    icon="building-columns"
-    href="/api-reference/introduction#bank-data-sharing-apis"
-  >
-    Account information, ATM, and product APIs
-  </Card>
-  <Card
-    title="Bank Services"
-    icon="credit-card"
-    href="/api-reference/introduction#bank-service-initiation-apis"
-  >
-    Account opening, payments, and FX services
-  </Card>
-  <Card
-    title="Insurance"
-    icon="shield"
-    href="/api-reference/introduction#insurance-apis"
-  >
-    Insurance policies and coverage APIs
-  </Card>
-</CardGroup>
-
-## 🚀 Start Building: Complete Hackathon Starter
-
-Everything you need in one repository - fork and start building in 5 minutes.
-
-<Card
-  title="🏆 Open Finance Hackathon Starter"
-  icon="github"
-  href="https://github.com/open-finance-os/open-finance-hackathon-starter"
-  horizontal
->
-  **Your winning foundation** - Complete starter kit with working API examples, authentication, test scripts, and framework templates. Includes Node.js examples, React/Python/React Native templates, and comprehensive documentation. Fork it now!
-</Card>
-
-<CardGroup cols={3}>
-  <Card
-    title="⚡ 5-Minute Setup"
+    title="🚀 Getting Started"
     icon="rocket"
-    href="/quickstart"
+    href="/getting-started"
   >
-    Fork → Configure → First API call in 5 minutes
+    Step-by-step guide to register your client, make your first API call, and connect to the sandbox.
   </Card>
   <Card
-    title="🎯 Framework Guides"
-    icon="code"
-    href="/templates"
+    title="📘 API Reference"
+    icon="book"
+    href="/api-reference/introduction"
   >
-    Adapt for React, Node.js, Python, or React Native
-  </Card>
-  <Card
-    title="🏆 Prize Track Examples"
-    icon="trophy"
-    href="/support#hackathon-participants"
-  >
-    AI + Open Finance examples for each competition track
+    Explore all available banking, insurance, and payment APIs for the UAE market.
   </Card>
 </CardGroup>
 
-## 💡 Instant Examples: Copy & Run
 
-See working Open Finance API calls you can copy and run immediately:
+---
 
-<Tabs>
-  <Tab title="Get Account Balance">
-    ```javascript
-    // Copy this working example from the hackathon starter
-    const { getAccessToken } = require('./examples/auth');
-    const axios = require('axios');
+## 🧭 Hackathon Overview
 
-    async function getAccountBalance() {
-      const { token } = await getAccessToken();
+The UAE Open Finance Hackathon is all about **turning intelligent automation + Open Finance** into real-world solutions that empower consumers and businesses.  
+Participants will explore APIs for banking, payments, and insurance to create seamless digital financial experiences.
 
-      const response = await axios.get(
-        `${process.env.OPENFINANCE_BASE_URL}/accounts`,
-        {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }
-      );
+---
 
-      console.log('Account Balance:', response.data.data[0].balance);
-    }
-    ```
-  </Tab>
-  <Tab title="Send Payment">
-    ```javascript
-    // Working payment example from starter repository
-    const { initiatePayment } = require('./examples/payments');
+## 🏆 Challenge Tracks
 
-    async function sendMoney() {
-      const payment = await initiatePayment({
-        amount: 100.50,
-        currency: 'AED',
-        to: {
-          accountNumber: '1234567890',
-          name: 'John Doe'
-        },
-        reference: 'Hackathon demo payment'
-      });
+Choose one of the four official **Hackathon Challenge Tracks** and let your creativity flow.
 
-      console.log('Payment initiated:', payment.payment_id);
-    }
-    ```
-  </Tab>
-  <Tab title="AI Integration">
-    ```javascript
-    // Combine Open Finance + AI for insights
-    async function analyzeSpending() {
-      const transactions = await getTransactions();
+### 💡 Retail & Wealth Journeys
 
-      // Use Claude Code MCP for AI analysis
-      const insights = await analyzeWithAI(transactions);
+**How might intelligent automation transform personal finance when connected to Open Finance APIs?**
 
-      return {
-        totalSpent: transactions.reduce((sum, t) => sum + t.amount, 0),
-        categories: insights.spendingCategories,
-        recommendations: insights.budgetAdvice
-      };
-    }
-    ```
-  </Tab>
-</Tabs>
+Focus areas:
+- Personalized financial insights and recommendations  
+- Voice-activated banking and investment guidance  
+- Real-time spending analysis and budgeting  
+- Sustainable investment portfolio optimization  
 
-## 🚀 Supercharge Your Development
+---
 
-<CardGroup cols={2}>
-  <Card
-    title="🤖 AI Development (MCP)"
-    icon="robot"
-    href="/additional-info/mcps"
-  >
-    50-70% faster development with Claude Code + MCP servers
-  </Card>
-  <Card
-    title="🗂️ UAE Open Data"
-    icon="database"
-    href="/additional-info/datasets"
-  >
-    Government data: property prices, business info, tourism stats
-  </Card>
-</CardGroup>
+### 💼 SME & Corporate Empowerment
 
-## 🆘 Need Help? We've Got You Covered
+**How can intelligent automation + Open Finance help businesses run smoother?**
 
-<CardGroup cols={3}>
-  <Card
-    title="🏆 Prize Track Help"
-    icon="trophy"
-    href="/support#hackathon-participants"
-  >
-    Track-specific guidance and AI integration examples
-  </Card>
-  <Card
-    title="💬 Community Support"
-    icon="comments"
-    href="https://github.com/open-finance-os/docs/discussions"
-  >
-    Get help from mentors and other teams
-  </Card>
-  <Card
-    title="❓ FAQ & Troubleshooting"
-    icon="circle-question"
-    href="/support/faq"
-  >
-    Common issues and solutions
-  </Card>
-</CardGroup>
+Focus areas:
+- Automated cash-flow forecasting and management  
+- Intelligent invoice processing and payments  
+- Embedded lending solutions for growth  
+- Automated tax compliance and reporting  
 
-## ⚡ Essential Resources
+---
 
-- **🚀 [Hackathon Starter Repository](https://github.com/open-finance-os/open-finance-hackathon-starter)** - Your foundation
-- **🧪 [API Sandbox](https://sandbox.openfinance.ae)** - Test environment
-- **📚 [Open Finance Standards](https://openfinanceuae.atlassian.net/wiki/spaces/OF/overview?mode=global)** - Official specifications
-- **🔐 [Authentication Guide](/support/faq#how-do-i-authenticate-with-the-open-finance-apis)** - Get connected
+### 🛡️ Risk, Trust & Compliance
 
-<Note>
-  **🎯 Ready to build?** Start with the [hackathon starter repository](https://github.com/open-finance-os/open-finance-hackathon-starter) and you'll have working API examples in 5 minutes!
-</Note>
+**How do we make finance safer and smarter at scale?**
+
+Focus areas:
+- Advanced fraud detection and prevention  
+- Real-time risk assessment and monitoring  
+- Automated compliance reporting and auditing  
+- Predictive analytics for business growth  
+
+---
+
+### ⚙️ Smart Automation & Integration
+
+**What if intelligent systems could act on behalf of users — with consent and control?**
+
+Focus areas:
+- Autonomous financial decision-making with user consent  
+- Cross-platform data integration and insights  
+- Intelligent automation of routine financial tasks  
+- Multi-system orchestration for complex workflows  
+
+---

@@ -1,0 +1,179 @@
+---
+title: API | Open Finance Products & Leads
+description: Step-by-step guide to initiate your first Open Products request using the Starter Kit API, including obtaining an access token, and initiating the product request.
+---
+
+
+# Your first product data pull
+
+Unlike bank data and payment initiation requests, product data is non-consented. This means you don’t need to go through a consent flow, making the process of accessing this data much simpler.
+
+## Step 1 - Get a `client-credentials` scoped Access Token
+
+To create a client credentials token send a POST request to the following endpoint, with the scope `openid products`:
+
+`/token/client-credentials`
+
+
+```json
+{
+  "access_token": "a444a69e-1e97-4fc6-844f-e3ecfd71700e",
+  "token_type": "Bearer",
+  "expires_in": 600,
+  "scope": "products"
+}
+```
+
+## Step 2 – Getting products
+
+Now that you have the required access token you can get the bank data payment by making a `GET` request to the following endpoint:
+
+`/open-finance/product/v1.2/products`
+
+
+
+Behind the scenes, this request triggers [Retrieve Products  (GET /products)](../../products-leads/) to the Al Tareq Sandbox Model Bank to retrieve the available products.
+
+
+#### Products Response
+
+
+
+```json
+{
+  "Data": [
+    {
+      "LFIId": "100000000000000000001001",
+      "LFIBrandId": "100000000000000000002001",
+      "Products": [
+        {
+          "ProductId": "100000000000000000003001",
+          "ProductName": "Savings Account",
+          "ProductCategory": "SavingsAccount",
+          "Description": "A high-interest savings account.",
+          "EffectiveFromDateTime": "2023-01-01T00:00:00Z",
+          "EffectiveToDateTime": "2025-01-01T00:00:00Z",
+          "LastUpdatedDateTime": "2024-12-01T12:00:00Z",
+          "IsShariaCompliant": true,
+          "ShariaInformation": "Fully compliant with Islamic principles.",
+          "IsSalaryTransferRequired": false,
+          "Links": {
+            "ApplicationUri": "https://example.com/apply",
+            "KfsUri": "https://example.com/kfs",
+            "OverviewUri": "https://example.com/overview",
+            "TermsUri": "https://example.com/terms",
+            "FeesAndPricingUri": "https://example.com/fees",
+            "ScheduleOfChargesUri": "https://example.com/charges",
+            "EligibilityUri": "https://example.com/eligibility",
+            "CardImageUri": "https://example.com/card-image"
+          },
+          "Eligibility": {
+            "ResidenceStatus": [
+              {
+                "Type": "UaeResident",
+                "Description": "A person who is a resident of the UAE."
+              }
+            ],
+            "EmploymentStatus": [
+              {
+                "Type": "Salaried",
+                "Description": "Employed individuals with regular income."
+              }
+            ],
+            "CustomerType": [
+              {
+                "Type": "Retail",
+                "Description": "Individual customers."
+              }
+            ],
+            "AccountOwnership": [
+              {
+                "Type": "Individual",
+                "Description": "Owned by a single individual."
+              }
+            ],
+            "Age": [
+              {
+                "Type": "MinimumAge",
+                "Description": "Minimum age required.",
+                "Value": 18
+              }
+            ],
+            "AdditionalEligibility": [
+              {
+                "Type": "Student",
+                "Description": "Available to students with a valid student ID."
+              }
+            ]
+          },
+          "Channels": [
+            {
+              "Type": "Internet",
+              "Description": "Accessible online."
+            }
+          ],
+          "Product": {
+            "SavingsAccount": {
+              "Type": "Savings",
+              "Description": "A standard savings account product.",
+              "MinimumBalance": {
+                "Amount": "1000",
+                "Currency": "AED"
+              },
+              "AnnualReturn": 3.5,
+              "Documentation": [
+                {
+                  "Type": "SalarySlip",
+                  "Description": "Salary Slip"
+                },
+                {
+                  "Type": "BusinessOwnership",
+                  "Description": "Business Ownership"
+                }
+              ],
+              "Features": [
+                {
+                  "Type": "DebitCard",
+                  "Description": "Includes a debit card for easy withdrawals."
+                },
+                {
+                  "Type": "FreeATMAccess",
+                  "Description": "Free access to ATMs worldwide."
+                }
+              ],
+              "Fees": [
+                {
+                  "Type": "MonthlyFees",
+                  "Period": "Daily",
+                  "Name": "Monthly Maintenance Fee",
+                  "Description": "Fee for maintaining the account.",
+                  "Unit": "Amount",
+                  "Amount": {
+                    "Amount": "5",
+                    "Currency": "AED"
+                  },
+                  "Percentage": 100,
+                  "UnitValue": 1,
+                  "MaximumUnitValue": 10
+                }
+              ],
+              "Limits": [
+                {
+                  "Type": "MaximumBalance",
+                  "Description": "The maximum balance allowed in the account.",
+                  "Value": 100000
+                }
+              ],
+              "Benefits": [
+                {
+                  "Type": "Cashback",
+                  "Name": "Monthly Cashback",
+                  "Description": "Earn cashback on transactions.",
+                  "Value": 2
+                }
+              ]
+            }
+          }
+          ....
+```
+

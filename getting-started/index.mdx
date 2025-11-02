@@ -1,0 +1,104 @@
+---
+title: "Getting Started"
+description: "Step-by-step guide to registering your client and accessing the Open Finance Sandbox."
+---
+
+# 🚀 Getting Started with Your Client Registration
+
+To begin working with the Open Finance Sandbox, you’ll need to **register the client** provided in your **Client Pack**.  
+This registration step links your application to the sandbox securely via the bank’s `registration_endpoint`, using your **TPP transport certificate** and **private key**.
+
+---
+
+## 🧰 Prerequisites
+
+Before you begin, make sure you have:
+
+- **Client Pack** — includes your:
+  - Client ID  
+  - Redirect URI  
+  - Client Transport Certificate & Key  
+  - Signing Certificate & Key
+
+- One of the following setups:
+  - Installed and configured the [Postman Collection](/developer-tools/)
+  - Installed and run the [Hackathon Starter Kit](/developer-tools/starter-kit/)
+
+---
+
+## 🔐 API Endpoint
+
+### `POST /tpp-registration`
+
+Use this endpoint to register your client with the Model Bank.
+
+#### Example Request
+
+```bash
+curl https://rs1.altareq1.sandbox.apihub.openfinance.ae/tpp-registration \
+  --request POST \
+  --header 'Content-Type: application/json' \
+  --cert path/to/your-cert.pem \
+  --key path/to/your-key.key \
+  --data '{}'
+```
+
+## 🔐 Certificate & Key
+
+This endpoint uses **mutual TLS (mTLS)** with transport-level certificates.
+
+| Flag | Description |
+|------|--------------|
+| `--cert` | Path to your **transport client certificate** (`.pem`) |
+| `--key` | Path to your **transport private key** (`.key`) |
+
+✅ Once registration is successful, you’ll receive a **204 No Content** response.  
+Your software statement is now registered, and you can begin communicating with the Model Bank.
+
+---
+
+## 🧪 Registering via Postman
+
+If you’re using **Postman**, follow the setup instructions in the [Postman Guide](/developer-tools/postman/).
+
+After setup:
+
+1. Open the **`/tpp-registration`** request.  
+2. Attach your **client certificate** and **private key**.  
+3. Send the request to complete registration.
+
+Once successful, Postman will display a **204 No Content** response — confirming that your client is registered.
+
+![Registering via Postman](/images/postman/Spotlight_10.png)
+
+---
+
+## 💻 Registering via Starter Kit
+
+If you’re using the **Hackathon Starter Kit**, follow the setup steps outlined in the [Starter Kit Guide](/developer-tools/starter-kit/).
+
+After installation and setup:
+
+1. Run the Starter Kit locally.  
+2. Navigate to the **Client Registration** section.  
+3. Execute the registration request from the interface.
+
+Upon success, you’ll receive a **204 No Content** response.  
+Your software statement is now registered with the Model Bank.
+
+![Registering via Starter Kit](/images/starter-kit/register.png)
+
+---
+
+## ✅ Next Steps
+
+Once registration is complete, you can:
+
+- Make your **first API call** to `/accounts`  
+- Explore **data-sharing** and **payment-initiation** APIs  
+- Continue with the [Quick Start Guide](/quickstart)
+
+<Note>
+💡 **Tip:** Keep your transport certificates and keys secure. They’re required for all authenticated API interactions with the sandbox.
+</Note>
+

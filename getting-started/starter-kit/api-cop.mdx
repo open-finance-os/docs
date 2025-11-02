@@ -1,0 +1,66 @@
+---
+title: API | Open Finance CoP
+description: Step-by-step guide to initiate your first Open Products request using the Starter Kit API, including obtaining an access token, and initiating a Confirmation of Payee request.
+---
+
+
+# Starter Kit - Your first Confirmation of Payee request
+
+Similar to product data, Confirmation of Payee requests are non-consented. This means you don’t need to go through a consent flow, making the process of making a Confirmation of Payee request this data much simpler.
+
+## Step 1 - Get a `client-credentials` scoped Access Token
+
+To create a client credentials token send a POST request to the following endpoint, with the scope `confirmation-of-payee`:
+
+`/token/client-credentials`
+
+
+
+```json
+{
+  "access_token": "a444a69e-1e97-4fc6-844f-e3ecfd71700e",
+  "token_type": "Bearer",
+  "expires_in": 600,
+  "scope": "products"
+}
+```
+
+
+## Step 2 - Get a `client-credentials` scoped Access Token
+
+Now that you have the required access token you can make the confirmation of payee request by making a `POST` request to the following endpoint:
+
+`/open-finance/confirmation-of-payee/v1.2/confirmation`
+
+
+including the account holder’s name and IBAN in the request body to you are verifying.
+
+Behind the scenes, this request triggers [Confirm the account details are correct based on the parameters supplied  (POST /open-finance/confirmation-of-payee/v1.2/confirmation)](../../confirmation-of-payee/) to the Al Tareq Sandbox Model Bank verify the account against the account holder's details.
+
+#### Confirmation of Payee Response
+
+
+If you have successfully made the CoP request, you will receive a **200** response with a **JWT**, for example:
+
+```bash
+eyJhbGciOiJQUzI1NiIsImtpZCI6IkxTUXhZc0thR2RzMk9lZS1pR01jYmVLd3c0SXplNXo4bG10YWhJMDRHLTQifQ.eyJtZXNzYWdlIjp7IkRhdGEiOnsiTmFtZU1hdGNoSW5kaWNhdG9yIjoiQ29uZmlybWF0aW9uT2ZQYXllZS5ZZXMiLCJNYXNrZWROYW1lIjoiTm91KiogQWwgTWF6cioqKioifSwiTWV0YSI6e30sIkxpbmtzIjp7IlNlbGYiOiJodHRwczovL3JzMS5hbHRhcmVxMS5zYW5kYm94LmFwaWh1Yi5vcGVuZmluYW5jZS5hZS9vcGVuLWZpbmFuY2UvY29uZmlybWF0aW9uLW9mLXBheWVlL3YxLjIvY29uZmlybWF0aW9uIn19LCJpc3MiOiJodHRwczovL2F1dGgxLmFsdGFyZXExLnNhbmRib3guYXBpaHViLm9wZW5maW5hbmNlLmFlIiwiZXhwIjoxNzYwMTcxMjY0LjAyMiwiaWF0IjoxNzYwMTcwNjY0LjAyMiwibmJmIjoxNzYwMTcwNjY0LjAyMiwiYXVkIjoiaHR0cHM6Ly9ycC5zYW5kYm94LmRpcmVjdG9yeS5vcGVuZmluYW5jZS5hZS9vcGVuaWRfcmVseWluZ19wYXJ0eS83MDM5YTFjNS02N2U0LTQ0NTItOWQ1MS05Y2FlNzlkZjhjNGEifQ.qsvydp8lXa-rVuw4ZQd_YyHyXgHAXqi85EDuFQ3A1Yf3sDtGUJl4v_xK9xXODtK3MrOOwnpc_4FXbo3BQ2xZN95GuhCO4zI048qkijuvYBLasjfcBhbwipJJ3gPIzKv8sWgHM66bQLaJDgftf5XoL6EgNP_FXMoOmYaswTmn0FggXdsRzY5IPOBS3kMZbXvlIxHs9azJu-I88KZLY1sSOVtoPT7OTbt81TTft5VfhfpeXdBTgJJaWaAItQg7HGw8R7TnbnBiOvJv1Ge4O25_W8s7LIFaByr6t35vW7Ujhkg0X0ZttG9hHhjBHWMwlVw8Fx4bW1JNNBb3TUM9F3XizA
+```
+and the decoded payload:
+
+```json
+  {
+    "message": {
+      "Data": {
+        "NameMatchIndicator": "ConfirmationOfPayee.Yes",
+        "MaskedName": "Nou** Al Mazr****"
+      },
+      "Meta": {},
+      "Links": {
+        "Self": "https://rs1.altareq1.sandbox.apihub.openfinance.ae/open-finance/confirmation-of-payee/v1.2/confirmation"
+      }
+    },
+    "iss": "https://auth1.altareq1.sandbox.apihub.openfinance.ae",
+   ....
+  }
+```
+
