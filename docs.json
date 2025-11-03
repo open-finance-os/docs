@@ -77,17 +77,17 @@
           {
             "group": "Products and Leads",
             "openapi": [
-              "open-finance-api/yaml/uae-confirmation-of-payee-openapi.yaml"
+              "open-finance-api/yaml/uae-product-openapi.yaml"
             ]
           },
           {
             "group": "Confirmation of Payee",
             "openapi": [
-              "open-finance-api/yaml/uae-product-openapi.yaml"
+              "open-finance-api/yaml/uae-confirmation-of-payee-openapi.yaml"
             ]
           }
         ]
-      },
+      }, 
       {
         "tab": "Advanced Integration",
         "groups": [
