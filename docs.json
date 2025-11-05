@@ -41,6 +41,8 @@
             "group": "Postman",
             "pages": [
               "getting-started/postman/index",
+              "getting-started/postman/certificates",
+              "getting-started/postman/env-vars",
               "getting-started/postman/registering-your-client",
               "getting-started/postman/data-sharing"
             ]
@@ -87,6 +89,15 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Hackathon Starter Kit",
+            "pages": [
+              "starter-kit/index",
+              "starter-kit/registering-your-client",
+              "starter-kit/client",
+              "starter-kit/api"
+            ]
       }, 
       {
         "tab": "Advanced Integration",
@@ -94,8 +105,6 @@
           {
             "group": "Power Tools",
             "pages": [
-              "additional-info/sandbox-guide",
-              "additional-info/mcps",
               "additional-info/datasets",
               "additional-info/datasets-categories",
               "additional-info/datasets-mashups",

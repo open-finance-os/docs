@@ -5,43 +5,28 @@ const Carousel = () => {
 
   const images = [
     {
-      src: '/images/postman/Spotlight_3.png',
+      src: '/images/postman/envs_1.png',
       alt: 'Step 1',
-      title: 'Click Settings'
+      title: 'Click Environments'
     },
     {
-      src: '/images/postman/Spotlight_4.png',
+      src: '/images/postman/envs_2.png',
       alt: 'Step 2',
-      title: 'Click Certificates'
+      title: 'Click Import'
     },
     {
-      src: '/images/postman/Spotlight_5.png',
+      src: '/images/postman/envs_3.png',
       alt: 'Step 3',
-      title: 'Click Add Certificates'
+      title: 'Import postman_environment.json from your Client Pack'
     },
     {
-      src: '/images/postman/Spotlight_6.png',
+      src: '/images/postman/envs_4.png',
       alt: 'Step 4',
-      title: 'Set the Host to *.altareq1.sandbox.apihub.openfinance.ae '
-    },
-    {
-      src: '/images/postman/Spotlight_7.png',
-      alt: 'Step 5',
-      title: 'Set to CRT file to the client_transport.crt file in your Client Pack'
-    },
-    {
-      src: '/images/postman/Spotlight_8.png',
-      alt: 'Step 6',
-      title: 'Set to Key file to the client_transport.key file in your Client Pack'
-    },
-    {
-      src: '/images/postman/Spotlight_9.png',
-      alt: 'Step 7',
-      title: 'Click Add'
-    },
+      title: 'Set the Environment to Hackathon Environment'
+    }
   ]
 
-  let currentIndex = 1;
+  let currentIndex = 0;
 
   const showSlide = (index) => {
     const slides = document.querySelectorAll(".carousel-image");

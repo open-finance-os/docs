@@ -4,8 +4,6 @@ description: Step-by-step guide to initiate your first Open Products request usi
 ---
 
 
-# Starter Kit - Your first Confirmation of Payee request
-
 Similar to product data, Confirmation of Payee requests are non-consented. This means you don’t need to go through a consent flow, making the process of making a Confirmation of Payee request this data much simpler.
 
 ## Step 1 - Get a `client-credentials` scoped Access Token
@@ -14,7 +12,11 @@ To create a client credentials token send a POST request to the following endpoi
 
 `/token/client-credentials`
 
-
+<img 
+  src="/images/api/Spotlight_12.png" 
+  alt="/token/client-credentials"
+  className="rounded-lg"
+/>
 
 ```json
 {
@@ -31,6 +33,18 @@ To create a client credentials token send a POST request to the following endpoi
 Now that you have the required access token you can make the confirmation of payee request by making a `POST` request to the following endpoint:
 
 `/open-finance/confirmation-of-payee/v1.2/confirmation`
+
+<img 
+  src="/images/api/Spotlight_8.png" 
+  alt="authorize_endpoint"
+  className="rounded-lg"
+/>
+
+<img 
+  src="/images/api/Spotlight_7.png" 
+  alt="enter_access_token"
+  className="rounded-lg"
+/>
 
 
 including the account holder’s name and IBAN in the request body to you are verifying.

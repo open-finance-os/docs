@@ -4,19 +4,19 @@ import React, { useState } from 'react';
 const Carousel = () => {
 
   const images = [
-  {
-    src: '/images/postman/Spotlight_1.png',
-    alt: 'Step 1',
-    title: 'Click Import'
-  },
-  {
-    src: '/images/postman/Spotlight_2.png',
-    alt: 'Step 2',
-    title: 'Import adcb-nebras-hackathon-postman.json'
-  }
+    {
+      src: '/images/model-bank/authenticate.png',
+      alt: 'Step 1',
+      title: 'Authenticate at AlTareq Model Bank'
+    },
+    {
+      src: '/images/model-bank/authorize.png',
+      alt: 'Step 5',
+      title: 'Authorize the consent'
+    }
   ]
 
-  let currentIndex = 1;
+  let currentIndex = 0;
 
   const showSlide = (index) => {
     const slides = document.querySelectorAll(".carousel-image");

@@ -1,0 +1,21 @@
+---
+title: Configuring Client Certificates
+description: How to configure client certificates in Postman to enable mTLS for Open Finance requests.
+---
+import Carousel  from "/snippets/Carousels/PostmanSetup.jsx";
+
+All Open Finance requests use mTLS as a security mechanism where both the client (Postman, in this case) and the server authenticate each other by exchanging certificates.
+
+### Step 1 - Go to Settings → Certificates → Add Certificate
+In Postman, client certificates are managed under the Settings menu. By navigating to **Certificates** and clicking **Add Certificate**, you open the interface where you can associate certificates with specific hosts.
+
+### Step 2 - set the Host to *.altareq1.sandbox.apihub.openfinance.ae
+The **Host** field tells Postman which requests should include the client certificate. By using `*.altareq1.sandbox.apihub.openfinance.ae`, you ensure that all subdomains under this sandbox domain will automatically use the certificate when making requests.
+
+### Step 3 - upload the client_transport.PEM  file from the Client Pack into the CRT file
+The **CRT file** is your client certificate, which proves your identity to the server. Upload the `client_transport.PEM` file provided in your Client Pack to ensure Postman can authenticate your requests properly.
+
+### Step 4 - upload the client_transport.KEY file from the Client Pack into the KEY file
+The **KEY file** is the private key associated with your client certificate. Uploading `client_transport.KEY` allows Postman to securely sign the handshake and complete the mTLS authentication process.
+
+<Carousel />

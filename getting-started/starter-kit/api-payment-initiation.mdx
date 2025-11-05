@@ -2,10 +2,8 @@
 title: API | Open Finance Payment
 description: Step-by-step guide to initiate your first Open Finance payment using the Starter Kit API, including creating consent, authorizing in the sandbox, obtaining an access token, and initiating the payment.
 ---
+import Carousel  from "/snippets/Carousels/StarterModelBank.jsx";
 
-
-
-#  Your first Open Finance payment
 
 Now that your client is registered, you can proceed to make your first payment.
 
@@ -23,7 +21,16 @@ This guide will walk you through the single payment example step by step.
 To initiate a single payment, you must first create a consent request.
 Send a POST request to the following endpoint:
 
-`/consent-create/single-payment` specifying the desired payment_amount.
+`/consent-create/single-payment` 
+
+<img 
+  src="/images/api/Spotlight_1.png" 
+  alt="ConsentCreate"
+  className="rounded-lg"
+/>
+
+
+specifying the desired payment_amount.
 
 Behind the scenes, this request triggers a [Pushed Authorization Request (PAR)](../../par) (of type AEServiceInitiationAuthorizationDetailConsent) to the Al Tareq Sandbox Model Bank to create the consent.
 
@@ -57,6 +64,7 @@ Open the `redirect` URL in a browser. This will take you to the **Al Tareq Sandb
 
 Once you open the `redirect` URL from the previous step, you’ll be taken to the **Al Tareq Sandbox Model Bank** for authentication and authorization.
 
+<Carousel />
 
 ### Authentication
 
@@ -90,6 +98,11 @@ You can now exchange the code for an access token by authorizing and making a `P
 
 `/token/authorization-code`
 
+<img 
+  src="/images/api/Spotlight_4.png" 
+  alt="ConsentCreate"
+  className="rounded-lg"
+/>
 
 with the code returned in the redirect back from the Model Bank:
 
@@ -121,6 +134,19 @@ and the `code_verifier` returned when you created the consent. If you have done 
 Now that you have the access token the only thing that is left is to initate the payment by making a `POST` request to the following endpoint:
 
 `/open-finance/payment/v1.2/payments`
+
+<img 
+  src="/images/api/Spotlight_8.png" 
+  alt="authorize_endpoint"
+  className="rounded-lg"
+/>
+
+<img 
+  src="/images/api/Spotlight_7.png" 
+  alt="enter_access_token"
+  className="rounded-lg"
+/>
+
 
 
 with the `payment_amount` used, and the `consent_id` returned, when you created the consent. 

@@ -2,21 +2,26 @@
 title: API | Open Finance Data Sharing
 description: Step-by-step guide to initiate your first Open Finance data sharing request using the Starter Kit API, including creating consent, authorizing in the sandbox, obtaining an access token, and initiating the data sharing request.
 ---
+import Carousel  from "/snippets/Carousels/StarterModelBank.jsx";
 
-
-# Your first Open Finance data pull
 
 Now that your client is registered, you can proceed to make your first bank data sharing request.
 
 This guide will walk you through the example step by step.
 
 
-## Step 1 - Create the single-payment consent.
+## Step 1 - Create the data sharing consent.
 
 To initiate a bank data sharing request, you must first create a consent request.
 Send a POST request to the following endpoint:
 
 `/consent-create/bank-data`
+
+<img 
+  src="/images/api/Spotlight_6.png" 
+  alt="ConsentCreate"
+  className="rounded-lg"
+/>
 
 
 specifying the desired data permissions.
@@ -53,6 +58,7 @@ Open the `redirect` URL in a browser. This will take you to the **Al Tareq Sandb
 
 Once you open the `redirect` URL from the previous step, you’ll be taken to the **Al Tareq Sandbox Model Bank** for authentication and authorization.
 
+<Carousel />
 
 ### Authentication
 
@@ -88,7 +94,11 @@ You can now exchange the code for an access token by making a `POST` request to 
 
 `/token/authorization-code`
 
-
+<img 
+  src="/images/api/Spotlight_4.png" 
+  alt="ConsentCreate"
+  className="rounded-lg"
+/>
 
 with the code returned in the redirect back from the Model Bank:
 
@@ -118,6 +128,19 @@ and the `code_verifier` returned when you created the consent. If you have done 
 Now that you have the access token the only thing that is left is to get the bank data payment by making a `GET` request to the following endpoint:
 
 `/open-finance/account-information/v1.2/accounts`
+
+<img 
+  src="/images/api/Spotlight_8.png" 
+  alt="authorize_endpoint"
+  className="rounded-lg"
+/>
+
+<img 
+  src="/images/api/Spotlight_7.png" 
+  alt="enter_access_token"
+  className="rounded-lg"
+/>
+
 
 
 

@@ -2,13 +2,8 @@
 title: Setting up Postman
 description: A postman collection walking your through requests to the Open Finance APIs for banking data, payments, product data and more.
 ---
+import Button  from "/snippets/DownloadPostman.jsx";
 
-import CarouselPostmanSetUp1 from "/snippets/CarouselPostmanSetUp1.jsx";
-import CarouselPostmanSetUp2 from "/snippets/CarouselPostmanSetUp2.jsx";
-
-
-
-# Postman Collection
 
 This **Postman collection** provides a guided sequence of API requests that help you:
 
@@ -24,19 +19,20 @@ Following the collection step by step demonstrates essential workflows to test O
 
 ### 1. Download the Postman Collection  
 
-<a href="/hackathon-guide/json/adcb-nebras-hackathon-postman.json" download class="button">Download Collection</a>
+<Button />
 
 ### 2. Import into Postman  
 
 Open **Postman**, click **Import**, and select the downloaded file `adcb-nebras-hackathon-postman.json`.
 
-<CarouselPostmanSetUp1 />
+<img 
+  src="/images/postman/Spotlight_1.png" 
+  alt="Registration request"
+  className="rounded-lg"
+/>
 
-### 3. Add Client Credentials  
 
-Add the **client transport certificate** and **client transport private key** from your **Client Pack** to the Postman requests. This ensures secure communication with the APIs.
 
-<CarouselPostmanSetUp2 />
 
 ---
 

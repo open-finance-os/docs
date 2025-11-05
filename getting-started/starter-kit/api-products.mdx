@@ -4,8 +4,6 @@ description: Step-by-step guide to initiate your first Open Products request usi
 ---
 
 
-# Your first product data pull
-
 Unlike bank data and payment initiation requests, product data is non-consented. This means you don’t need to go through a consent flow, making the process of accessing this data much simpler.
 
 ## Step 1 - Get a `client-credentials` scoped Access Token
@@ -13,6 +11,12 @@ Unlike bank data and payment initiation requests, product data is non-consented.
 To create a client credentials token send a POST request to the following endpoint, with the scope `openid products`:
 
 `/token/client-credentials`
+
+<img 
+  src="/images/api/Spotlight_10.png" 
+  alt="/token/client-credentials"
+  className="rounded-lg"
+/>
 
 
 ```json
@@ -30,7 +34,17 @@ Now that you have the required access token you can get the bank data payment by
 
 `/open-finance/product/v1.2/products`
 
+<img 
+  src="/images/api/Spotlight_8.png" 
+  alt="authorize_endpoint"
+  className="rounded-lg"
+/>
 
+<img 
+  src="/images/api/Spotlight_7.png" 
+  alt="enter_access_token"
+  className="rounded-lg"
+/>
 
 Behind the scenes, this request triggers [Retrieve Products  (GET /products)](../../products-leads/) to the Al Tareq Sandbox Model Bank to retrieve the available products.
 
