@@ -2,7 +2,6 @@
 title: Setting up Postman
 description: A postman collection walking your through requests to the Open Finance APIs for banking data, payments, product data and more.
 ---
-import Button  from "/snippets/DownloadPostman.jsx";
 
 
 This **Postman collection** provides a guided sequence of API requests that help you:
@@ -17,25 +16,47 @@ Following the collection step by step demonstrates essential workflows to test O
 
 ## Setting up Postman
 
-### 1. Download the Postman Collection  
+### Step 1. Install Postman
 
-<Button />
+If you don’t already have Postman installed, follow these steps:
 
-### 2. Import into Postman  
+1. Go to the [Postman website](https://www.postman.com/downloads/).
+2. Download the version for your operating system (Windows, macOS, or Linux).
+3. Run the installer and follow the prompts.
+4. Once installed, open Postman and sign in or create an account if needed.
 
-Open **Postman**, click **Import**, and select the downloaded file `adcb-nebras-hackathon-postman.json`.
+### Step 2. Locate the Postman Collection
+
+Within your Client Pack, you should have a file called:
+
+`postman_collection_open_finance_hackathon.json`
+
+Locate this file — it should look like:
+
+```json
+{
+  "info": {
+    "_postman_id": "9296da61-5164-4bd8-9284-338435eeda88",
+    "name": "Open Finance Hackathon Postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "10637960"
+  },
+  "item": [
+    {
+      "name": "TPP Onboarding",
+      "item": [
+        ...
+```
+
+###  Step 3. Import into Postman  
+
+Open **Postman**, click **Import**, and select the file `postman_collection_open_finance_hackathon.json`.
 
 <img 
   src="/images/postman/Spotlight_1.png" 
   alt="Registration request"
   className="rounded-lg"
 />
-
-
-
-
----
-
 
 
 
