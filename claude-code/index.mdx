@@ -1,236 +1,466 @@
 ---
-title: Claude Code via Amazon Bedrock
-description: Access Claude Code, an AI-powered coding assistant, through Amazon Bedrock. Instantly generate, debug, and refactor code directly from your terminal using a pre-configured bearer token—no AWS setup required.
+title: Agentic AI Coding
+description: Access Agentic AI coding with Amazon Q Developer. Instantly generate, debug, and refactor code directly from your terminal.
 ---
 
-A powerful AI-powered coding assistant that runs locally through Amazon Bedrock, providing intelligent code generation, analysis, and debugging capabilities for your hackathon projects.
+A powerful AI-powered coding assistant that runs locally powered by Amazon Bedrock, providing intelligent code generation, analysis, and debugging capabilities for your hackathon projects.
 
-Claude Code is an interactive CLI tool that helps developers with software engineering tasks. For this hackathon, access to Claude via Amazon Bedrock is pre-configured and provided through a bearer token—no AWS account setup or CLI installation required. Simply install Claude Code, configure your token, and start building!
+**Amazon Q Developer** is your AI-powered coding companion that transforms how you build software. Powered by advanced generative AI, Q Developer goes beyond simple code completion—it's an **agentic coding assistant** that understands your intent, takes autonomous actions, and helps you ship features faster.
 
-With Claude Code, you can generate code, debug issues, refactor existing code, explain complex logic, and automate repetitive tasks—all from your terminal.
+With Amazon Q Developer, you can generate code, debug issues, refactor existing code, explain complex logic, and automate repetitive tasks—all from your terminal.
+
+### Amazon Q Developer Pro
+
+For this hackathon, you'll create your own Builder ID account, install Amazon Q, and upgrade to **Q Developer Pro**. The hackathon support team will assist with Pro subscription activation.
+
+**Pro tier unlocks:**
+- Access to the latest Claude Sonnet 4.5 model for superior code generation
+- Advanced agentic capabilities for multi-file editing and complex refactoring
+- Extended context windows for understanding larger codebases
+- Priority access and faster response times
 
 ## Prerequisites
 
 Before starting, ensure you have:
 
-- **Node.js** (v18 or later) and npm installed
-- **AWS Bearer Token** provided by ADCB
-- A code editor and terminal
+- **macOS or Windows** operating system
+- **Email address** - You will use this to create your AWS Builder ID account (or you can use an existing Google account)
+- A code editor and/or terminal
+- **For macOS**: GUI access for the application
+- **For Windows**: Administrator privileges may be required for installation
 
-## Setting up Claude Code via Bedrock
+## Setup Overview
 
-### Step 1: Verify Node.js Installation
+The setup process consists of three main steps:
 
-Check that Node.js is installed:
+1. **Sign up** - Create your AWS Builder ID account (free personal account)
+2. **Install Amazon Q** - Install and configure Amazon Q CLI
+3. **Upgrade to Pro** - Subscribe to Q Developer Pro tier with hackathon support assistance
 
-```bash
-node --version
-npm --version
-```
+### Step 1: Sign Up for AWS Builder ID
 
-If not installed, download from [nodejs.org](https://nodejs.org/) (LTS version recommended).
+Before installing Amazon Q, create an AWS Builder ID account. This is a free personal account that you'll use to authenticate Amazon Q.
 
-### Step 2: Install Claude Code
+**Note:** While you can create a Builder ID during the Amazon Q authentication process (Step 2c), we recommend creating it upfront for a smoother setup experience.
 
-Install Claude Code globally via npm:
+#### Create Your Builder ID Account
 
-```bash
-npm install -g @anthropic-ai/claude-code
-```
+1. Visit the [AWS Builder ID sign-up page](https://profile.aws.amazon.com/)
 
-Or use npx (no installation required):
+2. Choose your sign-up method:
+   - **Sign up with email**: Enter your email address and follow the verification process
+   - **Sign up with Google**: Use your existing Google account for quick registration
 
-```bash
-npx @anthropic-ai/claude-code
-```
+3. Complete the registration process:
+   - Verify your email address (if using email sign-up)
+   - Create a secure password for your Builder ID
+   - Complete your profile information
 
-### Step 3: Get Your AWS Bearer Token
+4. **Save your credentials** - You'll use these to authenticate Amazon Q in Step 2
 
-ADCB will provide you with an `AWS_BEARER_TOKEN_BEDROCK`. This token gives you secure access to Claude via Amazon Bedrock in the `us-west-2` region.
+**IMPORTANT:**
+- Keep your Builder ID credentials secure
+- Remember your email/password combination
+- You can use the same Builder ID across multiple AWS developer tools
 
-⚠️ **IMPORTANT:**
-- **Store your token securely** - you'll need it for configuration
-- **Do not share the token outside of your team**
+For more information, see [Create your AWS Builder ID](https://docs.aws.amazon.com/signin/latest/userguide/sign-in-aws_builder_id.html) in the AWS Sign-In User Guide.
 
-### Step 4: Configure Claude Code for Bedrock
+### Step 2: Install Amazon Q Developer
 
-Configure Claude Code using environment variables:
+Now that you have your Builder ID, install Amazon Q Developer on your system.
 
-**On macOS/Linux:**
+For installation information, see [Installing Amazon Q for command line](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-getting-started.html).
 
-```bash
-# AWS Credentials with a Bedrock API Key
-export AWS_BEARER_TOKEN_BEDROCK=your-bedrock-api-key
+Choose the installation method that matches your operating system:
 
-# Enable Bedrock integration
-export CLAUDE_CODE_USE_BEDROCK=1
-export AWS_REGION=us-west-2
+#### macOS - Direct Download
 
-# Using inference profile ID
-export ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-20250514-v1:0
+1. Download [Amazon Q for command line for macOS](https://desktop-release.q.us-east-1.amazonaws.com/latest/amazon-q.dmg)
 
-# Recommended output token settings for Bedrock
-export CLAUDE_CODE_MAX_OUTPUT_TOKENS=4096
-export MAX_THINKING_TOKENS=1024
-```
+2. (Optional) Verify the downloaded file integrity
 
-**On Windows (Command Prompt):**
+3. Double-click on the downloaded `.dmg` file
 
-```cmd
-# AWS Credentials with a Bedrock API Key
-set AWS_BEARER_TOKEN_BEDROCK=your-bedrock-api-key
+4. Drag the Amazon Q app into your Applications folder
 
-# Enable Bedrock integration
-set CLAUDE_CODE_USE_BEDROCK=1
-set AWS_REGION=us-west-2
+5. In your Applications folder, double-click on Amazon Q to launch the GUI
 
-# Using inference profile ID
-set ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-20250514-v1:0
+#### macOS - Homebrew
 
-# Recommended output token settings for Bedrock
-set CLAUDE_CODE_MAX_OUTPUT_TOKENS=4096
-set MAX_THINKING_TOKENS=1024
-```
-
-**On Windows (PowerShell):**
-
-```powershell
-# AWS Credentials with a Bedrock API Key
-$env:AWS_BEARER_TOKEN_BEDROCK="your-bedrock-api-key"
-
-# Enable Bedrock integration
-$env:CLAUDE_CODE_USE_BEDROCK=1
-$env:AWS_REGION="us-west-2"
-
-# Using inference profile ID
-$env:ANTHROPIC_MODEL="us.anthropic.claude-sonnet-4-20250514-v1:0"
-
-# Recommended output token settings for Bedrock
-$env:CLAUDE_CODE_MAX_OUTPUT_TOKENS=4096
-$env:MAX_THINKING_TOKENS=1024
-```
-
-## Running Claude Code
-
-### Start Claude Code
-
-Navigate to your project directory and launch Claude Code:
+Install using Homebrew with a single command:
 
 ```bash
-cd your-hackathon-project
-claude
+brew install --cask amazon-q
 ```
 
-Or using npx:
+#### Windows
+
+1. Download Amazon Q for Windows from the [AWS website](https://desktop-release.q.us-east-1.amazonaws.com/latest/amazon-q.exe)
+
+2. Run the installer executable
+
+3. Follow the installation wizard prompts
+
+4. Launch Amazon Q from the Start Menu or Desktop shortcut
+
+5. The GUI will open and prompt you for initial setup
+
+#### Step 2a: Enable Shell Integration
+
+After launching Amazon Q, enable shell integrations to:
+- Run Amazon Q commands from your shell
+- Get autocomplete suggestions for 500+ command line tools
+- Access inline completions with `qterm`
+
+The GUI will prompt you to enable shell integrations during first launch.
+
+#### Step 2b: Grant Accessibility Permissions (macOS only)
+
+For autocomplete to work properly on macOS, you'll need to grant accessibility permissions:
+
+1. The Amazon Q setup will prompt you for accessibility permissions
+2. Follow the system prompts to grant permissions in System Preferences
+3. Navigate to: **System Preferences → Security & Privacy → Privacy → Accessibility**
+4. Ensure Amazon Q is checked in the list
+
+You should see a screen similar to this during setup:
+```
+Shell integrations: ✓ Complete
+Enable accessibility: Needs attention
+```
+
+#### Step 2c: Authenticate with Your Builder ID
+
+Amazon Q will prompt you to authenticate using the Builder ID you created in Step 1.
+
+1. Select **Sign in with Builder ID** (not IAM Identity Center)
+2. Follow the browser prompts to authenticate
+3. Enter your Builder ID credentials (email and password you created in Step 1)
+4. Complete the authentication flow and authorize Amazon Q
+
+**IMPORTANT:**
+- Use the Builder ID credentials you created in Step 1
+- If you encounter authentication issues, verify your credentials or try `q login` from the command line
+- Contact hackathon support if issues persist
+
+### Step 3: Upgrade to Q Developer Pro
+
+After authenticating with your Builder ID, you need to upgrade to Q Developer Pro to access all features. Follow these steps:
+
+1. **Open Amazon Q chat** by running:
+   ```bash
+   q chat
+   ```
+
+2. **Initiate the upgrade** by typing:
+   ```bash
+   /subscribe
+   ```
+
+3. **You will see the following prompt:**
+   ```
+   Subscribe to Q Developer Pro
+
+   During the upgrade, you'll be asked to link your Builder ID to the AWS account
+   that will be billed the monthly subscription fee.
+
+   Need help? Visit our subscription support page
+   https://docs.aws.amazon.com/console/amazonq/upgrade-builder-id
+
+   Would you like to open the AWS console to upgrade? [y/n]:
+   ```
+
+4. **Type `y` and press Enter** to open the AWS console
+
+5. **Copy the URL from your browser** after the AWS console opens. The URL will contain account linking information.
+
+6. **Send the URL to hackathon support** via the designated support channel. The support team will assist with completing your Pro subscription activation.
+
+7. **Wait for confirmation** from the hackathon support team that your Pro subscription is active
+
+**IMPORTANT:**
+- Do not close the browser window until you've copied the URL
+- Send the complete URL exactly as it appears in your browser
+- You will need Pro access activated before you can use advanced features
+- If you encounter any issues during the upgrade process, contact hackathon support immediately
+
+### Step 4: Configure Claude Sonnet 4.5 Model (Recommended)
+
+By default, Amazon Q uses **Claude Sonnet 4** for chat sessions. For the best performance and latest capabilities, we recommend configuring **Claude Sonnet 4.5** as your default model.
+
+#### Set Claude Sonnet 4.5 as Default Model
+
+Run the following command to set Claude Sonnet 4.5 as your default model for all chat sessions:
 
 ```bash
-npx @anthropic-ai/claude-code
+q settings chat.defaultModel claude-sonnet-4.5
 ```
 
-### Verify Connection
+This ensures all future chat sessions use Claude Sonnet 4.5 automatically.
 
-Once Claude Code starts, you should see a welcome message. Verify the connection to Sonnet 4 via Bedrock using the `/status` command:
+#### Available Models
 
-```
-/status
-```
+Amazon Q supports the following models for chat sessions:
 
-You should see output similar to:
+- **Claude Sonnet 4.5** (recommended for hackathon)
+- **Claude Sonnet 4** (default)
+- **Claude Sonnet 3.5**
 
-```
-Version: 2.0.33
- Session ID: 0da59082-bdbf-4f5a-9828-XXXXXXXX
- cwd: /Users/UserTest/Labs
- API provider: AWS Bedrock
- AWS region: us-west-2
+#### Change Model During a Chat Session
 
- Model: us.anthropic.claude-sonnet-4-20250514-v1:0
+If you're already in a chat session and want to switch models, use the `/model` command:
+
+```bash
+/model
 ```
 
-This confirms you're connected to Claude Sonnet 4 through AWS Bedrock in the us-west-2 region.
+This displays a list of available models. Use arrow keys to navigate and press Enter to select Claude Sonnet 4.5.
 
-### Common Commands
+**Note:** The model you select persists for the duration of that chat session only. New sessions will use your configured default model.
 
-- `/help` - Get help with Claude Code features
-- `/clear` - Clear the conversation history
-- `Ctrl+C` (or `Cmd+C` on Mac) - Exit Claude Code
+#### Start a Chat Session with a Specific Model
+
+You can launch a chat session with a specific model using:
+
+```bash
+q chat --model claude-sonnet-4.5
+```
+
+### Using Amazon Q CLI
+
+#### Launch Amazon Q
+
+From your terminal, simply run:
+
+```bash
+q
+```
+
+This launches the Amazon Q interactive chat interface.
+
+#### Verify Installation and Model Configuration
+
+Run the diagnostic command to ensure everything is working:
+
+```bash
+q doctor
+```
+
+Expected output:
+```
+✔ Everything looks good!
+
+Amazon Q still not working? Run q issue to let us know!
+```
+
+To verify your default model is set to Claude Sonnet 4.5, start a chat session and check the model indicator, or run:
+
+```bash
+q chat --model claude-sonnet-4.5
+```
+
+#### Common CLI Commands
+
+- `q` - Start Amazon Q chat interface
+- `q chat --model claude-sonnet-4.5` - Start chat with Claude Sonnet 4.5
+- `/model` - Change model during a chat session
+- `q settings chat.defaultModel <model-name>` - Set default model
+- `q doctor` - Diagnose and fix common issues
+- `q login` - Re-authenticate with Builder ID
+- `q issue` - Report a bug or issue
+- `qterm` - Enhanced terminal with inline completions (for zsh)
 
 ## Troubleshooting
 
-### Issue: "Authentication Failed" or "Access Denied"
+### CLI Issues
+
+#### Issue: Authentication Failed
 
 **Solution:**
-- Verify your bearer token is correctly copied (no extra spaces or line breaks)
-- Check that the token hasn't expired - contact ADCB for a new token
-- Ensure the token is in the right location (config.json or environment variable)
+- Verify your Builder ID credentials are correct
+- Try re-authenticating: `q login`
+- If you forgot your Builder ID password, use the password reset option
+- Ensure you completed the Builder ID verification process
+- Contact hackathon support if you continue to have issues
 
-### Issue: "Connection Timeout" or "Network Error"
-
-**Solution:**
-- Verify you have internet connectivity
-- Check that the region in config.json is set to `"us-west-2"`
-- Try restarting Claude Code
-- Contact hackathon technical support if issues persist
-
-### Issue: Slow Responses
+#### Issue: Autocomplete Not Working
 
 **Solution:**
-- This is normal for complex requests - Claude is processing your code
-- For faster responses, break large requests into smaller ones
+- Run `q doctor` to check shell integration
+- Verify accessibility permissions are granted (macOS)
+- Ensure shell integrations were properly installed during setup
+- Try restarting your terminal
+
+#### Issue: "q: command not found"
+
+**Solution:**
+- Shell integrations may not be enabled
+- Run the Amazon Q app again and enable shell integrations
+- Restart your terminal after enabling integrations
+- Check that your shell configuration (.zshrc, .bashrc, or PowerShell profile) was updated
+
+#### Issue: Cannot Upgrade to Pro / Subscription Issues
+
+**Solution:**
+- Ensure you've completed the authentication with your Builder ID first
+- Try the `/subscribe` command again in a fresh Q chat session
+- If the AWS console doesn't open, ensure your default browser is set correctly
+- Make sure you copied the complete URL from the browser
+- Verify you sent the URL to hackathon support
+- Contact hackathon support if you don't receive confirmation within a reasonable time
+- Check if your Pro subscription is active by trying to access Pro features
+
+#### Issue: Model Not Available or Model Selection Not Working
+
+**Solution:**
+- Ensure you're using the correct model name format: `claude-sonnet-4.5`, `claude-sonnet-4`, or `claude-3.5-sonnet`
+- Verify your Q Developer Pro subscription is active
+- Try re-authenticating: `q login`
+- Contact hackathon support to verify your Pro subscription status
+
+#### Issue: Connection Timeout or Network Errors
+
+**Solution:**
+- Check your internet connection
+- Verify AWS endpoints are accessible from your network
+- Contact your IT administrator for firewall issues
+- Restart Amazon Q application
+
+#### Issue: Slow Responses
+
+**Solution:**
+- This is normal for complex requests—Amazon Q is processing your code
+- Break large requests into smaller, focused ones
 - Check your internet connection speed
+- Ensure you have the latest version of Amazon Q
+- Consider using Claude Sonnet 4 or 3.5 if 4.5 seems slower for simple tasks
 
-### Issue: Claude Command Not Found
+## Best Practices
 
-**Solution:**
-If installed globally:
-```bash
-npm install -g @anthropic-ai/claude-code
-```
+### Optimize Your Prompts
 
-Or always use npx (no installation):
-```bash
-npx @anthropic-ai/claude-code
-```
+- **Be specific**: Clearly describe what you want to achieve
+- **Provide context**: Share relevant code snippets or file structures
+- **Iterate**: Start small and build up complexity
+- **Use autocomplete**: Let Amazon Q suggest commands as you type (CLI)
+- **Use the right model**: Claude Sonnet 4.5 for complex tasks (CLI only)
 
-## Token Usage Guidelines
+### Work Incrementally
 
-While your bearer token provides access to Claude, be mindful of usage:
+- Build features step-by-step rather than requesting entire applications
+- Test generated code before moving to the next feature
+- Refactor and improve code iteratively
 
-- **Optimize prompts**: Be clear and specific to get better responses faster
-- **Work incrementally**: Build features step-by-step rather than requesting entire apps
-- **Reuse code**: Copy and adapt generated code rather than re-generating similar patterns
-- **Share wisely**: Coordinate with your team to avoid duplicate work
+### Leverage Multiple Features
+
+- **CLI Chat**: Use `q` for complex code generation and explanations
+- **CLI Autocomplete**: Use inline suggestions for terminal commands
+- **Debugging**: Ask Amazon Q to help analyze errors and logs
+- **Model Selection**: Switch models during CLI sessions with `/model` if needed
 
 ## Security Best Practices
 
-### Protect Your Bearer Token
+### Protect Your Credentials
 
-⚠️ **IMPORTANT:** Never commit your bearer token to version control!
+**IMPORTANT:** Never commit your Builder ID credentials to version control!
+
+### Code Review
+
+- Always review code generated by Amazon Q before using in production
+- Understand what the code does before committing
+- Test thoroughly, especially for security-sensitive operations
+- Be cautious with code that handles sensitive data or credentials
+
+### Token Usage
+
+Your Q Developer Pro subscription provides access to advanced features:
+- Be mindful of usage during the hackathon
+- Coordinate with your team to avoid duplicate work
+- Reuse and adapt generated code patterns
+- The hackathon support team manages subscription billing
 
 ## Quick Start Checklist
 
-- [ ] Node.js installed (v18+)
-- [ ] Claude Code installed: `npm install -g @anthropic-ai/claude-code`
-- [ ] Bearer token received from ADCB
-- [ ] Config created with environment variables set
-- [ ] Region set to `us-west-2`
-- [ ] Claude Code launched: `claude`
-- [ ] Connection verified with test prompt
+### Step 1: Sign Up
+- [ ] Created AWS Builder ID account at https://profile.aws.amazon.com/
+- [ ] Verified email address (if using email sign-up)
+- [ ] Saved Builder ID credentials securely
+
+### Step 2: Install Amazon Q
+- [ ] Downloaded and installed Amazon Q (via download or Homebrew for macOS, installer for Windows)
+- [ ] Launched Amazon Q application
+- [ ] Enabled shell integrations
+- [ ] Granted accessibility permissions (macOS only)
+- [ ] Authenticated with Builder ID credentials from Step 1
+
+### Step 3: Upgrade to Pro
+- [ ] Ran `/subscribe` command in Q chat
+- [ ] Clicked 'y' to open AWS console
+- [ ] Copied browser URL
+- [ ] Sent URL to hackathon support
+- [ ] Received confirmation that Pro subscription is active
+
+### Step 4: Configure and Test
+- [ ] Configured Claude Sonnet 4.5 as default model: `q settings chat.defaultModel claude-sonnet-4.5`
+- [ ] Ran `q doctor` successfully
+- [ ] Tested chat with `q` or `q chat --model claude-sonnet-4.5`
 
 ## Additional Resources
 
-- [Claude Code Documentation](https://docs.claude.com/claude-code)
-- [Anthropic API Documentation](https://docs.anthropic.com/)
-- Contact ADCB for technical support
+### Official Documentation
+- [Amazon Q CLI Documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html) - Complete CLI reference and advanced features
+- [Amazon Q in IDE Documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE.html) - IDE setup for VS Code, JetBrains, Eclipse, and Visual Studio
+- [Amazon Q Developer Documentation](https://docs.aws.amazon.com/amazonq/) - Main documentation hub
+- [Supported Command Line Environments](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-supported-environments.html)
+- [Model Selection Documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-chat-models.html)
+
+### Support
+- Contact hackathon support for technical assistance during the event
 
 ## Support
 
 For issues during the hackathon:
 
-- **Token problems**: Contact ADCB for a new token
-- **Claude Code issues**: Visit [GitHub Issues](https://github.com/anthropics/claude-code/issues)
+- **Builder ID creation or authentication problems**: Contact hackathon support for assistance
+- **Pro subscription upgrade issues**: Send your browser URL to hackathon support as instructed in Step 6
+- **CLI installation issues**: Run `q doctor` and `q issue` to diagnose
+- **Model configuration issues**: Verify model name format and Pro subscription status
+- **Network issues**: Check your internet connection and contact IT if needed
 - **Technical questions**: Reach out to hackathon mentors or support channel
+- **Bug reports**: Use `q issue` to report CLI problems
+
+## Uninstalling Amazon Q (Post-Hackathon)
+
+### CLI Uninstallation
+
+#### macOS
+
+1. Open the Applications folder in Finder
+2. Locate the Amazon Q Developer application
+3. Drag the application to Trash, or right-click and select "Move to Trash"
+4. Empty the Trash to complete uninstallation
+
+#### macOS (Homebrew)
+
+```bash
+brew uninstall --cask amazon-q
+```
+
+#### Windows
+
+1. Open **Settings** → **Apps** → **Apps & features**
+2. Search for **Amazon Q**
+3. Click on Amazon Q and select **Uninstall**
+4. Follow the uninstallation wizard prompts
 
 ---
 
-**You're all set!** 🚀 Launch Claude Code and start building your hackathon project with AI assistance. Good luck!
+## Summary
+
+You've completed the three-step setup process:
+
+1. ✅ **Sign up** - Created your AWS Builder ID account
+2. ✅ **Install** - Installed Amazon Q CLI and/or IDE extension
+3. ✅ **Upgrade to Pro** - Subscribed to Q Developer Pro tier with hackathon support
+
+**You're all set!** Once your Pro subscription is confirmed by hackathon support, launch Amazon Q with `q chat --model claude-sonnet-4.5` for CLI. Start building your hackathon project with AI assistance. Good luck!
