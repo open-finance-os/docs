@@ -98,7 +98,13 @@
               "starter-kit/client",
               "starter-kit/api"
             ]
-      }, 
+      },
+      {
+        "tab": "Claude Code",
+        "pages": [
+              "claude-code/index"
+            ]
+      },
       {
         "tab": "Advanced Integration",
         "groups": [
