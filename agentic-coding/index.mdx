@@ -98,7 +98,7 @@ brew install --cask amazon-q
 #### Windows
 
 Amazon Q CLI on Windows is installed through WSL (Windows Subsystem for Linux), which provides a Linux environment directly on Windows without needing a virtual machine.
-For step by step follow instruction from https://builder.aws.com/content/2ySpxVfiIsy46THpP6YdlYgQZpD/how-to-install-amazon-q-cli-on-windows
+For step by step follow instruction from [Install Q CLI on Windows](https://builder.aws.com/content/2ySpxVfiIsy46THpP6YdlYgQZpD/how-to-install-amazon-q-cli-on-windows)
 
 #### Step 2a: Enable Shell Integration
 
@@ -267,105 +267,8 @@ q chat --model claude-sonnet-4.5
 
 ## Option 2: Amazon Q IDE Integration (Recommended for Windows)
 
-You can use Amazon Q Developer directly in your IDE for real-time code suggestions, inline completions, and integrated chat. This section covers setup for **Visual Studio Code**.
-For setup instructions for other IDEs, see the [Amazon Q in IDE documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE.html).
-
-The IDE setup follows the same three-step process:
-1. **Sign up** - Create your AWS Builder ID (or use existing from Part 1)
-2. **Install** - Install the Amazon Q extension in VS Code
-3. **Upgrade to Pro** - Subscribe to Q Developer Pro tier (or skip if already completed in Part 1)
-
-### Prerequisites for IDE Setup
-
-- **Visual Studio Code** version 1.85.0 or later
-- **Builder ID credentials**:
-  - **Windows users**: You'll create your Builder ID during authentication (see Step 1 at the beginning of this guide)
-  - **macOS users**: Use the same Builder ID from Part 1
-- **Pro subscription**: You'll upgrade to Pro after authentication (instructions below)
-
-For installation information, see [Installing the Amazon Q Developer extension or plugin in your IDE](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE-install.html).
-
-### Install the Amazon Q Extension in VS Code
-
-1. Open Visual Studio Code
-
-2. Go to the Extensions view by clicking the Extensions icon in the Activity Bar or pressing `Ctrl+Shift+X` (Windows) or `Cmd+Shift+X` (macOS)
-
-3. Search for **"Amazon Q"**
-
-4. Click **Install** on the Amazon Q extension by AWS
-
-Alternatively, download directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.amazon-q-vscode)
-
-### Authenticate with Your Builder ID
-
-1. After installation, click the **Amazon Q icon** in the Activity Bar (left sidebar)
-
-2. In the Amazon Q panel, click **Sign in**
-
-3. Select **AWS Builder ID** as your authentication method
-
-4. Follow the prompts in your browser to authenticate with Builder ID:
-   - **If you already created a Builder ID** (from Part 1 or earlier): Enter your existing credentials
-   - **If you don't have a Builder ID yet**: Click "Create a new AWS Builder ID" and follow the registration process (see Step 1 at the beginning of this guide for details)
-   - Complete the authorization flow
-
-5. Return to VS Code—you should now see "Connected" status in the Amazon Q panel
-
-**Note for macOS users:** If you've already upgraded to Pro in Part 1, your IDE will automatically have access to Pro features once authenticated. Windows users should proceed to upgrade to Pro below.
-
-### Upgrade to Q Developer Pro (Windows Users)
-
-If you haven't already upgraded to Pro in Part 1, you'll need to upgrade now to access all Pro features.
-
-1. Click the Amazon Q icon in the Activity Bar
-2. In the chat panel, type `/subscribe`
-3. Follow the prompts
-
-**After initiating the upgrade:**
-
-1. **You will see the following prompt:**
-   ```
-   Subscribe to Q Developer Pro
-
-   During the upgrade, you'll be asked to link your Builder ID to the AWS account
-   that will be billed the monthly subscription fee.
-
-   Need help? Visit our subscription support page
-   https://docs.aws.amazon.com/console/amazonq/upgrade-builder-id
-
-   Would you like to open the AWS console to upgrade? [y/n]:
-   ```
-
-2. **Type `y` and press Enter** to open the AWS console
-
-3. **Copy the URL from your browser** after the AWS console opens
-
-4. **Send the URL via email to slinsola@amazon.ae**, including your team name. The team will assist with completing your Pro subscription activation.
-
-5. **Wait for confirmation** from the hackathon support team that your Pro subscription is active
-
-**IMPORTANT:**
-- Do not close the browser window until you've copied the URL
-- Send the complete URL exactly as it appears
-- Contact hackathon support if you encounter any issues
-
-### Start Using Amazon Q in VS Code
-
-Once authenticated, you can use Amazon Q in several ways:
-
-#### Chat with Amazon Q
-
-- Click the **Amazon Q icon** in the Activity Bar
-- Type your questions or requests in the chat interface
-- Get code suggestions, explanations, debugging help, and more
-
-#### Inline Code Suggestions
-
-- As you type code, Amazon Q will provide inline suggestions
-- Press `Tab` to accept suggestions
-- Continue coding with AI-powered autocomplete
-
+You can use Amazon Q Developer directly in your IDE for real-time code suggestions, inline completions, and integrated chat. 
+For setup instructions see the [Amazon Q in IDE documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE.html).
 
 ## Troubleshooting
 
@@ -476,7 +379,7 @@ Your Q Developer Pro subscription provides access to advanced features:
 
 ## Quick Start Checklist
 
-### For macOS Users (CLI Installation)
+### CLI Installation
 
 **Step 1: Sign Up**
 - [ ] Created AWS Builder ID account at https://profile.aws.amazon.com/
@@ -506,33 +409,6 @@ Your Q Developer Pro subscription provides access to advanced features:
 - [ ] Installed Amazon Q extension in VS Code
 - [ ] Authenticated with same Builder ID
 - [ ] Verified Pro features are active
-
-### For Windows Users (VS Code Installation)
-
-**Step 1: Sign Up**
-- [ ] Created AWS Builder ID account at https://profile.aws.amazon.com/
-  - Or created during VS Code authentication
-- [ ] Verified email address (if using email sign-up)
-- [ ] Saved Builder ID credentials securely
-
-**Step 2: Install Amazon Q in VS Code**
-- [ ] VS Code version 1.85.0 or later installed
-- [ ] Amazon Q extension installed from VS Code Marketplace
-- [ ] Authenticated with Builder ID
-- [ ] Verified "Connected" status in Amazon Q panel
-
-**Step 3: Upgrade to Pro**
-- [ ] Opened Command Palette and ran "Amazon Q: Subscribe to Pro"
-  - Or used `/subscribe` in integrated terminal
-- [ ] Clicked 'y' to open AWS console
-- [ ] Copied browser URL
-- [ ] Sent URL to hackathon support
-- [ ] Received confirmation that Pro subscription is active
-
-**Step 4: Test Features**
-- [ ] Tested Amazon Q chat in VS Code
-- [ ] Verified inline code suggestions are working
-- [ ] Tested code actions (explain, refactor, etc.)
 
 ## Additional Resources
 
