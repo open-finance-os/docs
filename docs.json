@@ -87,6 +87,12 @@
             "openapi": [
               "open-finance-api/yaml/uae-confirmation-of-payee-openapi.yaml"
             ]
+          },
+          {
+            "group": "Future Functionality - PAR",
+            "openapi": [
+              "open-finance-api/yaml/uae-authorization-endpoints-openapi-dual-consents.yaml"
+            ]
           }
         ]
       },

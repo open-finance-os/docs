@@ -152,7 +152,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"https://auth1.altareq1.sandbox.apihub.openfinance.ae\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"accounts openid\",\n        \"redirect_uri\": \"https://ob-testing.onrender.com/callback\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:account-access-consent:v1.2\",\n                \"consent\": {\n                    \"ExpirationDateTime\": \"{{today}}T23:00:00.000Z\",\n                    \"OnBehalfOf\": {\n                        \"TradingName\": \"Ozone\",\n                        \"LegalName\": \"Ozone-CBUAE\",\n                        \"IdentifierType\": \"Other\",\n                        \"Identifier\": \"Identifier\"\n                    },\n                    \"ConsentId\": \"{{$guid}}\",\n                    // \"BaseConsentId\": \"b9f42378-10ac-46a1-8d20-4e020484216d\",\n                    \"Permissions\": [\n                        \"ReadTransactionsCredits\",\n                        \"ReadAccountsBasic\",\n                        \"ReadBalances\",\n                        \"ReadTransactionsBasic\",\n                        \"ReadTransactionsDetail\",\n                        \"ReadDirectDebits\",\n                        \"ReadBeneficiariesDetail\",\n                        \"ReadBeneficiariesBasic\",\n                        \"ReadScheduledPaymentsBasic\",\n                        \"ReadScheduledPaymentsDetail\",\n                        \"ReadStandingOrdersBasic\",\n                        \"ReadStandingOrdersDetail\",\n                        \"ReadParty\",\n                        \"ReadPartyUserIdentity\",\n                        \"ReadProduct\"\n                    ],\n                    //  \"TransactionFromDateTime\": \"2025-03-01T23:00:00.000Z\",\n                    //  \"TransactionToDateTime\": \"2025-03-31T23:00:00.000Z\",\n                    \"OpenFinanceBilling\": {\n                        \"UserType\": \"Retail\",\n                        \"Purpose\": \"AccountAggregation\"\n                    }\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                        \"Url\": \"https://rs1.altareq1.sandbox.apihub.openfinance.ae/mock-event-receiver\",\n                        \"IsActive\": true\n                    }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
+									"raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"https://auth1.altareq1.sandbox.apihub.openfinance.ae\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"accounts openid\",\n        \"redirect_uri\": \"https://docs.openfinance-hackathon.com/starter-kit/callback\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:account-access-consent:v1.2\",\n                \"consent\": {\n                    \"ExpirationDateTime\": \"{{today}}T23:00:00.000Z\",\n                    \"OnBehalfOf\": {\n                        \"TradingName\": \"Ozone\",\n                        \"LegalName\": \"Ozone-CBUAE\",\n                        \"IdentifierType\": \"Other\",\n                        \"Identifier\": \"Identifier\"\n                    },\n                    \"ConsentId\": \"{{$guid}}\",\n                    // \"BaseConsentId\": \"b9f42378-10ac-46a1-8d20-4e020484216d\",\n                    \"Permissions\": [\n                        \"ReadTransactionsCredits\",\n                        \"ReadAccountsBasic\",\n                        \"ReadBalances\",\n                        \"ReadTransactionsBasic\",\n                        \"ReadTransactionsDetail\",\n                        \"ReadDirectDebits\",\n                        \"ReadBeneficiariesDetail\",\n                        \"ReadBeneficiariesBasic\",\n                        \"ReadScheduledPaymentsBasic\",\n                        \"ReadScheduledPaymentsDetail\",\n                        \"ReadStandingOrdersBasic\",\n                        \"ReadStandingOrdersDetail\",\n                        \"ReadParty\",\n                        \"ReadPartyUserIdentity\",\n                        \"ReadProduct\"\n                    ],\n                    //  \"TransactionFromDateTime\": \"2025-03-01T23:00:00.000Z\",\n                    //  \"TransactionToDateTime\": \"2025-03-31T23:00:00.000Z\",\n                    \"OpenFinanceBilling\": {\n                        \"UserType\": \"Retail\",\n                        \"Purpose\": \"AccountAggregation\"\n                    }\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                        \"Url\": \"https://rs1.altareq1.sandbox.apihub.openfinance.ae/mock-event-receiver\",\n                        \"IsActive\": true\n                    }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
 								},
 								"url": {
 									"raw": "https://rs1.altareq1.sandbox.apihub.openfinance.ae/o3/v1.0/message-signature",
@@ -394,7 +394,7 @@
 										},
 										{
 											"key": "redirect_uri",
-											"value": "https://ob-testing.onrender.com/callback",
+											"value": "https://docs.openfinance-hackathon.com/starter-kit/callback",
 											"type": "text"
 										},
 										{
@@ -1617,7 +1617,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"https://auth1.altareq1.sandbox.apihub.openfinance.ae\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"payments openid\",\n        \"redirect_uri\": \"https://ob-testing.onrender.com/callback\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:service-initiation-consent:v1.2\",\n                \"consent\": {\n                    \"ConsentId\": \"{{service-initiation-consent-id}}\",\n                    \"IsSingleAuthorization\": true,\n                    \"ExpirationDateTime\": \"{{today}}T23:00:00.000Z\",\n                    \"PersonalIdentifiableInformation\": \"{{encryptedPII}}\",\n                    \"Permissions\": [\"ReadRefundAccount\"],\n                    \"ControlParameters\": {\n                        \"ConsentSchedule\": {\n                            \"SinglePayment\": {\n                                \"Type\": \"SingleInstantPayment\",\n                                \"Amount\": {\n                                    \"Amount\": \"150.00\",\n                                    \"Currency\": \"AED\"\n                                }\n                            }\n                        }\n                    },\n                    \"PaymentPurposeCode\": \"ACM\"\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                        \"Url\": \"http://localhost:4700/mock-event-receiver\",\n                        \"IsActive\": false\n                    }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
+											"raw": "{\n    \"header\": {\n        \"alg\": \"PS256\",\n        \"kid\": \"{{kid-local}}\"\n    },\n    \"body\": {\n        \"aud\": \"https://auth1.altareq1.sandbox.apihub.openfinance.ae\",\n        \"exp\": {{exp}},\n        \"iss\": \"{{_clientId}}\",\n        \"scope\": \"payments openid\",\n        \"redirect_uri\": \"https://docs.openfinance-hackathon.com/starter-kit/callback\",\n        \"client_id\": \"{{_clientId}}\",\n        \"nonce\": \"{{$guid}}\",\n        \"state\": \"{{$guid}}\",\n        \"nbf\": {{nbf}},\n        \"response_type\": \"code\",\n        \"code_challenge_method\": \"S256\",\n        \"code_challenge\": \"{{code-challenge}}\",\n        \"max_age\": 3600,\n        \"authorization_details\": [\n            {\n                \"type\": \"urn:openfinanceuae:service-initiation-consent:v1.2\",\n                \"consent\": {\n                    \"ConsentId\": \"{{service-initiation-consent-id}}\",\n                    \"IsSingleAuthorization\": true,\n                    \"ExpirationDateTime\": \"{{today}}T23:00:00.000Z\",\n                    \"PersonalIdentifiableInformation\": \"{{encryptedPII}}\",\n                    \"Permissions\": [\"ReadRefundAccount\"],\n                    \"ControlParameters\": {\n                        \"ConsentSchedule\": {\n                            \"SinglePayment\": {\n                                \"Type\": \"SingleInstantPayment\",\n                                \"Amount\": {\n                                    \"Amount\": \"150.00\",\n                                    \"Currency\": \"AED\"\n                                }\n                            }\n                        }\n                    },\n                    \"PaymentPurposeCode\": \"ACM\"\n                },\n                \"subscription\": {\n                    \"Webhook\": {\n                        \"Url\": \"http://localhost:4700/mock-event-receiver\",\n                        \"IsActive\": false\n                    }\n                }\n            }\n        ]\n    },\n    \"signingKeyPEM\": \"{{pem-local}}\"\n}"
 										},
 										"url": {
 											"raw": "https://rs1.altareq1.sandbox.apihub.openfinance.ae/o3/v1.0/message-signature",
@@ -1852,7 +1852,7 @@
 												},
 												{
 													"key": "redirect_uri",
-													"value": "https://ob-testing.onrender.com/callback",
+													"value": "https://docs.openfinance-hackathon.com/starter-kit/callback",
 													"type": "text"
 												},
 												{
@@ -2401,7 +2401,7 @@
 												},
 												{
 													"key": "redirect_uri",
-													"value": "https://ob-testing.onrender.com/callback",
+													"value": "https://docs.openfinance-hackathon.com/starter-kit/callback",
 													"type": "text",
 													"disabled": true
 												},
@@ -2655,7 +2655,7 @@
 								},
 								{
 									"key": "redirect_uri",
-									"value": "https://ob-testing.onrender.com/callback",
+									"value": "https://docs.openfinance-hackathon.com/starter-kit/callback",
 									"type": "text",
 									"disabled": true
 								},
@@ -2902,7 +2902,7 @@
 								},
 								{
 									"key": "redirect_uri",
-									"value": "https://ob-testing.onrender.com/callback",
+									"value": "https://docs.openfinance-hackathon.com/starter-kit/callback",
 									"type": "text",
 									"disabled": true
 								},
