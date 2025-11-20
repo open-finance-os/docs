@@ -8,8 +8,71 @@ description: "Production deployment options and strategies for Open Finance appl
 Comprehensive guide to deploying Open Finance applications with modern cloud platforms, focusing on security, scalability, and cost optimization for hackathon teams and production environments.
 
 <Info>
-  **🚀 Hackathon Focus**: Quick deployment strategies to get your demo live fast, with paths to production scaling.
+**Third-Party Deployment Platforms**
+
+This guide covers **external hosting services** for deploying your hackathon project:
+
+- **Not provided** - Choose and set up your own deployment platform
+- **Free tiers available** - Great for hackathon demos and MVPs
+- **Your choice** - Use any platform you're comfortable with
+- **Not officially supported** - Platform-specific issues are outside hackathon support scope
+
+**Quick Start Recommendation**: Use Vercel (frontend) + Railway (backend) free tiers for fastest deployment with minimal configuration.
 </Info>
+
+## ⚡ Hackathon Quick Deploy (5-10 Minutes)
+
+**For teams who need their demo live FAST:**
+
+### Frontend: Vercel One-Click Deploy
+
+**Perfect for**: React, Next.js, Vue.js applications
+
+```bash
+# 1. Push your code to GitHub
+git add .
+git commit -m "Ready for deployment"
+git push
+
+# 2. Deploy to Vercel (one command)
+npx vercel --prod
+```
+
+**That's it!** Your frontend is live. Vercel will give you a URL like `your-app.vercel.app`
+
+### Backend: Railway Quick Deploy
+
+**Perfect for**: Node.js, Python, databases
+
+```bash
+# 1. Install Railway CLI
+npm install -g @railway/cli
+
+# 2. Login and deploy (2 commands)
+railway login
+railway up
+```
+
+**Done!** Your backend is deployed with a live URL.
+
+### Database: Railway PostgreSQL
+
+```bash
+# Add a database to your Railway project
+railway add postgresql
+```
+
+**Environment variables are automatically configured** - no manual setup needed.
+
+<Tip>
+**Pro Tip**: Deploy early in the hackathon (within first 6 hours) to catch any deployment issues before demo time. Test your live URLs to ensure everything works end-to-end.
+</Tip>
+
+---
+
+## 📋 Detailed Platform Guide
+
+For teams who want more control or have specific requirements:
 
 ## Platform Overview
 
@@ -376,7 +439,21 @@ async def root():
     return {"message": "Open Finance API"}
 ```
 
-## Advanced Deployment Strategies
+---
+
+## 🏗️ Advanced Deployment Strategies
+
+<Warning>
+**Advanced Topics - Beyond Hackathon Scope**
+
+The following sections cover production-grade deployment strategies that are **typically beyond hackathon needs**:
+
+- **Kubernetes**: Enterprise container orchestration (complex setup)
+- **Docker multi-stage builds**: Advanced containerization
+- **Custom infrastructure**: AWS/GCP/Azure manual configuration
+
+**For Hackathon**: Stick with the "Quick Deploy" section above unless your team has specific expertise in these areas. Judges value working demos over deployment complexity.
+</Warning>
 
 ### Docker Containerization
 

@@ -1,0 +1,471 @@
+---
+title: Agentic AI Coding
+description: Access Agentic AI coding with Amazon Q Developer. Instantly generate, debug, and refactor code directly from your terminal.
+---
+
+A powerful AI-powered coding assistant that runs locally powered by Amazon Bedrock, providing intelligent code generation, analysis, and debugging capabilities for your hackathon projects.
+
+**Amazon Q Developer** is your AI-powered coding companion that transforms how you build software. Powered by advanced generative AI, Q Developer goes beyond simple code completion—it's an **agentic coding assistant** that understands your intent, takes autonomous actions, and helps you ship features faster.
+
+With Amazon Q Developer, you can generate code, debug issues, refactor existing code, explain complex logic, and automate repetitive tasks—all from your terminal.
+
+### Amazon Q Developer Pro
+
+For this hackathon, you'll create your own free Builder ID account, install Amazon Q, and upgrade to **Q Developer Pro**. The hackathon support team will assist with Pro subscription activation.
+
+**Pro tier unlocks:**
+- Access to the latest Claude Sonnet 4.5 model for superior code generation
+- Advanced agentic capabilities for multi-file editing and complex refactoring
+- Extended context windows for understanding larger codebases
+- Priority access and faster response times
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- **macOS or Windows** operating system
+- **Email address** - You will use this to create your AWS Builder ID account (or you can use an existing Google account)
+- A code editor and/or terminal
+- **For macOS**: GUI access for the application
+- **For Windows**: Administrator privileges may be required for installation
+
+## Setup Overview
+
+The setup process consists of three main steps:
+
+1. **Sign up** - Create your AWS Builder ID account (free personal account)
+2. **Install Amazon Q** - Install and configure Amazon Q CLI
+3. **Upgrade to Pro** - Subscribe to Q Developer Pro tier with hackathon support assistance
+
+## Option 1: Amazon Q CLI Setup
+
+### Step 1: Sign Up for AWS Builder ID
+
+Before installing Amazon Q, create an AWS Builder ID account. This is a free personal account that you'll use to authenticate Amazon Q.
+
+**Note:** While you can create a Builder ID during the Amazon Q authentication process (Step 2c), we recommend creating it upfront for a smoother setup experience.
+
+#### Create Your Builder ID Account - One per team
+
+1. Visit the [AWS Builder ID sign-up page](https://profile.aws.amazon.com/)
+
+2. Choose your sign-up method:
+   - **Sign up with email**: Enter your email address and follow the verification process
+   - **Sign up with Google**: Use your existing Google account for quick registration
+
+3. Complete the registration process:
+   - Verify your email address (if using email sign-up)
+   - Create a secure password for your Builder ID
+   - Complete your profile information
+
+4. **Save your credentials** - You'll use these to authenticate Amazon Q in Step 2
+
+**IMPORTANT:**
+- Keep your Builder ID credentials secure
+- Remember your email/password combination
+- You can use the same Builder ID across multiple AWS developer tools
+
+For more information, see [Create your AWS Builder ID](https://docs.aws.amazon.com/signin/latest/userguide/sign-in-aws_builder_id.html) in the AWS Sign-In User Guide.
+
+### Step 2: Install Amazon Q Developer
+
+Now that you have your Builder ID, install Amazon Q Developer on your system.
+
+For installation information, see [Installing Amazon Q for command line](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-getting-started.html).
+
+Choose the installation method that matches your operating system:
+
+#### macOS - Direct Download
+
+1. Download [Amazon Q for command line for macOS](https://desktop-release.q.us-east-1.amazonaws.com/latest/amazon-q.dmg)
+
+2. (Optional) Verify the downloaded file integrity
+
+3. Double-click on the downloaded `.dmg` file
+
+4. Drag the Amazon Q app into your Applications folder
+
+5. In your Applications folder, double-click on Amazon Q to launch the GUI
+
+#### macOS - Homebrew
+
+Install using Homebrew with a single command:
+
+```bash
+brew install --cask amazon-q
+```
+
+#### Windows
+
+Amazon Q CLI on Windows is installed through WSL (Windows Subsystem for Linux), which provides a Linux environment directly on Windows without needing a virtual machine.
+For step by step follow instruction from [Install Q CLI on Windows](https://builder.aws.com/content/2ySpxVfiIsy46THpP6YdlYgQZpD/how-to-install-amazon-q-cli-on-windows)
+
+#### Step 2a: Enable Shell Integration
+
+After launching Amazon Q, enable shell integrations to:
+- Run Amazon Q commands from your shell
+- Get autocomplete suggestions for 500+ command line tools
+- Access inline completions with `qterm`
+
+The GUI will prompt you to enable shell integrations during first launch.
+
+#### Step 2b: Grant Accessibility Permissions (macOS only)
+
+For autocomplete to work properly on macOS, you'll need to grant accessibility permissions:
+
+1. The Amazon Q setup will prompt you for accessibility permissions
+2. Follow the system prompts to grant permissions in System Preferences
+3. Navigate to: **System Preferences → Security & Privacy → Privacy → Accessibility**
+4. Ensure Amazon Q is checked in the list
+
+You should see a screen similar to this during setup:
+```
+Shell integrations: ✓ Complete
+Enable accessibility: Needs attention
+```
+
+#### Step 2c: Authenticate with Your Builder ID
+
+Amazon Q will prompt you to authenticate using the Builder ID you created in Step 1.
+
+1. Select **Sign in with Builder ID** (not IAM Identity Center)
+2. Follow the browser prompts to authenticate
+3. Enter your Builder ID credentials (email and password you created in Step 1)
+4. Complete the authentication flow and authorize Amazon Q
+
+**IMPORTANT:**
+- Use the Builder ID credentials you created in Step 1
+- If you encounter authentication issues, verify your credentials or try `q login` from the command line
+- Contact hackathon support if issues persist
+
+### Step 3: Upgrade to Q Developer Pro
+
+After authenticating with your Builder ID, you need to upgrade to Q Developer Pro to access all features. Follow these steps:
+
+1. **Open Amazon Q chat** by running:
+   ```bash
+   q chat
+   ```
+
+2. **Initiate the upgrade** by typing:
+   ```bash
+   /subscribe
+   ```
+
+3. **You will see the following prompt:**
+   ```
+   Subscribe to Q Developer Pro
+
+   During the upgrade, you'll be asked to link your Builder ID to the AWS account
+   that will be billed the monthly subscription fee.
+
+   Need help? Visit our subscription support page
+   https://docs.aws.amazon.com/console/amazonq/upgrade-builder-id
+
+   Would you like to open the AWS console to upgrade? [y/n]:
+   ```
+
+4. **Type `y` and press Enter** to open the AWS console
+
+5. **Copy the URL from your browser** after the AWS console opens. The URL will contain account linking information.
+
+6. **Send the URL via email to slinsola@amazon.ae**, including your team name. The team will assist with completing your Pro subscription activation.
+
+7. **Wait for confirmation** from the hackathon support team that your Pro subscription is active
+
+**IMPORTANT:**
+- Do not close the browser window until you've copied the URL
+- Send the complete URL exactly as it appears in your browser
+- You will need Pro access activated before you can use advanced features
+- If you encounter any issues during the upgrade process, contact hackathon support immediately
+
+### Step 4: Configure Claude Sonnet 4.5 Model (Recommended)
+
+By default, Amazon Q uses **Claude Sonnet 4** for chat sessions. For the best performance and latest capabilities, we recommend configuring **Claude Sonnet 4.5** as your default model.
+
+#### Set Claude Sonnet 4.5 as Default Model
+
+Run the following command to set Claude Sonnet 4.5 as your default model for all chat sessions:
+
+```bash
+q settings chat.defaultModel claude-sonnet-4.5
+```
+
+This ensures all future chat sessions use Claude Sonnet 4.5 automatically.
+
+#### Available Models
+
+Amazon Q supports the following models for chat sessions:
+
+- **Claude Sonnet 4.5** (recommended for hackathon)
+- **Claude Sonnet 4** (default)
+- **Claude Sonnet 3.5**
+
+#### Change Model During a Chat Session
+
+If you're already in a chat session and want to switch models, use the `/model` command:
+
+```bash
+/model
+```
+
+This displays a list of available models. Use arrow keys to navigate and press Enter to select Claude Sonnet 4.5.
+
+**Note:** The model you select persists for the duration of that chat session only. New sessions will use your configured default model.
+
+#### Start a Chat Session with a Specific Model
+
+You can launch a chat session with a specific model using:
+
+```bash
+q chat --model claude-sonnet-4.5
+```
+
+### Using Amazon Q CLI
+
+#### Launch Amazon Q
+
+From your terminal, simply run:
+
+```bash
+q
+```
+
+This launches the Amazon Q interactive chat interface.
+
+#### Verify Installation and Model Configuration
+
+Run the diagnostic command to ensure everything is working:
+
+```bash
+q doctor
+```
+
+Expected output:
+```
+✔ Everything looks good!
+
+Amazon Q still not working? Run q issue to let us know!
+```
+
+To verify your default model is set to Claude Sonnet 4.5, start a chat session and check the model indicator, or run:
+
+```bash
+q chat --model claude-sonnet-4.5
+```
+
+#### Common CLI Commands
+
+- `q` - Start Amazon Q chat interface
+- `q chat --model claude-sonnet-4.5` - Start chat with Claude Sonnet 4.5
+- `/model` - Change model during a chat session
+- `q settings chat.defaultModel <model-name>` - Set default model
+- `q doctor` - Diagnose and fix common issues
+- `q login` - Re-authenticate with Builder ID
+- `q issue` - Report a bug or issue
+- `qterm` - Enhanced terminal with inline completions (for zsh)
+
+## Option 2: Amazon Q IDE Integration
+
+You can use Amazon Q Developer directly in your IDE for real-time code suggestions, inline completions, and integrated chat. 
+For setup instructions see the [Amazon Q in IDE documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE.html).
+
+## Troubleshooting
+
+#### Issue: Authentication Failed
+
+**Solution:**
+- Verify your Builder ID credentials are correct
+- Try re-authenticating: `q login`
+- If you forgot your Builder ID password, use the password reset option
+- Ensure you completed the Builder ID verification process
+- Contact hackathon support if you continue to have issues
+
+#### Issue: Autocomplete Not Working
+
+**Solution:**
+- Run `q doctor` to check shell integration
+- Verify accessibility permissions are granted (macOS)
+- Ensure shell integrations were properly installed during setup
+- Try restarting your terminal
+
+#### Issue: "q: command not found"
+
+**Solution:**
+- Shell integrations may not be enabled
+- Run the Amazon Q app again and enable shell integrations
+- Restart your terminal after enabling integrations
+- Check that your shell configuration (.zshrc, .bashrc, or PowerShell profile) was updated
+
+#### Issue: Cannot Upgrade to Pro / Subscription Issues
+
+**Solution:**
+- Ensure you've completed the authentication with your Builder ID first
+- Try the `/subscribe` command again in a fresh Q chat session
+- If the AWS console doesn't open, ensure your default browser is set correctly
+- Make sure you copied the complete URL from the browser
+- Verify you sent the URL to hackathon support
+- Contact hackathon support if you don't receive confirmation within a reasonable time
+- Check if your Pro subscription is active by trying to access Pro features
+
+#### Issue: Model Not Available or Model Selection Not Working
+
+**Solution:**
+- Ensure you're using the correct model name format: `claude-sonnet-4.5`, `claude-sonnet-4`, or `claude-3.5-sonnet`
+- Verify your Q Developer Pro subscription is active
+- Try re-authenticating: `q login`
+- Contact hackathon support to verify your Pro subscription status
+
+#### Issue: Connection Timeout or Network Errors
+
+**Solution:**
+- Check your internet connection
+- Verify AWS endpoints are accessible from your network
+- Contact your IT administrator for firewall issues
+- Restart Amazon Q application
+
+#### Issue: Slow Responses
+
+**Solution:**
+- This is normal for complex requests—Amazon Q is processing your code
+- Break large requests into smaller, focused ones
+- Check your internet connection speed
+- Ensure you have the latest version of Amazon Q
+- Consider using Claude Sonnet 4 or 3.5 if 4.5 seems slower for simple tasks
+
+## Best Practices
+
+### Optimize Your Prompts
+
+- **Be specific**: Clearly describe what you want to achieve
+- **Provide context**: Share relevant code snippets or file structures
+- **Iterate**: Start small and build up complexity
+- **Use autocomplete**: Let Amazon Q suggest commands as you type (CLI)
+- **Use the right model**: Claude Sonnet 4.5 for complex tasks (CLI only)
+
+### Work Incrementally
+
+- Build features step-by-step rather than requesting entire applications
+- Test generated code before moving to the next feature
+- Refactor and improve code iteratively
+
+### Leverage Multiple Features
+
+- **CLI Chat**: Use `q` for complex code generation and explanations
+- **CLI Autocomplete**: Use inline suggestions for terminal commands
+- **Debugging**: Ask Amazon Q to help analyze errors and logs
+- **Model Selection**: Switch models during CLI sessions with `/model` if needed
+
+## Security Best Practices
+
+### Protect Your Credentials
+
+**IMPORTANT:** Never commit your Builder ID credentials to version control!
+
+### Code Review
+
+- Always review code generated by Amazon Q before using in production
+- Understand what the code does before committing
+- Test thoroughly, especially for security-sensitive operations
+- Be cautious with code that handles sensitive data or credentials
+
+### Token Usage
+
+Your Q Developer Pro subscription provides access to advanced features:
+- Be mindful of usage during the hackathon
+- Coordinate with your team to avoid duplicate work
+- Reuse and adapt generated code patterns
+- The hackathon support team manages subscription billing
+
+## Quick Start Checklist
+
+### CLI Installation
+
+**Step 1: Sign Up**
+- [ ] Created AWS Builder ID account at https://profile.aws.amazon.com/
+- [ ] Verified email address (if using email sign-up)
+- [ ] Saved Builder ID credentials securely
+
+**Step 2: Install Amazon Q CLI**
+- [ ] Downloaded and installed Amazon Q (via direct download or Homebrew)
+- [ ] Launched Amazon Q application
+- [ ] Enabled shell integrations
+- [ ] Granted accessibility permissions
+- [ ] Authenticated with Builder ID credentials from Step 1
+
+**Step 3: Upgrade to Pro**
+- [ ] Ran `/subscribe` command in Q chat
+- [ ] Clicked 'y' to open AWS console
+- [ ] Copied browser URL
+- [ ] Sent URL to hackathon support
+- [ ] Received confirmation that Pro subscription is active
+
+**Step 4: Configure and Test**
+- [ ] Configured Claude Sonnet 4.5 as default model: `q settings chat.defaultModel claude-sonnet-4.5`
+- [ ] Ran `q doctor` successfully
+- [ ] Tested chat with `q` or `q chat --model claude-sonnet-4.5`
+
+**Optional: IDE Setup**
+- [ ] Installed Amazon Q extension in VS Code
+- [ ] Authenticated with same Builder ID
+- [ ] Verified Pro features are active
+
+## Additional Resources
+
+### Official Documentation
+- [Amazon Q CLI Documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html) - Complete CLI reference and advanced features
+- [Amazon Q in IDE Documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/q-in-IDE.html) - IDE setup for VS Code, JetBrains, Eclipse, and Visual Studio
+- [Amazon Q Developer Documentation](https://docs.aws.amazon.com/amazonq/) - Main documentation hub
+- [Supported Command Line Environments](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-supported-environments.html)
+- [Model Selection Documentation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line-chat-models.html)
+
+### Support
+- Contact hackathon support for technical assistance during the event
+
+## Support
+
+For issues during the hackathon:
+
+- **Builder ID creation or authentication problems**: Contact hackathon support for assistance
+- **Pro subscription upgrade issues**: Send your browser URL to hackathon support as instructed in Step 6
+- **CLI installation issues**: Run `q doctor` and `q issue` to diagnose
+- **Model configuration issues**: Verify model name format and Pro subscription status
+- **Network issues**: Check your internet connection and contact IT if needed
+- **Technical questions**: Reach out to hackathon mentors or support channel
+- **Bug reports**: Use `q issue` to report CLI problems
+
+## Uninstalling Amazon Q (Post-Hackathon)
+
+### CLI Uninstallation
+
+#### macOS
+
+1. Open the Applications folder in Finder
+2. Locate the Amazon Q Developer application
+3. Drag the application to Trash, or right-click and select "Move to Trash"
+4. Empty the Trash to complete uninstallation
+
+#### macOS (Homebrew)
+
+```bash
+brew uninstall --cask amazon-q
+```
+
+#### Windows
+
+1. Open **Settings** → **Apps** → **Apps & features**
+2. Search for **Amazon Q**
+3. Click on Amazon Q and select **Uninstall**
+4. Follow the uninstallation wizard prompts
+
+---
+
+## Summary
+
+You've completed the three-step setup process:
+
+1. ✅ **Sign up** - Created your AWS Builder ID account
+2. ✅ **Install** - Installed Amazon Q CLI and/or IDE extension
+3. ✅ **Upgrade to Pro** - Subscribed to Q Developer Pro tier with hackathon support
+
+**You're all set!** Once your Pro subscription is confirmed by hackathon support, launch Amazon Q with `q chat --model claude-sonnet-4.5` for CLI. Start building your hackathon project with AI assistance. Good luck!

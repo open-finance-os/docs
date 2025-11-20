@@ -106,9 +106,9 @@
             ]
       },
       {
-        "tab": "Claude Code",
+        "tab": "Agentic Coding",
         "pages": [
-              "claude-code/index"
+              "agentic-coding/index"
             ]
       },
       {
